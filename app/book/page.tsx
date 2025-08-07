@@ -17,7 +17,8 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { RootState } from '@/lib/store';
+import { RootState, AppDispatch } from '@/lib/store';
+import { addOrderAction } from '@/lib/actions/orderActions';
 import {
     updateCycleDetails,
     addNewCycle,
@@ -25,32 +26,15 @@ import {
     setSelectedExistingCycle,
     checkLocationAvailability,
     setTermsAccepted,
-    confirmBooking,
     resetOrder,
     setCurrentStep,
+    setSelectedService,
 } from '@/lib/slices/orderSlice';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-    CheckCircle2,
-    Clock,
-    MapPin,
-    Phone,
-    User,
-    CalendarIcon,
-    Upload,
-    X,
-} from 'lucide-react';
-
-const timeSlots = [
-    '9:00 AM - 11:00 AM',
-    '11:00 AM - 1:00 PM',
-    '1:00 PM - 3:00 PM',
-    '3:00 PM - 5:00 PM',
-    '5:00 PM - 7:00 PM',
-];
+import { CheckCircle2, Upload, MapPin } from 'lucide-react';
 
 export default function BookPage() {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -68,6 +52,8 @@ export default function BookPage() {
         isLocationAvailable,
         orderId,
         termsAccepted,
+        isLoading,
+        error,
     } = useSelector((state: RootState) => state.order);
 
     // Initialize service from URL params
@@ -78,24 +64,83 @@ export default function BookPage() {
         }
 
         const serviceId = searchParams.get('service');
-        const serviceType = searchParams.get('type');
+        const serviceType = searchParams.get('type') as 'gear' | 'non-gear';
         const serviceName = searchParams.get('name');
         const servicePrice = searchParams.get('price');
 
-        if (serviceId && !selectedService) {
-            // Set service data from URL params
-            // This would normally come from Redux state or API
-            dispatch(setCurrentStep('cycle-details'));
+        if (serviceId && serviceName && servicePrice && !selectedService) {
+            dispatch(
+                setSelectedService({
+                    id: serviceId,
+                    name: serviceName,
+                    type: serviceType || 'gear',
+                    price: parseInt(servicePrice),
+                })
+            );
         }
-    }, [isAuthenticated, searchParams, selectedService, router, dispatch]);
+
+        // Pre-fill customer details from user data
+        if (user && !customerDetails.firstName) {
+            dispatch(
+                updateCustomerDetails({
+                    firstName: user.firstName || '',
+                    lastName: user.lastName || '',
+                    phoneNumber: user.phoneNumber || '',
+                    addressLine1: user.addressLine1 || '',
+                    addressLine2: user.addressLine2 || '',
+                    city: user.city || '',
+                    state: user.state || '',
+                    country: user.country || '',
+                    pinCode: user.pinCode || '',
+                })
+            );
+        }
+    }, [
+        isAuthenticated,
+        searchParams,
+        selectedService,
+        user,
+        customerDetails.firstName,
+        router,
+        dispatch,
+    ]);
 
     const handleNext = () => {
         if (currentStep === 'cycle-details') {
             dispatch(setCurrentStep('customer-details'));
         } else if (currentStep === 'customer-details') {
             dispatch(checkLocationAvailability(customerDetails.pinCode));
-            if (isLocationAvailable && termsAccepted) {
-                dispatch(confirmBooking());
+            if (
+                isLocationAvailable &&
+                termsAccepted &&
+                user &&
+                selectedService
+            ) {
+                // Create order
+                const orderData = {
+                    userId: user.id,
+                    serviceId: selectedService.id,
+                    cycles: cycles.map((cycle) => ({
+                        brand: cycle.brand,
+                        type: cycle.type,
+                        photo: cycle.photo,
+                        serviceId: selectedService.id,
+                    })),
+                    customerDetails: {
+                        firstName: customerDetails.firstName,
+                        lastName: customerDetails.lastName,
+                        phoneNumber: customerDetails.phoneNumber,
+                        addressLine1: customerDetails.addressLine1,
+                        addressLine2: customerDetails.addressLine2,
+                        city: customerDetails.city,
+                        state: customerDetails.state,
+                        country: customerDetails.country,
+                        pinCode: customerDetails.pinCode,
+                    },
+                    totalAmount: selectedService.price * cycles.length,
+                };
+
+                dispatch(addOrderAction(orderData));
             }
         }
     };
@@ -306,41 +351,6 @@ export default function BookPage() {
                                     </RadioGroup>
                                 </div>
                             </div>
-
-                            {cycles.length > 1 && (
-                                <div className='space-y-2'>
-                                    <Label className='text-white'>
-                                        Select Service
-                                    </Label>
-                                    <Select
-                                        value={cycle.service}
-                                        onValueChange={(value) =>
-                                            dispatch(
-                                                updateCycleDetails({
-                                                    index,
-                                                    field: 'service',
-                                                    value,
-                                                })
-                                            )
-                                        }
-                                    >
-                                        <SelectTrigger className='w-full bg-[#060608] border-[#4a4b4d] text-white'>
-                                            <SelectValue placeholder='Select service' />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value='standard'>
-                                                Standard Service
-                                            </SelectItem>
-                                            <SelectItem value='premium'>
-                                                Premium Service
-                                            </SelectItem>
-                                            <SelectItem value='annual'>
-                                                Annual Maintenance
-                                            </SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            )}
 
                             <div className='space-y-2'>
                                 <Label className='text-white'>
@@ -606,6 +616,12 @@ export default function BookPage() {
                         .
                     </Label>
                 </div>
+
+                {error && (
+                    <div className='mt-4 p-3 bg-red-900/20 border border-red-500/50 rounded-lg'>
+                        <p className='text-red-300 text-sm'>{error}</p>
+                    </div>
+                )}
             </div>
         </motion.div>
     );
@@ -684,7 +700,11 @@ export default function BookPage() {
                 <div className='container mx-auto px-4'>
                     <div className='text-center'>
                         <h1 className='text-2xl font-semibold text-[#fbbf24]'>
-                            Premium service - Non Gear Bicycle
+                            {selectedService?.name} -{' '}
+                            {selectedService?.type === 'gear'
+                                ? 'Gear'
+                                : 'Non Gear'}{' '}
+                            Bicycle
                         </h1>
                         <p className='text-gray-300 mt-1'>
                             Confirm Your booking
@@ -713,22 +733,27 @@ export default function BookPage() {
                             onClick={handlePrevStep}
                             variant='outline'
                             className='border-[#4a4b4d] text-white hover:bg-[#3c3d3f] px-8 py-3'
+                            disabled={isLoading}
                         >
                             Back
                         </Button>
                         <Button
                             onClick={handleNext}
                             disabled={
-                                currentStep === 'customer-details' &&
-                                (!termsAccepted ||
-                                    (!isLocationAvailable &&
-                                        customerDetails.pinCode.length > 0))
+                                isLoading ||
+                                (currentStep === 'customer-details' &&
+                                    (!termsAccepted ||
+                                        (!isLocationAvailable &&
+                                            customerDetails.pinCode.length >
+                                                0)))
                             }
                             className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold px-8 py-3 rounded-full disabled:opacity-50 disabled:cursor-not-allowed'
                         >
-                            {currentStep === 'customer-details' &&
-                            !isLocationAvailable &&
-                            customerDetails.pinCode
+                            {isLoading
+                                ? 'Processing...'
+                                : currentStep === 'customer-details' &&
+                                  !isLocationAvailable &&
+                                  customerDetails.pinCode
                                 ? 'Submit'
                                 : 'Next'}
                         </Button>

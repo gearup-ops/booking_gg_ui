@@ -1,133 +1,153 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, XCircle } from 'lucide-react';
 import Image from 'next/image';
-import { RootState } from '@/lib/store';
+import { RootState, AppDispatch } from '@/lib/store';
+import { getServicesAction } from '@/lib/actions/serviceActions';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
-const serviceDetails = {
-    standard: {
-        title: 'Standard service',
-        description: 'Our most popular plan for non-gear & kids bicycle',
-        price: 499,
-        image: '/images/service1.png',
-        features: [
-            { name: 'Stem Bolt (Alignment of the headset)', included: true },
-            { name: 'Brakes (Check & Adjust)', included: true },
-            { name: 'Pedals (Tightening)', included: true },
-            { name: 'Axle setting (Loose & Tightening)', included: true },
-            {
-                name: 'Tyre pressure (Check to inflate to correct pressure)',
-                included: true,
-            },
-            { name: 'Gear tune-up', included: true },
-            {
-                name: 'Brake levers (Loose and Tightening cable)',
-                included: true,
-            },
-            { name: 'Bottom bracket (Checkup)', included: false },
-            { name: 'Chain (Check & Lube)', included: false },
-            { name: 'Cables (Check & Lube)', included: false },
-            {
-                name: 'Checking & tightening all screw & bolts',
-                included: false,
-            },
-            { name: 'Wheel truing (Not wheel bend)', included: false },
-            { name: 'Pre-Ride check', included: false },
-            { name: 'Safety checks', included: false },
-            { name: 'Hub Checkup', included: false },
-            { name: 'Clean (Cleaning the bike)', included: false },
-        ],
-    },
-    premium: {
-        title: 'Premium service',
-        description: 'Our advanced plan for comprehensive maintenance.',
-        price: 799,
-        image: '/images/service4.png',
-        features: [
-            { name: 'Stem Bolt (Alignment of the headset)', included: true },
-            { name: 'Brakes (Check & Adjust)', included: true },
-            { name: 'Pedals (Tightening)', included: true },
-            { name: 'Axle setting (Loose & Tightening)', included: true },
-            {
-                name: 'Tyre pressure (Check to inflate to correct pressure)',
-                included: true,
-            },
-            { name: 'Gear tune-up', included: true },
-            {
-                name: 'Brake levers (Loose and Tightening cable)',
-                included: true,
-            },
-            { name: 'Bottom bracket (Checkup)', included: true },
-            { name: 'Chain (Check & Lube)', included: true },
-            { name: 'Cables (Check & Lube)', included: true },
-            { name: 'Checking & tightening all screw & bolts', included: true },
-            { name: 'Wheel truing (Not wheel bend)', included: true },
-            { name: 'Pre-Ride check', included: true },
-            { name: 'Safety checks', included: true },
-            { name: 'Hub Checkup', included: true },
-            { name: 'Clean (Cleaning the bike)', included: true },
-        ],
-    },
-    'assemble-dismantle': {
-        title: 'Assemble - Dismantle',
-        description:
-            'Professional assembly and disassembly services for your bicycle.',
-        price: 399,
-        image: '/images/service2.png',
-        features: [
-            { name: 'Full assembly from box', included: true },
-            { name: 'Disassembly for transport', included: true },
-            { name: 'Basic safety check', included: true },
-        ],
-    },
-    'annual-maintenance': {
-        title: 'Annual Maintenance',
-        description:
-            'Comprehensive yearly maintenance package to keep your bike in perfect condition.',
-        price: 1299,
-        image: '/images/service3.png',
-        features: [
-            { name: 'Quarterly service (4 times/year)', included: true },
-            { name: 'Priority booking', included: true },
-            { name: 'Free minor repairs', included: true },
-        ],
-    },
-    'road-bike-service': {
-        title: 'Road Bike service',
-        description:
-            'Specialized service for road bikes, focusing on performance and precision.',
-        price: 599,
-        image: '/images/service1.png',
-        features: [
-            { name: 'Road bike specific tune-up', included: true },
-            { name: 'Aerodynamic adjustments', included: true },
-            { name: 'Tire pressure optimization', included: true },
-        ],
-    },
-    'e-bike-service': {
-        title: 'E - Bike service',
-        description:
-            'Expert maintenance for electric bicycles, including battery and motor checks.',
-        price: 699,
-        image: '/images/service4.png',
-        features: [
-            { name: 'Motor and battery diagnostics', included: true },
-            { name: 'Electrical system check', included: true },
-            { name: 'Software updates (if applicable)', included: true },
-        ],
-    },
-};
-
 export default function ServicesSection() {
     const router = useRouter();
+    const dispatch = useDispatch<AppDispatch>();
     const [selectedServiceKey, setSelectedServiceKey] = useState('standard');
     const [isGearBike, setIsGearBike] = useState(true);
     const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+    const { services, isLoading } = useSelector(
+        (state: RootState) => state.services
+    );
+
+    // Fetch services on component mount
+    useEffect(() => {
+        dispatch(getServicesAction());
+    }, [dispatch]);
+
+    // Fallback service details for demo purposes
+    const serviceDetails = {
+        standard: {
+            title: 'Standard service',
+            description: 'Our most popular plan for non-gear & kids bicycle',
+            price: 499,
+            image: '/images/service1.png',
+            features: [
+                {
+                    name: 'Stem Bolt (Alignment of the headset)',
+                    included: true,
+                },
+                { name: 'Brakes (Check & Adjust)', included: true },
+                { name: 'Pedals (Tightening)', included: true },
+                { name: 'Axle setting (Loose & Tightening)', included: true },
+                {
+                    name: 'Tyre pressure (Check to inflate to correct pressure)',
+                    included: true,
+                },
+                { name: 'Gear tune-up', included: true },
+                {
+                    name: 'Brake levers (Loose and Tightening cable)',
+                    included: true,
+                },
+                { name: 'Bottom bracket (Checkup)', included: false },
+                { name: 'Chain (Check & Lube)', included: false },
+                { name: 'Cables (Check & Lube)', included: false },
+                {
+                    name: 'Checking & tightening all screw & bolts',
+                    included: false,
+                },
+                { name: 'Wheel truing (Not wheel bend)', included: false },
+                { name: 'Pre-Ride check', included: false },
+                { name: 'Safety checks', included: false },
+                { name: 'Hub Checkup', included: false },
+                { name: 'Clean (Cleaning the bike)', included: false },
+            ],
+        },
+        premium: {
+            title: 'Premium service',
+            description: 'Our advanced plan for comprehensive maintenance.',
+            price: 799,
+            image: '/images/service4.png',
+            features: [
+                {
+                    name: 'Stem Bolt (Alignment of the headset)',
+                    included: true,
+                },
+                { name: 'Brakes (Check & Adjust)', included: true },
+                { name: 'Pedals (Tightening)', included: true },
+                { name: 'Axle setting (Loose & Tightening)', included: true },
+                {
+                    name: 'Tyre pressure (Check to inflate to correct pressure)',
+                    included: true,
+                },
+                { name: 'Gear tune-up', included: true },
+                {
+                    name: 'Brake levers (Loose and Tightening cable)',
+                    included: true,
+                },
+                { name: 'Bottom bracket (Checkup)', included: true },
+                { name: 'Chain (Check & Lube)', included: true },
+                { name: 'Cables (Check & Lube)', included: true },
+                {
+                    name: 'Checking & tightening all screw & bolts',
+                    included: true,
+                },
+                { name: 'Wheel truing (Not wheel bend)', included: true },
+                { name: 'Pre-Ride check', included: true },
+                { name: 'Safety checks', included: true },
+                { name: 'Hub Checkup', included: true },
+                { name: 'Clean (Cleaning the bike)', included: true },
+            ],
+        },
+        'assemble-dismantle': {
+            title: 'Assemble - Dismantle',
+            description:
+                'Professional assembly and disassembly services for your bicycle.',
+            price: 399,
+            image: '/images/service2.png',
+            features: [
+                { name: 'Full assembly from box', included: true },
+                { name: 'Disassembly for transport', included: true },
+                { name: 'Basic safety check', included: true },
+            ],
+        },
+        'annual-maintenance': {
+            title: 'Annual Maintenance',
+            description:
+                'Comprehensive yearly maintenance package to keep your bike in perfect condition.',
+            price: 1299,
+            image: '/images/service3.png',
+            features: [
+                { name: 'Quarterly service (4 times/year)', included: true },
+                { name: 'Priority booking', included: true },
+                { name: 'Free minor repairs', included: true },
+            ],
+        },
+        'road-bike-service': {
+            title: 'Road Bike service',
+            description:
+                'Specialized service for road bikes, focusing on performance and precision.',
+            price: 599,
+            image: '/images/service1.png',
+            features: [
+                { name: 'Road bike specific tune-up', included: true },
+                { name: 'Aerodynamic adjustments', included: true },
+                { name: 'Tire pressure optimization', included: true },
+            ],
+        },
+        'e-bike-service': {
+            title: 'E - Bike service',
+            description:
+                'Expert maintenance for electric bicycles, including battery and motor checks.',
+            price: 699,
+            image: '/images/service4.png',
+            features: [
+                { name: 'Motor and battery diagnostics', included: true },
+                { name: 'Electrical system check', included: true },
+                { name: 'Software updates (if applicable)', included: true },
+            ],
+        },
+    };
 
     const currentService =
         serviceDetails[selectedServiceKey as keyof typeof serviceDetails];
@@ -326,9 +346,10 @@ export default function ServicesSection() {
                 >
                     <Button
                         onClick={handleBookNow}
-                        className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold px-12 py-4 text-xl rounded-lg transition-all duration-300 hover:scale-105'
+                        disabled={isLoading}
+                        className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold px-12 py-4 text-xl rounded-lg transition-all duration-300 hover:scale-105 disabled:opacity-50'
                     >
-                        Book Now
+                        {isLoading ? 'Loading...' : 'Book Now'}
                     </Button>
                 </motion.div>
             </div>

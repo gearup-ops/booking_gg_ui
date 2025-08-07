@@ -1,4 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+    addOrderAction,
+    getOrdersByUserIdAction,
+} from '../actions/orderActions';
+import { Order } from '../api/orderApi';
 
 interface CycleDetails {
     id: string;
@@ -37,6 +42,9 @@ interface OrderState {
     isLocationAvailable: boolean;
     orderId: string | null;
     termsAccepted: boolean;
+    orders: Order[];
+    isLoading: boolean;
+    error: string | null;
 }
 
 const initialState: OrderState = {
@@ -61,6 +69,9 @@ const initialState: OrderState = {
     isLocationAvailable: true,
     orderId: null,
     termsAccepted: false,
+    orders: [],
+    isLoading: false,
+    error: null,
 };
 
 const orderSlice = createSlice({
@@ -114,7 +125,6 @@ const orderSlice = createSlice({
             state.selectedExistingCycle = action.payload;
         },
         checkLocationAvailability: (state, action: PayloadAction<string>) => {
-            // Mock location check - some pin codes are not available
             const unavailablePinCodes = ['110001', '400001', '600001'];
             state.isLocationAvailable = !unavailablePinCodes.includes(
                 action.payload
@@ -123,13 +133,45 @@ const orderSlice = createSlice({
         setTermsAccepted: (state, action: PayloadAction<boolean>) => {
             state.termsAccepted = action.payload;
         },
-        confirmBooking: (state) => {
-            state.orderId = `ORD${Date.now()}`;
-            state.currentStep = 'confirmation';
-        },
         resetOrder: (state) => {
-            return { ...initialState };
+            return { ...initialState, orders: state.orders };
         },
+        clearError: (state) => {
+            state.error = null;
+        },
+    },
+    extraReducers: (builder) => {
+        // Add Order
+        builder
+            .addCase(addOrderAction.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(addOrderAction.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.orderId = action.payload.order.id;
+                state.currentStep = 'confirmation';
+                state.orders.unshift(action.payload.order);
+            })
+            .addCase(addOrderAction.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            });
+
+        // Get Orders By User ID
+        builder
+            .addCase(getOrdersByUserIdAction.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(getOrdersByUserIdAction.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.orders = action.payload.orders;
+            })
+            .addCase(getOrdersByUserIdAction.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            });
     },
 });
 
@@ -142,8 +184,8 @@ export const {
     setSelectedExistingCycle,
     checkLocationAvailability,
     setTermsAccepted,
-    confirmBooking,
     resetOrder,
+    clearError,
 } = orderSlice.actions;
 
 export default orderSlice.reducer;
