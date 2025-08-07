@@ -114,13 +114,13 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-[#060608] flex">
       {/* Left side - Bicycle image and branding */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-[#060608] overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#060608] via-[#3c3d3f] to-[#060608] opacity-90"></div>
+      <div className="hidden lg:flex lg:w-2/3 relative bg-[#060608] overflow-hidden">
+        {/* <div className="absolute inset-0 bg-gradient-to-br from-[#060608] via-[#3c3d3f] to-[#060608] opacity-90"></div> */}
         
         {/* Background bicycle image */}
-        <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0">
           <Image
-            src="/placeholder.svg?height=800&width=600&text=Professional+Bicycle+Service"
+            src="/images/bg-cycle.jpg"
             alt="Background bicycle"
             fill
             className="object-cover object-center"
@@ -128,24 +128,25 @@ export default function LoginPage() {
         </div>
 
         <div className="relative z-10 p-12 flex flex-col justify-center">
-          <Link href="/" className="flex items-center space-x-2 mb-12">
+          {/* <Link href="/" className="flex items-center space-x-2 mb-12">
             <div className="w-10 h-10 bg-[#fbbf24] rounded-full flex items-center justify-center">
               <div className="w-5 h-5 bg-[#060608] rounded-full"></div>
             </div>
             <span className="text-2xl font-bold text-white">BikeService</span>
-          </Link>
+          </Link> */}
           
           <div className="space-y-6">
-            <h1 className="text-4xl font-bold text-white leading-tight">
+            <h1 className="text-6xl font-bold text-white leading-tight">
               Pedal with Peace of mind
             </h1>
-            <p className="text-gray-300 text-lg leading-relaxed">
-              Our expert technicians service your companion at home. Professional bike servicing at your convenience, wherever you are.
+            <p className="text-gray-300 font-semibold text-3xl leading-relaxed w-3/4">
+              Our expert technicians service your companion at home. 
+              {/* Professional bike servicing at your convenience, wherever you are. */}
             </p>
           </div>
 
           {/* Decorative bicycle illustration */}
-          <div className="absolute bottom-12 right-12 opacity-30">
+          {/* <div className="absolute bottom-12 right-12 opacity-30">
             <svg width="200" height="150" viewBox="0 0 200 150" className="text-[#fbbf24]">
               <circle cx="50" cy="120" r="25" fill="none" stroke="currentColor" strokeWidth="2"/>
               <circle cx="150" cy="120" r="25" fill="none" stroke="currentColor" strokeWidth="2"/>
@@ -153,21 +154,15 @@ export default function LoginPage() {
               <path d="M100 80 L100 100" stroke="currentColor" strokeWidth="2"/>
               <path d="M90 100 L110 100" stroke="currentColor" strokeWidth="2"/>
             </svg>
-          </div>
+          </div> */}
         </div>
       </div>
 
       {/* Right side - Login form */}
-      <div className="w-full lg:w-1/2 bg-[#3c3d3f] flex items-center justify-center p-8">
+      <div className="w-full lg:w-1/3 bg-[#3c3d3f] flex items-center justify-center p-8">
         <div className="w-full max-w-md space-y-8">
           {/* Mobile header */}
           <div className="lg:hidden text-center">
-            <Link href="/" className="inline-flex items-center space-x-2 mb-6">
-              <div className="w-8 h-8 bg-[#fbbf24] rounded-full flex items-center justify-center">
-                <div className="w-4 h-4 bg-[#060608] rounded-full"></div>
-              </div>
-              <span className="text-xl font-bold text-white">BikeService</span>
-            </Link>
             <h2 className="text-2xl font-bold text-white mb-2">
               Pedal with Peace of mind
             </h2>
