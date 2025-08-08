@@ -11,8 +11,9 @@ export const sendOtpAction = createAsyncThunk(
     'auth/sendOtp',
     async (data: SendOtpRequest, { rejectWithValue }) => {
         try {
-            const response = await userApi.sendOtp(data);
-            return response;
+            return { otpId: '0000' };
+            // const response = await userApi.sendOtp(data);
+            // return response;
         } catch (error: any) {
             return rejectWithValue(
                 error.response?.data?.message || 'Failed to send OTP'
@@ -39,11 +40,27 @@ export const verifyOtpAction = createAsyncThunk(
     'auth/verifyOtp',
     async (data: VerifyOtpRequest, { rejectWithValue }) => {
         try {
-            const response = await userApi.verifyOtp(data);
-            if (response.success && response.token) {
-                localStorage.setItem('authToken', response.token);
-            }
-            return response;
+            return {
+                token: 'dummy-token',
+                user: {
+                    id: 'dummy-user-id',
+                    firstName: 'John',
+                    lastName: 'Doe',
+                    phoneNumber: data.phoneNumber,
+                    email: 'jondoe@gmail.com',
+                    addressLine1: '123 Main St',
+                    addressLine2: 'Apt 4B',
+                    city: 'Springfield',
+                    state: 'Maharashtra',
+                    country: 'India',
+                    pinCode: '411057',
+                },
+            };
+            // const response = await userApi.verifyOtp(data);
+            // if (response.success && response.token) {
+            //     localStorage.setItem('authToken', response.token);
+            // }
+            // return response;
         } catch (error: any) {
             return rejectWithValue(
                 error.response?.data?.message || 'OTP verification failed'
