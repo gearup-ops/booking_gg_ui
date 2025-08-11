@@ -89,7 +89,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div className='min-h-screen h-screen bg-[#060608] flex flex-col lg:flex-row'>
+        <div className='min-h-screen h-screen bg-[#3c3d3f] flex flex-col lg:flex-row'>
             {/* Left side - Bicycle image and branding */}
             <div className='relative w-full lg:w-2/3 h-[50vh] lg:h-auto flex items-center justify-center overflow-hidden'>
                 {/* Background bicycle image */}
@@ -169,7 +169,7 @@ export default function LoginPage() {
                                             !phoneNumber ||
                                             phoneNumber.length < 10
                                         }
-                                        className='h-12 bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed'
+                                        className='h-12 bg-[#F5B41D] hover:bg-[#F5B41D] text-black font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed'
                                     >
                                         {isLoading ? 'Sending...' : 'Get OTP'}
                                     </Button>
@@ -183,11 +183,11 @@ export default function LoginPage() {
                                 </div> */}
 
                                 <div className='space-y-6 text-center'>
-                                    <p className='text-gray-300 text-sm text-left'>
+                                    <p className='text-gray-300 text-sm text-left ml-8 lg:ml-0'>
                                         Type the verification code sent to{' '}
                                         {phoneNumber}
                                     </p>
-                                    <div className='flex gap-3 justify-center'>
+                                    <div className='flex gap-6 justify-center'>
                                         {otpInputs.map((digit, index) => (
                                             <Input
                                                 key={index}
@@ -205,13 +205,13 @@ export default function LoginPage() {
                                                 onKeyDown={(e) =>
                                                     handleKeyDown(index, e)
                                                 }
-                                                className='w-14 h-14 text-center bg-[#2a2b2d] border-[#4a4b4d] text-white text-xl font-semibold focus:border-[#fbbf24] focus:ring-[#fbbf24]'
+                                                className='w-14 h-14 text-center bg-white border-[#4a4b4d] text-black text-xl font-semibold focus:border-[#fbbf24] focus:ring-[#fbbf24]'
                                                 maxLength={1}
                                             />
                                         ))}
                                     </div>
 
-                                    <div className='flex space-x-2 items-center text-sm'>
+                                    <div className='flex space-x-2 items-center text-sm ml-8 lg:ml-0'>
                                         <span className='text-gray-300'>
                                             Didn't receive code?
                                         </span>
