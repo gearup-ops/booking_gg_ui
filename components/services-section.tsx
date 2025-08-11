@@ -172,7 +172,7 @@ export default function ServicesSection() {
     return (
         <section className='bg-[#3c3d3f]'>
             <div className='relative w-full h-auto flex items-center justify-center overflow-hidden py-20 px-4 lg:px-0'>
-                <div className='absolute inset-0 hidden'>
+                <div className='absolute inset-0 hidden lg:block'>
                     <Image
                         src='/images/bg-cycle.jpg'
                         alt='Background bicycle'

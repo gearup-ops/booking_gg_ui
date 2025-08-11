@@ -21,13 +21,13 @@ export default function Footer() {
                         <div className='flex items-center space-x-2'>
                             <Image
                                 src='/images/logo.png'
-                                alt='BikeService Logo'
+                                alt='GearGrow Cycle Logo'
                                 width={32}
                                 height={32}
                                 className='w-8 h-8'
                             />
                             <span className='text-xl font-bold text-white'>
-                                BikeService
+                                GearGrow Cycle
                             </span>
                         </div>
                         <p className='text-gray-300 text-sm'>
@@ -203,7 +203,7 @@ export default function Footer() {
                 </div>
 
                 <div className='border-t border-[#4a4b4d] mt-8 pt-8 text-center text-sm text-gray-300'>
-                    <p>&copy; 2024 BikeService. All rights reserved.</p>
+                    <p>&copy; 2024 GearGrow Cycle. All rights reserved.</p>
                 </div>
             </div>
         </motion.footer>

@@ -111,7 +111,7 @@ export default function LoginPage() {
                     >
                         <Image
                             src='/images/logo.png'
-                            alt='BikeService Logo'
+                            alt='GearGrow Cycle Logo'
                             width={32}
                             height={32}
                             className='w-16 h-16'

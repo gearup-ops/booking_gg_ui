@@ -48,13 +48,13 @@ export default function Header() {
                     <Link href='/' className='flex items-center space-x-2'>
                         <Image
                             src='/images/logo.png'
-                            alt='BikeService Logo'
+                            alt='GearGrow Cycle Logo'
                             width={32}
                             height={32}
                             className='w-8 h-8'
                         />
                         <span className='text-xl font-bold text-white'>
-                            BikeService
+                            GearGrow Cycle
                         </span>
                     </Link>
 

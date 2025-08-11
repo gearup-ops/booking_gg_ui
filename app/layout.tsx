@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import { store } from '@/lib/store';
 
 const metadata: Metadata = {
-    title: 'BikeService - Professional Bicycle Maintenance',
+    title: 'GearGrow Cycle - Professional Bicycle Maintenance',
     description:
         'Doorstep bicycle maintenance services. Professional bike servicing at your convenience.',
     generator: 'v0.dev',
