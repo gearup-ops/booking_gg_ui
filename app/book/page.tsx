@@ -32,6 +32,7 @@ import {
 } from '@/lib/slices/orderSlice';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, Upload, MapPin } from 'lucide-react';
+import Image from 'next/image';
 
 export default function BookPage() {
     const dispatch = useDispatch<AppDispatch>();
@@ -178,7 +179,7 @@ export default function BookPage() {
                     <div key={step.key} className='flex flex-col items-center'>
                         <div className='flex items-center'>
                             <div
-                                className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-semibold ${
+                                className={`w-4 h-4 rounded-full flex items-center justify-center text-sm font-semibold ${
                                     currentStep === step.key
                                         ? 'bg-[#fbbf24] text-black'
                                         : steps.findIndex(
@@ -231,7 +232,7 @@ export default function BookPage() {
             exit={{ opacity: 0, x: -20 }}
             className='max-w-4xl mx-auto'
         >
-            <div className='bg-[#3c3d3f] rounded-lg p-8 border border-[#4a4b4d]'>
+            <div className='rounded-lg p-8 border border-[#4a4b4d]'>
                 {isExistingUser && (
                     <div className='mb-6'>
                         <Label className='text-white mb-2 block'>
@@ -377,10 +378,10 @@ export default function BookPage() {
             exit={{ opacity: 0, x: -20 }}
             className='max-w-4xl mx-auto'
         >
-            <div className='bg-[#3c3d3f] rounded-lg p-8 border border-[#4a4b4d]'>
+            <div className='text-black'>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                     <div className='space-y-2'>
-                        <Label className='text-white'>First Name*</Label>
+                        <Label className='text-black'>First Name*</Label>
                         <Input
                             value={customerDetails.firstName}
                             onChange={(e) =>
@@ -391,11 +392,11 @@ export default function BookPage() {
                                 )
                             }
                             placeholder='Enter first name'
-                            className='bg-[#2a2b2d] border-[#4a4b4d] text-white placeholder:text-gray-500'
+                            className='bg-white border-[#4a4b4d] text-black placeholder:text-gray-600'
                         />
                     </div>
                     <div className='space-y-2'>
-                        <Label className='text-white'>Last Name*</Label>
+                        <Label className='text-black'>Last Name*</Label>
                         <Input
                             value={customerDetails.lastName}
                             onChange={(e) =>
@@ -406,14 +407,14 @@ export default function BookPage() {
                                 )
                             }
                             placeholder='Enter last name'
-                            className='bg-[#2a2b2d] border-[#4a4b4d] text-white placeholder:text-gray-500'
+                            className='bg-white border-[#4a4b4d] text-black placeholder:text-gray-600'
                         />
                     </div>
                 </div>
 
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-6'>
                     <div className='space-y-2'>
-                        <Label className='text-white'>Gender</Label>
+                        <Label className='text-black'>Gender</Label>
                         <RadioGroup
                             value={customerDetails.gender}
                             onValueChange={(value: 'male' | 'female') =>
@@ -429,7 +430,7 @@ export default function BookPage() {
                                     id='male'
                                     className='border-[#fbbf24] text-[#fbbf24]'
                                 />
-                                <Label htmlFor='male' className='text-white'>
+                                <Label htmlFor='male' className='text-black'>
                                     Male
                                 </Label>
                             </div>
@@ -439,14 +440,14 @@ export default function BookPage() {
                                     id='female'
                                     className='border-[#fbbf24] text-[#fbbf24]'
                                 />
-                                <Label htmlFor='female' className='text-white'>
+                                <Label htmlFor='female' className='text-black'>
                                     Female
                                 </Label>
                             </div>
                         </RadioGroup>
                     </div>
                     <div className='space-y-2'>
-                        <Label className='text-white'>Phone Number*</Label>
+                        <Label className='text-black'>Phone Number*</Label>
                         <Input
                             value={customerDetails.phoneNumber}
                             onChange={(e) =>
@@ -457,14 +458,14 @@ export default function BookPage() {
                                 )
                             }
                             placeholder='Enter phone number'
-                            className='bg-[#2a2b2d] border-[#4a4b4d] text-white placeholder:text-gray-500'
+                            className='bg-white border-[#4a4b4d] text-black placeholder:text-gray-600'
                         />
                     </div>
                 </div>
 
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-6'>
                     <div className='space-y-2'>
-                        <Label className='text-white'>Address line 1*</Label>
+                        <Label className='text-black'>Address line 1*</Label>
                         <Input
                             value={customerDetails.addressLine1}
                             onChange={(e) =>
@@ -475,19 +476,19 @@ export default function BookPage() {
                                 )
                             }
                             placeholder='Enter address'
-                            className='bg-[#2a2b2d] border-[#4a4b4d] text-white placeholder:text-gray-500'
+                            className='bg-white border-[#4a4b4d] text-black placeholder:text-gray-600'
                         />
                     </div>
                     <div className='space-y-2'>
-                        <Label className='text-white'>Locate Yourself</Label>
-                        <div className='flex items-center justify-center h-10 border border-[#4a4b4d] rounded-md bg-[#2a2b2d]'>
+                        <Label className='text-black'>Locate Yourself</Label>
+                        <div className='flex items-center justify-center h-10 border border-[#4a4b4d] rounded-md bg-white'>
                             <MapPin className='w-5 h-5 text-[#fbbf24]' />
                         </div>
                     </div>
                 </div>
 
                 <div className='mt-6'>
-                    <Label className='text-white'>Address line 2</Label>
+                    <Label className='text-black'>Address line 2</Label>
                     <Input
                         value={customerDetails.addressLine2}
                         onChange={(e) =>
@@ -498,13 +499,13 @@ export default function BookPage() {
                             )
                         }
                         placeholder='Enter additional address details'
-                        className='bg-[#2a2b2d] border-[#4a4b4d] text-white placeholder:text-gray-500 mt-2'
+                        className='bg-white border-[#4a4b4d] text-black placeholder:text-gray-600'
                     />
                 </div>
 
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-6'>
                     <div className='space-y-2'>
-                        <Label className='text-white'>City*</Label>
+                        <Label className='text-black'>City*</Label>
                         <Input
                             value={customerDetails.city}
                             onChange={(e) =>
@@ -515,11 +516,11 @@ export default function BookPage() {
                                 )
                             }
                             placeholder='Enter city'
-                            className='bg-[#2a2b2d] border-[#4a4b4d] text-white placeholder:text-gray-500'
+                            className='bg-white border-[#4a4b4d] text-black placeholder:text-gray-600'
                         />
                     </div>
                     <div className='space-y-2'>
-                        <Label className='text-white'>State*</Label>
+                        <Label className='text-black'>State*</Label>
                         <Input
                             value={customerDetails.state}
                             onChange={(e) =>
@@ -530,14 +531,14 @@ export default function BookPage() {
                                 )
                             }
                             placeholder='Enter state'
-                            className='bg-[#2a2b2d] border-[#4a4b4d] text-white placeholder:text-gray-500'
+                            className='bg-white border-[#4a4b4d] text-black placeholder:text-gray-600'
                         />
                     </div>
                 </div>
 
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-6'>
                     <div className='space-y-2'>
-                        <Label className='text-white'>Country*</Label>
+                        <Label className='text-black'>Country*</Label>
                         <Input
                             value={customerDetails.country}
                             onChange={(e) =>
@@ -548,11 +549,11 @@ export default function BookPage() {
                                 )
                             }
                             placeholder='Enter country'
-                            className='bg-[#2a2b2d] border-[#4a4b4d] text-white placeholder:text-gray-500'
+                            className='bg-white border-[#4a4b4d] text-black placeholder:text-gray-600'
                         />
                     </div>
                     <div className='space-y-2'>
-                        <Label className='text-white'>PIN Code*</Label>
+                        <Label className='text-black'>PIN Code*</Label>
                         <Input
                             value={customerDetails.pinCode}
                             onChange={(e) => {
@@ -570,7 +571,7 @@ export default function BookPage() {
                                 }
                             }}
                             placeholder='Enter PIN code'
-                            className={`bg-[#2a2b2d] border-[#4a4b4d] text-white placeholder:text-gray-500 ${
+                            className={`bg-white border-[#4a4b4d] text-black placeholder:text-gray-600 ${
                                 !isLocationAvailable && customerDetails.pinCode
                                     ? 'border-red-500'
                                     : ''
@@ -603,7 +604,7 @@ export default function BookPage() {
                     />
                     <Label
                         htmlFor='terms'
-                        className='text-sm text-gray-300 leading-relaxed'
+                        className='text-sm text-gray-600 leading-relaxed'
                     >
                         I accept the{' '}
                         <span className='text-[#fbbf24] underline cursor-pointer'>
@@ -633,36 +634,23 @@ export default function BookPage() {
             exit={{ opacity: 0, scale: 0.9 }}
             className='text-center space-y-8 max-w-2xl mx-auto'
         >
-            <div className='bg-[#3c3d3f] rounded-lg p-12 border border-[#4a4b4d]'>
-                <div className='relative mb-8'>
-                    <div className='w-32 h-32 bg-yellow-100 rounded-full flex items-center justify-center mx-auto'>
-                        <div className='w-16 h-16 bg-[#fbbf24] rounded-full flex items-center justify-center relative'>
-                            <svg
-                                width='32'
-                                height='24'
-                                viewBox='0 0 32 24'
-                                className='text-black'
-                            >
-                                <path
-                                    d='M8 12L4 16L12 8L16 12L28 0'
-                                    stroke='currentColor'
-                                    strokeWidth='2'
-                                    fill='none'
-                                />
-                            </svg>
-                        </div>
-                        <div className='absolute top-2 right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center'>
-                            <CheckCircle2 className='w-5 h-5 text-white' />
-                        </div>
-                    </div>
+            <div className='rounded-lg p-12'>
+                <div className='flex items-center justify-center mr-8 mb-8'>
+                            <Image
+                                src='/images/confirmation.svg'
+                                alt='GearGrow Cycle Logo'
+                                width={64}
+                                height={64}
+                                className='w-40 h-40'
+                            />
                 </div>
 
-                <h2 className='text-3xl font-bold text-white mb-4'>
+                <h2 className='text-3xl font-bold text-black mb-4'>
                     Your booking has been confirmed
                 </h2>
 
                 <div className='flex items-center justify-center space-x-2 mb-6'>
-                    <span className='text-gray-300'>
+                    <span className='text-gray-600'>
                         You can track your booking
                     </span>
                     <Button
@@ -675,7 +663,7 @@ export default function BookPage() {
 
                 {orderId && (
                     <div className='bg-[#2a2b2d] p-4 rounded-lg'>
-                        <p className='text-sm text-gray-300'>
+                        <p className='text-sm text-gray-600'>
                             Order ID:{' '}
                             <span className='font-semibold text-[#fbbf24]'>
                                 {orderId}
@@ -692,73 +680,81 @@ export default function BookPage() {
     }
 
     return (
-        <div className='min-h-screen bg-[#060608] text-white'>
+        <div className='min-h-screen bg-[#3c3d3f] text-white'>
             <Header />
 
-            {/* Header Section */}
-            <div className='bg-black py-6'>
-                <div className='container mx-auto px-4'>
-                    <div className='text-center'>
-                        <h1 className='text-2xl font-semibold text-[#fbbf24]'>
-                            {selectedService?.name} -{' '}
-                            {selectedService?.type === 'gear'
-                                ? 'Gear'
-                                : 'Non Gear'}{' '}
-                            Bicycle
-                        </h1>
-                        <p className='text-gray-300 mt-1'>
-                            Confirm Your booking
-                        </p>
+            <div className='bg-white text-black m-6'>
+                {/* Header Section */}
+                <div className='bg-black py-6'>
+                    <div className='container mx-auto px-4'>
+                        <div className='text-center'>
+                            <h1 className='text-2xl font-semibold text-[#fbbf24]'>
+                                {selectedService?.name} -{' '}
+                                {selectedService?.type === 'gear'
+                                    ? 'Gear'
+                                    : 'Non Gear'}{' '}
+                                Bicycle
+                            </h1>
+                            <p className='text-gray-300 mt-1'>
+                                Confirm Your booking
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div className='container mx-auto px-4 py-12'>
-                {/* Progress Steps */}
-                {currentStep !== 'confirmation' && renderProgressSteps()}
+                <div className='container mx-auto py-12'>
+                    {/* Progress Steps */}
+                    <div className='px-8'>
 
-                {/* Step Content */}
-                <AnimatePresence mode='wait'>
-                    {currentStep === 'cycle-details' &&
-                        renderCycleDetailsStep()}
-                    {currentStep === 'customer-details' &&
-                        renderCustomerDetailsStep()}
-                    {currentStep === 'confirmation' && renderConfirmationStep()}
-                </AnimatePresence>
-
-                {/* Navigation Buttons */}
-                {currentStep !== 'confirmation' && (
-                    <div className='flex justify-between mt-12 max-w-4xl mx-auto'>
-                        <Button
-                            onClick={handlePrevStep}
-                            variant='outline'
-                            className='border-[#4a4b4d] text-white hover:bg-[#3c3d3f] px-8 py-3'
-                            disabled={isLoading}
-                        >
-                            Back
-                        </Button>
-                        <Button
-                            onClick={handleNext}
-                            disabled={
-                                isLoading ||
-                                (currentStep === 'customer-details' &&
-                                    (!termsAccepted ||
-                                        (!isLocationAvailable &&
-                                            customerDetails.pinCode.length >
-                                                0)))
-                            }
-                            className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold px-8 py-3 rounded-full disabled:opacity-50 disabled:cursor-not-allowed'
-                        >
-                            {isLoading
-                                ? 'Processing...'
-                                : currentStep === 'customer-details' &&
-                                  !isLocationAvailable &&
-                                  customerDetails.pinCode
-                                ? 'Submit'
-                                : 'Next'}
-                        </Button>
+                    {
+                        renderProgressSteps()
+                    }
                     </div>
-                )}
+
+                    {/* Step Content */}
+                    <AnimatePresence mode='wait'>
+                        {currentStep === 'cycle-details' &&
+                            renderCycleDetailsStep()}
+                        {currentStep === 'customer-details' &&
+                            renderCustomerDetailsStep()}
+                        {currentStep === 'confirmation' &&
+                            renderConfirmationStep()}
+                    </AnimatePresence>
+
+                    {/* Navigation Buttons */}
+                    {currentStep !== 'confirmation' && (
+                        <div className='flex justify-between mt-12 max-w-4xl mx-auto'>
+                            <Button
+                                onClick={handlePrevStep}
+                                variant='outline'
+                                className='border-[#4a4b4d] text-white hover:bg-[#3c3d3f] px-8 py-3'
+                                disabled={isLoading}
+                            >
+                                Back
+                            </Button>
+                            <Button
+                                onClick={handleNext}
+                                disabled={
+                                    isLoading ||
+                                    (currentStep === 'customer-details' &&
+                                        (!termsAccepted ||
+                                            (!isLocationAvailable &&
+                                                customerDetails.pinCode.length >
+                                                    0)))
+                                }
+                                className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold px-8 py-3 rounded-full disabled:opacity-50 disabled:cursor-not-allowed'
+                            >
+                                {isLoading
+                                    ? 'Processing...'
+                                    : currentStep === 'customer-details' &&
+                                      !isLocationAvailable &&
+                                      customerDetails.pinCode
+                                    ? 'Submit'
+                                    : 'Next'}
+                            </Button>
+                        </div>
+                    )}
+                </div>
             </div>
 
             <Footer />

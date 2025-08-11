@@ -37,7 +37,7 @@ export default function Header() {
 
     return (
         <motion.header
-            className='bg-[#060608] border-b border-[#4a4b4d]'
+            className='bg-[#3c3d3f] border-b border-[#4a4b4d]'
             initial={{ y: -100 }}
             animate={{ y: 0 }}
             transition={{ duration: 0.6 }}
