@@ -232,10 +232,10 @@ export default function BookPage() {
             exit={{ opacity: 0, x: -20 }}
             className='max-w-4xl mx-auto'
         >
-            <div className='rounded-lg p-8 border border-[#4a4b4d]'>
+            <div className=''>
                 {isExistingUser && (
                     <div className='mb-6'>
-                        <Label className='text-white mb-2 block'>
+                        <Label className='text-black mb-2 block'>
                             Add existing cycle
                         </Label>
                         <Select
@@ -244,7 +244,7 @@ export default function BookPage() {
                                 dispatch(setSelectedExistingCycle(value))
                             }
                         >
-                            <SelectTrigger className='w-full bg-[#2a2b2d] border-[#4a4b4d] text-white'>
+                            <SelectTrigger className='w-full text-black'>
                                 <SelectValue placeholder='Select' />
                             </SelectTrigger>
                             <SelectContent>
@@ -261,7 +261,7 @@ export default function BookPage() {
 
                 <div className='space-y-6'>
                     <div className='flex items-center justify-between'>
-                        <h3 className='text-xl font-semibold text-white'>
+                        <h3 className='text-xl font-semibold text-black'>
                             Upload your cycle details
                         </h3>
                         <Button
@@ -277,17 +277,17 @@ export default function BookPage() {
                     {cycles.map((cycle, index) => (
                         <div
                             key={cycle.id}
-                            className='space-y-4 p-6 border border-[#4a4b4d] rounded-lg bg-[#2a2b2d]'
+                            className='space-y-4    '
                         >
                             {cycles.length > 1 && (
-                                <h4 className='font-medium text-white'>
+                                <h4 className='font-medium text-black'>
                                     Cycle {index + 1}
                                 </h4>
                             )}
 
                             <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                                 <div className='space-y-2'>
-                                    <Label className='text-white'>
+                                    <Label className='text-black'>
                                         Cycle Brand
                                     </Label>
                                     <Input
@@ -302,12 +302,12 @@ export default function BookPage() {
                                             )
                                         }
                                         placeholder='Enter brand name'
-                                        className='bg-[#060608] border-[#4a4b4d] text-white placeholder:text-gray-500'
+                                        className='border-[#4a4b4d] text-black placeholder:text-gray-600'
                                     />
                                 </div>
 
                                 <div className='space-y-2'>
-                                    <Label className='text-white'>
+                                    <Label className='text-black'>
                                         Cycle Type
                                     </Label>
                                     <RadioGroup
@@ -331,7 +331,7 @@ export default function BookPage() {
                                             />
                                             <Label
                                                 htmlFor={`gear-${index}`}
-                                                className='text-white'
+                                                className='text-black'
                                             >
                                                 Gear
                                             </Label>
@@ -344,7 +344,7 @@ export default function BookPage() {
                                             />
                                             <Label
                                                 htmlFor={`non-gear-${index}`}
-                                                className='text-white'
+                                                className='text-black'
                                             >
                                                 Non - gear
                                             </Label>
@@ -354,12 +354,12 @@ export default function BookPage() {
                             </div>
 
                             <div className='space-y-2'>
-                                <Label className='text-white'>
+                                <Label className='text-black'>
                                     Upload Bicycle photo
                                 </Label>
-                                <div className='border-2 border-dashed border-[#4a4b4d] rounded-lg p-8 text-center hover:border-[#fbbf24] transition-colors cursor-pointer bg-[#060608]'>
-                                    <Upload className='w-8 h-8 text-gray-400 mx-auto mb-2' />
-                                    <p className='text-gray-400 text-sm'>
+                                <div className='border-2 border-dashed border-[#4a4b4d] rounded-lg p-8 text-center hover:border-[#fbbf24] transition-colors cursor-pointer'>
+                                    <Upload className='w-8 h-8 text-gray-600 mx-auto mb-2' />
+                                    <p className='text-gray-600 text-sm'>
                                         Click to upload or drag and drop
                                     </p>
                                 </div>
