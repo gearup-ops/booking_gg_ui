@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Header from '@/components/header';
@@ -34,7 +34,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, Upload, MapPin } from 'lucide-react';
 import Image from 'next/image';
 
-export default function BookPage() {
+function Book() {
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -275,10 +275,7 @@ export default function BookPage() {
                     </div>
 
                     {cycles.map((cycle, index) => (
-                        <div
-                            key={cycle.id}
-                            className='space-y-4    '
-                        >
+                        <div key={cycle.id} className='space-y-4    '>
                             {cycles.length > 1 && (
                                 <h4 className='font-medium text-black'>
                                     Cycle {index + 1}
@@ -636,13 +633,13 @@ export default function BookPage() {
         >
             <div className='rounded-lg p-12'>
                 <div className='flex items-center justify-center mr-8 mb-8'>
-                            <Image
-                                src='/images/confirmation.svg'
-                                alt='GearGrow Cycle Logo'
-                                width={64}
-                                height={64}
-                                className='w-40 h-40'
-                            />
+                    <Image
+                        src='/images/confirmation.svg'
+                        alt='GearGrow Cycle Logo'
+                        width={64}
+                        height={64}
+                        className='w-40 h-40'
+                    />
                 </div>
 
                 <h2 className='text-3xl font-bold text-black mb-4'>
@@ -704,12 +701,7 @@ export default function BookPage() {
 
                 <div className='container mx-auto py-12'>
                     {/* Progress Steps */}
-                    <div className='px-8'>
-
-                    {
-                        renderProgressSteps()
-                    }
-                    </div>
+                    <div className='px-8'>{renderProgressSteps()}</div>
 
                     {/* Step Content */}
                     <AnimatePresence mode='wait'>
@@ -759,5 +751,13 @@ export default function BookPage() {
 
             <Footer />
         </div>
+    );
+}
+
+export default function BookPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <Book />
+        </Suspense>
     );
 }
