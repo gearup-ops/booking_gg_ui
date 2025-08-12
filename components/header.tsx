@@ -76,12 +76,14 @@ export default function Header() {
 
                         {isAuthenticated ? (
                             <div className='flex items-center space-x-4'>
-                                <div className='flex items-center space-x-2'>
-                                    <User className='w-4 h-4 text-[#fbbf24]' />
-                                    <span className='text-white text-sm'>
-                                        {user?.name}
-                                    </span>
-                                </div>
+                                <Link href='/account'>
+                                    <Button className='flex items-center space-x-2'>
+                                        <User className='w-4 h-4 text-[#fbbf24]' />
+                                        <span className='text-white text-sm'>
+                                            {user?.firstName} {user?.lastName}
+                                        </span>
+                                    </Button>
+                                </Link>
                                 <Button
                                     onClick={handleLogout}
                                     variant='outline'
@@ -137,12 +139,14 @@ export default function Header() {
 
                         {isAuthenticated ? (
                             <div className='pt-4 border-t border-[#4a4b4d] mt-4'>
-                                <div className='flex items-center space-x-2 mb-3'>
-                                    <User className='w-4 h-4 text-[#fbbf24]' />
-                                    <span className='text-white'>
-                                        {user?.name}
-                                    </span>
-                                </div>
+                                <Link href='/account'>
+                                    <div className='flex items-center space-x-2 mb-3'>
+                                        <User className='w-4 h-4 text-[#fbbf24]' />
+                                        <span className='text-white'>
+                                            {user?.firstName} {user?.lastName}
+                                        </span>
+                                    </div>
+                                </Link>
                                 <Button
                                     onClick={handleLogout}
                                     variant='outline'

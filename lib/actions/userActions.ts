@@ -73,8 +73,24 @@ export const getUserByIdAction = createAsyncThunk(
     'auth/getUserById',
     async (userId: string, { rejectWithValue }) => {
         try {
-            const response = await userApi.getUserById(userId);
-            return response;
+            return {
+                token: 'dummy-token',
+                user: {
+                    id: 'dummy-user-id',
+                    firstName: 'John',
+                    lastName: 'Doe',
+                    phoneNumber: '9876543210',
+                    email: 'jondoe@gmail.com',
+                    addressLine1: '123 Main St',
+                    addressLine2: 'Apt 4B',
+                    city: 'Springfield',
+                    state: 'Maharashtra',
+                    country: 'India',
+                    pinCode: '411057',
+                },
+            };
+            // const response = await userApi.getUserById(userId);
+            // return response;
         } catch (error: any) {
             return rejectWithValue(
                 error.response?.data?.message || 'Failed to fetch user'
