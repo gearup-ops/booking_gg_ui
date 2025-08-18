@@ -188,9 +188,6 @@ export default function ServicesPage() {
                         <h1 className='text-4xl md:text-5xl font-bold text-[#fbbf24] mb-4'>
                             {currentService.title}
                         </h1>
-                        <p className='text-gray-300 text-lg max-w-3xl mx-auto'>
-                            {currentService.description}
-                        </p>
                     </div>
 
                     <div className='grid lg:grid-cols-2 gap-12 items-start px-4'>
@@ -231,7 +228,7 @@ export default function ServicesPage() {
                         </div>
                     </div>
                     {/* Gear Toggle */}
-                    <div className='flex lg:ml-88 justify-center mt-12 p-0'>
+                    <div className='flex lg:ml-88 justify-center mt-12'>
                         <div className='bg-[#3c3d3f] rounded-full p-2 flex items-center space-x-4 border border-[#4a4b4d]'>
                             <span
                                 className={`px-4 py-2 rounded-full transition-colors ${
