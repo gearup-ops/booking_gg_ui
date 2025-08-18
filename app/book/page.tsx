@@ -159,78 +159,80 @@ function Book() {
             {
                 key: 'cycle-details',
                 label: 'Booking Initiated',
-                subLabel: 'Your cycle details',
             },
             {
                 key: 'customer-details',
                 label: 'Add Your Details',
-                subLabel: 'Your Cycle(s) Details',
             },
             {
                 key: 'confirmation',
-                label: 'Booking confirmed',
-                subLabel: 'Technician assigned',
+                label: 'Booking Confirmed',
             },
         ];
 
+        // Find the index of the current active step
+        const currentStepIndex = steps.findIndex((s) => s.key === currentStep);
+
         return (
-            <div className='flex items-center justify-between mb-12 max-w-2xl mx-auto'>
-                {steps.map((step, index) => (
-                    <div key={step.key} className='flex flex-col items-center'>
-                        <div className='flex items-center'>
-                            <div
-                                className={`w-4 h-4 rounded-full flex items-center justify-center text-sm font-semibold ${
-                                    currentStep === step.key
-                                        ? 'bg-[#fbbf24] text-black'
-                                        : steps.findIndex(
-                                              (s) => s.key === currentStep
-                                          ) > index
-                                        ? 'bg-[#fbbf24] text-black'
+            <div className='flex items-start justify-center w-full max-w-2xl mx-auto px-4 mb-12'>
+                {steps.map((step, index) => {
+                    // Determine the state of each step
+                    const isCompleted = currentStepIndex > index;
+                    const isActive = currentStepIndex === index;
+
+                    return (
+                        // Use React.Fragment to group elements without adding extra nodes to the DOM
+                        <>
+                            {/* Step Node: Contains the circle and the label */}
+                            <div className='flex flex-col items-center text-center w-28'>
+                                {/* Step Circle */}
+                                <div
+                                    className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold transition-colors duration-300
+                                ${
+                                    isCompleted || isActive
+                                        ? 'bg-amber-400 text-black' // bg-[#fbbf24]
                                         : 'bg-gray-600 text-white'
                                 }`}
-                            >
-                                {steps.findIndex((s) => s.key === currentStep) >
-                                index
-                                    ? '✓'
-                                    : index + 1}
-                            </div>
-                            {index < steps.length - 1 && (
-                                <div
-                                    className={`w-24 h-0.5 mx-4 ${
-                                        steps.findIndex(
-                                            (s) => s.key === currentStep
-                                        ) > index
-                                            ? 'bg-[#fbbf24]'
-                                            : 'bg-gray-600'
-                                    }`}
-                                />
-                            )}
-                        </div>
-                        <div className='text-center mt-2'>
-                            <p
-                                className={`text-sm font-medium ${
-                                    currentStep === step.key
-                                        ? 'text-[#fbbf24]'
+                                >
+                                    {isCompleted ? '✓' : index + 1}
+                                </div>
+
+                                {/* Step Label */}
+                                <p
+                                    className={`mt-2 text-xs font-medium transition-colors duration-300
+                                ${
+                                    isActive
+                                        ? 'text-amber-400' // text-[#fbbf24]
                                         : 'text-gray-400'
                                 }`}
-                            >
-                                {currentStep === step.key
-                                    ? step.label
-                                    : step.subLabel}
-                            </p>
-                        </div>
-                    </div>
-                ))}
+                                >
+                                    {step.label}
+                                </p>
+                            </div>
+
+                            {/* Connecting Line (not rendered for the last step) */}
+                            {index < steps.length - 1 && (
+                                <div
+                                    className={`flex-1 h-0.5 mt-3 transition-colors duration-300
+                                ${
+                                    isCompleted
+                                        ? 'bg-amber-400' // bg-[#fbbf24]
+                                        : 'bg-gray-600'
+                                }`}
+                                />
+                            )}
+                        </>
+                    );
+                })}
             </div>
         );
     };
-
     const renderCycleDetailsStep = () => (
         <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className='max-w-4xl mx-auto'
+            className='max-w-4xl mx-auto p-4'
         >
             <div className=''>
                 {isExistingUser && (
@@ -373,7 +375,7 @@ function Book() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className='max-w-4xl mx-auto'
+            className='max-w-4xl mx-auto p-4'
         >
             <div className='text-black'>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
@@ -597,17 +599,17 @@ function Book() {
                         onCheckedChange={(checked) =>
                             dispatch(setTermsAccepted(checked as boolean))
                         }
-                        className='border-[#fbbf24] data-[state=checked]:bg-[#fbbf24] data-[state=checked]:text-black'
+                        className='border-[#fbbf24] data-[state=checked]:bg-[#fbbf24] data-[state=checked]:text-black shrink-0'
                     />
                     <Label
                         htmlFor='terms'
-                        className='text-sm text-gray-600 leading-relaxed'
+                        className='text-xs text-gray-600 leading-relaxed flex flex-wrap'
                     >
                         I accept the{' '}
                         <span className='text-[#fbbf24] underline cursor-pointer'>
                             terms & conditions
-                        </span>{' '}
-                        set by gearup cycles. I have read all the{' '}
+                        </span>
+                        set by GearGrow Cycle. I have read all the{' '}
                         <span className='text-[#fbbf24] underline cursor-pointer'>
                             privacy policy
                         </span>
@@ -629,9 +631,9 @@ function Book() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className='text-center space-y-8 max-w-2xl mx-auto'
+            className='text-center space-y-8 max-w-2xl mx-auto p-4'
         >
-            <div className='rounded-lg p-12'>
+            <div className='rounded-lg'>
                 <div className='flex items-center justify-center mr-8 mb-8'>
                     <Image
                         src='/images/confirmation.svg'
@@ -701,7 +703,7 @@ function Book() {
 
                 <div className='container mx-auto py-12'>
                     {/* Progress Steps */}
-                    <div className='px-8'>{renderProgressSteps()}</div>
+                    <div className='px-4'>{renderProgressSteps()}</div>
 
                     {/* Step Content */}
                     <AnimatePresence mode='wait'>
@@ -715,7 +717,7 @@ function Book() {
 
                     {/* Navigation Buttons */}
                     {currentStep !== 'confirmation' && (
-                        <div className='flex justify-between mt-12 max-w-4xl mx-auto'>
+                        <div className='flex justify-between lg:justify-center gap-2 mt-12 max-w-4xl lg:max-w-full mx-4'>
                             <Button
                                 onClick={handlePrevStep}
                                 variant='outline'
