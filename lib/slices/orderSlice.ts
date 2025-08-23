@@ -3,19 +3,12 @@ import {
     addOrderAction,
     getOrdersByUserIdAction,
 } from '../actions/orderActions';
-import { Order } from '../api/orderApi';
-
-interface CycleDetails {
-    id: string;
-    brand: string;
-    type: 'gear' | 'non-gear';
-    photo?: string;
-    service?: string;
-}
+import { CycleDetails, Order } from '../api/orderApi';
 
 interface CustomerDetails {
     firstName: string;
     lastName: string;
+    email?: string;
     gender: 'male' | 'female';
     phoneNumber: string;
     addressLine1: string;
@@ -27,9 +20,9 @@ interface CustomerDetails {
 }
 
 interface OrderState {
-    currentStep: 'cycle-details' | 'customer-details' | 'confirmation';
+    currentStep: 'customer-details' | 'cycle-details' | 'confirmation';
     selectedService: {
-        id: string;
+        id: number;
         name: string;
         type: 'gear' | 'non-gear';
         price: number;
@@ -48,9 +41,9 @@ interface OrderState {
 }
 
 const initialState: OrderState = {
-    currentStep: 'cycle-details',
+    currentStep: 'customer-details',
     selectedService: null,
-    cycles: [{ id: '1', brand: '', type: 'gear', photo: '', service: '' }],
+    cycles: [{ id: '1', brand: '', type: 'gear', image: '', serviceId: null }],
     customerDetails: {
         firstName: '',
         lastName: '',
@@ -80,21 +73,21 @@ const initialState: OrderState = {
                     // id: 'cycle1',
                     brand: 'Hero',
                     type: 'gear',
-                    photo: 'photo1.jpg',
-                    serviceId: '4564646',
+                    image: 'photo1.jpg',
+                    serviceId: null,
                 },
             ],
             customerDetails: {
-                firstName: 'John',
-                lastName: 'Doe',
-                // gender: 'male',
-                phoneNumber: '1234567890',
-                addressLine1: '123 Main St',
-                addressLine2: 'Apt 4B',
-                city: 'Delhi',
-                state: 'Delhi',
-                country: 'India',
-                pinCode: '110001',
+                firstName: '',
+                lastName: '',
+                gender: 'male',
+                phoneNumber: '',
+                addressLine1: '',
+                addressLine2: '',
+                city: '',
+                state: '',
+                country: '',
+                pinCode: '',
             },
             status: 'pending',
             scheduledDate: '2024-06-01',
@@ -116,14 +109,14 @@ const initialState: OrderState = {
                     // id: 'cycle2',
                     brand: 'BSA',
                     type: 'non-gear',
-                    photo: 'photo2.jpg',
-                    serviceId: '8940699',
+                    image: 'photo2.jpg',
+                    serviceId: null,
                 },
             ],
             customerDetails: {
                 firstName: 'Jane',
                 lastName: 'Smith',
-                // gender: 'female',
+                gender: 'female',
                 phoneNumber: '9876543210',
                 addressLine1: '456 Park Ave',
                 addressLine2: '',
@@ -151,6 +144,10 @@ const orderSlice = createSlice({
     name: 'order',
     initialState,
     reducers: {
+        setLoading: (state, action: PayloadAction<boolean>) => {
+            state.isLoading = action.payload;
+            state.error = null;
+        },
         setCurrentStep: (
             state,
             action: PayloadAction<OrderState['currentStep']>
@@ -181,8 +178,8 @@ const orderSlice = createSlice({
                 id: newId,
                 brand: '',
                 type: 'gear',
-                photo: '',
-                service: '',
+                image: '',
+                serviceId: null,
             });
         },
         updateCustomerDetails: (
@@ -224,7 +221,7 @@ const orderSlice = createSlice({
                 state.isLoading = false;
                 state.orderId = action.payload.order.id;
                 state.currentStep = 'confirmation';
-                state.orders.unshift(action.payload.order);
+                // state.orders.unshift(action.payload.order);
             })
             .addCase(addOrderAction.rejected, (state, action) => {
                 state.isLoading = false;
@@ -259,6 +256,7 @@ export const {
     setTermsAccepted,
     resetOrder,
     clearError,
+    setLoading,
 } = orderSlice.actions;
 
 export default orderSlice.reducer;

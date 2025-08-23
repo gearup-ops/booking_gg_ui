@@ -1,16 +1,22 @@
 import { apiClient } from './client';
 
-export interface Service {
-    id: string;
-    name: string;
-    description: string;
+interface ServicePrice {
+    id: number;
     price: number;
-    gearPrice: number;
-    nonGearPrice: number;
-    features: string[];
-    image: string;
-    category: string;
+    type: 'gear' | 'nonGear' | string; // restrict if only these two are valid
+}
+
+interface Service {
+    _id: number;
+    serviceName: string;
+    serviceShortDescription: string;
     isActive: boolean;
+    serviceImageUrl: string;
+    serviceChecks: string; // it's stored as a stringified array in your data
+    orderNo: number;
+    createdAt: string; // ISO date string
+    updatedAt: string; // ISO date string
+    prices: ServicePrice[];
 }
 
 export interface GetServicesResponse {
@@ -33,7 +39,7 @@ export const serviceApi = {
     },
 
     getServiceById: async (
-        serviceId: string
+        serviceId: number | string
     ): Promise<GetServiceByIdResponse> => {
         const response = await apiClient.get(
             `/api/service/getServiceById/${serviceId}`
