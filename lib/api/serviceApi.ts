@@ -20,8 +20,8 @@ interface Service {
 }
 
 export interface GetServicesResponse {
-    success: boolean;
-    services: Service[];
+    // success: boolean;
+    data: Service[];
 }
 
 export interface GetServiceByIdResponse {
@@ -30,9 +30,11 @@ export interface GetServiceByIdResponse {
 }
 
 export const serviceApi = {
-    getServices: async (city?: string): Promise<GetServicesResponse> => {
-        const params = city ? { city } : {};
-        const response = await apiClient.get('/api/service/getServices', {
+    getServices: async (data: {
+        city?: number;
+    }): Promise<GetServicesResponse> => {
+        const params = data ? data : {};
+        const response = await apiClient.get('/service/getServices', {
             params,
         });
         return response.data;
