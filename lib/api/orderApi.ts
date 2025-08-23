@@ -1,10 +1,12 @@
 import { apiClient } from './client';
 
 export interface CycleDetails {
+    id?: number | string;
     brand: string;
     type: 'gear' | 'non-gear';
-    photo?: string;
-    serviceId: string;
+    image?: string | File | null;
+    order?: boolean;
+    serviceId: number | null;
 }
 
 export interface AddOrderRequest {
@@ -14,6 +16,7 @@ export interface AddOrderRequest {
     customerDetails: {
         firstName: string;
         lastName: string;
+        gender: 'male' | 'female';
         phoneNumber: string;
         addressLine1: string;
         addressLine2?: string;
@@ -28,10 +31,18 @@ export interface AddOrderRequest {
     notes?: string;
 }
 
+export interface AddOrder {
+    address1: string;
+    address2: string;
+    city: number;
+    pincode: string;
+    cycles: CycleDetails[];
+}
+
 export interface Order {
     id: string;
     userId: string;
-    serviceId: string;
+    serviceId: number | string | null;
     serviceName: string;
     cycles: CycleDetails[];
     customerDetails: AddOrderRequest['customerDetails'];
@@ -59,7 +70,7 @@ export interface GetOrdersResponse {
 
 export const orderApi = {
     addOrder: async (data: AddOrderRequest): Promise<AddOrderResponse> => {
-        const response = await apiClient.post('/api/v1/orders/addOrder', data);
+        const response = await apiClient.post('/v1/orders/addOrder', data);
         return response.data;
     },
 

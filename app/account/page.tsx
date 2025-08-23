@@ -176,7 +176,7 @@ export default function AccountPage() {
                         <h3 className='text-xl font-semibold text-gray-900'>
                             Profile
                         </h3>
-                        {!isEditing ? (
+                        {!isEditing && (
                             <Button
                                 variant='ghost'
                                 size='icon'
@@ -185,24 +185,6 @@ export default function AccountPage() {
                             >
                                 <Edit2 className='w-5 h-5' />
                             </Button>
-                        ) : (
-                            <div className='flex space-x-2'>
-                                <Button
-                                    variant='outline'
-                                    size='sm'
-                                    onClick={handleCancelEdit}
-                                    className='text-gray-600 bg-transparent'
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    size='sm'
-                                    onClick={handleSaveProfile}
-                                    className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black'
-                                >
-                                    Save
-                                </Button>
-                            </div>
                         )}
                     </div>
 
@@ -339,6 +321,25 @@ export default function AccountPage() {
                             />
                         </div>
                     </div>
+                    {isEditing && (
+                        <div className='flex space-x-2 mt-4 w-full justify-center'>
+                            <Button
+                                variant='outline'
+                                size='sm'
+                                onClick={handleCancelEdit}
+                                className='text-gray-600 bg-transparent'
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                size='sm'
+                                onClick={handleSaveProfile}
+                                className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black'
+                            >
+                                Save
+                            </Button>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
         </motion.div>

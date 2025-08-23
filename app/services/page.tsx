@@ -161,17 +161,17 @@ export default function ServicesPage() {
             <Header />
 
             {/* Service Tabs */}
-            <section className='py-8 bg-[#060608]'>
+            <section className='py-8 bg-[#3c3d3f]'>
                 <div className='container mx-auto px-4'>
-                    <div className='flex flex-wrap gap-4 justify-center'>
+                    <div className='flex flex-row overflow-x-scroll lg:overflow-auto gap-4 justify-start'>
                         {Object.entries(serviceData).map(([key, service]) => (
                             <button
                                 key={key}
                                 onClick={() => setActiveService(key)}
-                                className={`px-6 py-3 rounded-full border-2 transition-all duration-300 ${
+                                className={`px-6 py-3 rounded-full border-2 transition-all duration-300 whitespace-nowrap ${
                                     activeService === key
                                         ? 'bg-[#fbbf24] text-black border-[#fbbf24]'
-                                        : 'bg-transparent text-white border-[#fbbf24] hover:bg-[#fbbf24] hover:text-black'
+                                        : 'bg-[#19191a] text-white border-[#fbbf24] hover:bg-[#fbbf24] hover:text-black'
                                 }`}
                             >
                                 {service.title}
@@ -182,18 +182,15 @@ export default function ServicesPage() {
             </section>
 
             {/* Service Details */}
-            <section className='py-16 bg-[#060608]'>
-                <div className='container mx-auto px-4'>
-                    <div className='text-center mb-12'>
+            <section className='py-16 bg-[#3c3d3f]'>
+                <div className='container mx-auto'>
+                    <div className='text-center mb-12 px-4'>
                         <h1 className='text-4xl md:text-5xl font-bold text-[#fbbf24] mb-4'>
                             {currentService.title}
                         </h1>
-                        <p className='text-gray-300 text-lg max-w-3xl mx-auto'>
-                            {currentService.description}
-                        </p>
                     </div>
 
-                    <div className='grid lg:grid-cols-2 gap-12 items-start'>
+                    <div className='grid lg:grid-cols-2 gap-12 items-start px-4'>
                         {/* Service Image */}
                         <div className='relative'>
                             <div className='bg-[#3c3d3f] rounded-2xl p-8 border-4 border-[#fbbf24]'>
@@ -230,9 +227,8 @@ export default function ServicesPage() {
                             ))}
                         </div>
                     </div>
-
                     {/* Gear Toggle */}
-                    <div className='flex justify-center mt-12'>
+                    <div className='flex lg:ml-88 justify-center mt-12'>
                         <div className='bg-[#3c3d3f] rounded-full p-2 flex items-center space-x-4 border border-[#4a4b4d]'>
                             <span
                                 className={`px-4 py-2 rounded-full transition-colors ${
@@ -259,14 +255,14 @@ export default function ServicesPage() {
                     </div>
 
                     {/* Pricing and Book Now */}
-                    <div className='mt-12 text-center'>
-                        <div className='bg-[#3c3d3f] rounded-lg p-8 max-w-md mx-auto border border-[#4a4b4d]'>
-                            <div className='text-4xl font-bold text-[#fbbf24] mb-6'>
+                    <div className='ml-8 lg:ml-[800px] mt-6 text-center'>
+                        <div className='flex justify-start gap-6 lg:gap-20 bg-[#19191a] p-8'>
+                            <div className='text-4xl font-bold text-[#fbbf24]'>
                                 {currentService.price} RS
                             </div>
                             <Button
                                 onClick={handleBookNow}
-                                className='w-full bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold py-3 text-lg'
+                                className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold py-2 text-lg'
                             >
                                 {isAuthenticated ? 'Book Now' : 'Login to Book'}
                             </Button>
