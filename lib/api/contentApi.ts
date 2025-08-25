@@ -34,33 +34,47 @@ export interface ContactDetails {
 }
 
 export interface HomePageData {
-    heroSection: {
-        title: string;
-        subtitle: string;
-        ctaText: string;
-        backgroundImage: string;
+    id: number;
+    s1: {
+        hl: string;
+        tl: string;
+        img: string;
     };
-    featuresSection: {
-        title: string;
-        features: {
-            icon: string;
-            title: string;
-            description: string;
+    s2: {
+        hl: string;
+        tl: string;
+        _id?: string;
+    }[];
+    s3: {
+        hl: string;
+        tl1: string;
+        pts: {
+            pt: string;
+            _id?: string;
+        }[];
+        tl2: string;
+        url: string;
+    };
+    s4: {
+        hl: string;
+        tl: string;
+    }[];
+    s5: {
+        dsc: string;
+    }[];
+    s6: {
+        hl: string;
+        data: {
+            no: string;
+            tl: string;
         }[];
     };
-    testimonialsSection: {
-        title: string;
-        testimonials: {
-            name: string;
-            text: string;
-            image: string;
-            rating: number;
-        }[];
-    };
-    brandsSection: {
-        title: string;
-        brands: string[];
-    };
+    s7: {
+        a: string;
+        q: string;
+    }[];
+    createdAt: string;
+    updatedAt: string;
 }
 
 export const contentApi = {
@@ -84,9 +98,7 @@ export const contentApi = {
         success: boolean;
         data: HomePageData;
     }> => {
-        const response = await apiClient.get(
-            '/api/v1/landingPage/getHomePageData'
-        );
+        const response = await apiClient.get('/v1/landingPage/getHomePageData');
         return response.data;
     },
 };
