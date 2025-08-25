@@ -7,8 +7,9 @@ import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link'; // Add this import
+import { useSelector } from 'react-redux';
 
-const testimonials = [
+const sampleTestimonials = [
     {
         name: 'John Smith',
         text: 'Excellent service and done... Great work and very helpful technicians. They came to my home and fixed my bike perfectly. The service was quick and professional. I would definitely recommend this service to everyone.',
@@ -32,7 +33,16 @@ const testimonials = [
 ];
 
 export default function StoriesPage() {
+    const { homePageData } = useSelector((state: any) => state.content);
     const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
+
+    const testimonials =
+        homePageData?.s5?.map((item: any) => ({
+            name: item.name || 'Happy Customer',
+            text: item.dsc,
+            image: '/happy-customer-portrait.png',
+        })) || sampleTestimonials;
+
 
     useEffect(() => {
         const interval = setInterval(() => {

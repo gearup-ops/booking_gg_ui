@@ -59,7 +59,6 @@ export default function HomePage() {
             <WhyChooseUsSection />
             <ServiceHighlights />
             <TestimonialsSection testimonials={testimonials} />
-            {/* Removed from homepage */}
             <StatsSection />
             <BrandsSection />
             <FAQSection />

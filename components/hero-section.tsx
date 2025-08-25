@@ -68,17 +68,20 @@ export default function HeroSection() {
                         >
                             {isAuthenticated ? (
                                 <div className='space-y-2'>
-                                    <p className='text-[#fbbf24] text-sm'>
-                                        Welcome back, {user?.name}!
-                                    </p>
-                                    <Link href='/book'>
+                                    {user && (
+                                        <p className='text-[#fbbf24] text-sm'>
+                                            Welcome back, {user?.firstName}{' '}
+                                            {user?.lastName}!
+                                        </p>
+                                    )}
+                                    <Link href='/services'>
                                         <Button className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold px-8 py-3 text-lg transition-all duration-300 hover:scale-105'>
                                             Book Service Now
                                         </Button>
                                     </Link>
                                 </div>
                             ) : (
-                                <Link href='/login'>
+                                <Link href='/services'>
                                     <Button className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold px-8 py-3 text-lg transition-all duration-300 hover:scale-105'>
                                         Book Service
                                     </Button>
@@ -103,7 +106,7 @@ export default function HeroSection() {
                             alt='Professional bicycle maintenance service'
                             width={600}
                             height={500}
-                            className='rounded-lg shadow-2xl'
+                            className='rounded-lg'
                         />
                     </motion.div>
                 </div>
