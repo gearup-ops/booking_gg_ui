@@ -6,17 +6,24 @@ import {
 import { CycleDetails, Order } from '../api/orderApi';
 
 interface CustomerDetails {
+    id?: number;
     firstName: string;
     lastName: string;
     email?: string;
-    gender: 'male' | 'female';
+    gender: string;
     phoneNumber: string;
-    addressLine1: string;
-    addressLine2: string;
-    city: string;
-    state: string;
-    country: string;
+    address1: string;
+    address2?: string;
+    cityId?: number | string;
     pinCode: string;
+    longLat?: string;
+    isActive?: boolean;
+    isRegistered?: boolean;
+    createdBy?: string;
+    followUpDate?: string; // ISO date string
+    createdAt?: string; // ISO timestamp
+    updatedAt?: string; // ISO timestamp
+    fcm?: string;
 }
 
 interface OrderState {
@@ -49,11 +56,11 @@ const initialState: OrderState = {
         lastName: '',
         gender: 'male',
         phoneNumber: '',
-        addressLine1: '',
-        addressLine2: '',
-        city: '',
-        state: '',
-        country: '',
+        address1: '',
+        address2: '',
+        cityId: 3,
+        // state: '',
+        // country: '',
         pinCode: '',
     },
     isExistingUser: false,
@@ -82,11 +89,11 @@ const initialState: OrderState = {
                 lastName: '',
                 gender: 'male',
                 phoneNumber: '',
-                addressLine1: '',
-                addressLine2: '',
-                city: '',
-                state: '',
-                country: '',
+                address1: '',
+                address2: '',
+                cityId: 0,
+                // state: '',
+                // country: '',
                 pinCode: '',
             },
             status: 'pending',
@@ -118,11 +125,11 @@ const initialState: OrderState = {
                 lastName: 'Smith',
                 gender: 'female',
                 phoneNumber: '9876543210',
-                addressLine1: '456 Park Ave',
-                addressLine2: '',
-                city: 'Mumbai',
-                state: 'Maharashtra',
-                country: 'India',
+                address1: '456 Park Ave',
+                address2: '',
+                cityId: 2,
+                // state: 'Maharashtra',
+                // country: 'India',
                 pinCode: '400001',
             },
             status: 'confirmed',

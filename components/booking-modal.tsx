@@ -380,11 +380,11 @@ export default function BookingModal() {
                 <div className='space-y-2'>
                     <Label className='text-gray-700'>Address line 1*</Label>
                     <Input
-                        value={customerDetails.addressLine1}
+                        value={customerDetails.address1}
                         onChange={(e) =>
                             dispatch(
                                 updateCustomerDetails({
-                                    addressLine1: e.target.value,
+                                    address1: e.target.value,
                                 })
                             )
                         }
@@ -402,11 +402,11 @@ export default function BookingModal() {
             <div className='space-y-2'>
                 <Label className='text-gray-700'>Address line 2</Label>
                 <Input
-                    value={customerDetails.addressLine2}
+                    value={customerDetails.address2}
                     onChange={(e) =>
                         dispatch(
                             updateCustomerDetails({
-                                addressLine2: e.target.value,
+                                address2: e.target.value,
                             })
                         )
                     }

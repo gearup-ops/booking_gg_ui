@@ -7,18 +7,25 @@ import {
     updateCustomerAction,
 } from '../actions/userActions';
 
-interface User {
-    id: string;
+export interface User {
+    id?: number;
     firstName: string;
     lastName: string;
-    phoneNumber: string;
     email?: string;
-    addressLine1?: string;
-    addressLine2?: string;
-    city?: string;
-    state?: string;
-    country?: string;
-    pinCode?: string;
+    gender: string;
+    phoneNumber: string;
+    address1: string;
+    address2?: string;
+    cityId?: number;
+    pinCode: string;
+    longLat?: string;
+    isActive?: boolean;
+    isRegistered?: boolean;
+    createdBy?: string;
+    followUpDate?: string; // ISO date string
+    createdAt?: string; // ISO timestamp
+    updatedAt?: string; // ISO timestamp
+    fcm?: string;
 }
 
 interface AuthState {

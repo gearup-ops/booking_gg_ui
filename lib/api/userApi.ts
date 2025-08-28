@@ -1,3 +1,4 @@
+import { User } from '../slices/authSlice';
 import { apiClient } from './client';
 
 export interface SendOtpRequest {
@@ -15,19 +16,13 @@ export interface RegisterRequest {
     lastName: string;
     phoneNumber: string;
     email?: string;
-    gender: 'male' | 'female';
+    gender: string;
 }
 
 export interface RegisterResponse {
     success: boolean;
     message: string;
-    user: {
-        id: string;
-        firstName: string;
-        lastName: string;
-        phoneNumber: string;
-        email?: string;
-    };
+    user: User;
 }
 
 export interface VerifyOtpRequest {
@@ -53,8 +48,8 @@ export interface UpdateCustomerRequest {
     firstName?: string;
     lastName?: string;
     email?: string;
-    addressLine1?: string;
-    addressLine2?: string;
+    address1?: string;
+    address2?: string;
     city?: string;
     state?: string;
     country?: string;

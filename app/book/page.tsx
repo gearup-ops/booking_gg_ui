@@ -92,11 +92,11 @@ function Book() {
                     firstName: user.firstName || '',
                     lastName: user.lastName || '',
                     phoneNumber: user.phoneNumber || '',
-                    addressLine1: user.addressLine1 || '',
-                    addressLine2: user.addressLine2 || '',
-                    city: user.city || '',
-                    state: user.state || '',
-                    country: user.country || '',
+                    address1: user.address1 || '',
+                    address2: user.address2 || '',
+                    cityId: user.cityId || '',
+                    // state: user.state || '',
+                    // country: user.country || '',
                     pinCode: user.pinCode || '',
                 })
             );
@@ -151,18 +151,21 @@ function Book() {
             ) {
                 errors.phoneNumber = 'Phone number must be exactly 10 digits';
             }
-            if (!customerDetails.addressLine1.trim()) {
-                errors.addressLine1 = 'Address line 1 is required';
+            if (!customerDetails.address1.trim()) {
+                errors.address1 = 'Address line 1 is required';
             }
-            if (!customerDetails.city.trim() || customerDetails.city === '') {
-                errors.city = 'City is required';
+            if (customerDetails.cityId === '') {
+                errors.cityId = 'City is required';
             }
-            if (!customerDetails.state.trim()) {
-                errors.state = 'State is required';
+            if (!isLocationAvailable || !customerDetails.longLat?.trim()) {
+                errors.longLat = 'Please locate yourself';
             }
-            if (!customerDetails.country.trim()) {
-                errors.country = 'Country is required';
-            }
+            // if (!customerDetails.state.trim()) {
+            //     errors.state = 'State is required';
+            // }
+            // if (!customerDetails.country.trim()) {
+            //     errors.country = 'Country is required';
+            // }
             if (!customerDetails.pinCode.trim()) {
                 errors.pinCode = 'PIN code is required';
             } else if (!/^\d{6}$/.test(customerDetails.pinCode)) {
@@ -213,7 +216,6 @@ function Book() {
     );
 
     console.log(cycles);
-    
 
     const handleNext = useCallback(() => {
         if (!validateRequiredFields()) {
@@ -248,11 +250,11 @@ function Book() {
                         email: customerDetails.email || '',
                         gender: customerDetails.gender,
                         phoneNumber: customerDetails.phoneNumber,
-                        addressLine1: customerDetails.addressLine1,
-                        addressLine2: customerDetails.addressLine2,
-                        city: customerDetails.city,
-                        state: customerDetails.state,
-                        country: customerDetails.country,
+                        address1: customerDetails.address1,
+                        address2: customerDetails.address2,
+                        cityId: customerDetails.cityId,
+                        // state: customerDetails.state,
+                        // country: customerDetails.country,
                         pinCode: customerDetails.pinCode,
                     })
                 );
@@ -284,7 +286,9 @@ function Book() {
                         const fileExt = cycle.image.type.split('/')[1] || 'jpg';
                         const renamedFile = new File(
                             [cycle.image],
-                            `${cycle.id ?? index}_${cycleName.toLowerCase().replace(/\s+/g, '_')}.${fileExt}`,
+                            `${cycle.id ?? index}_${cycleName
+                                .toLowerCase()
+                                .replace(/\s+/g, '_')}.${fileExt}`,
                             { type: cycle.image.type }
                         );
                         formData.append(`file`, renamedFile);
@@ -931,50 +935,92 @@ function Book() {
                     <div className='space-y-2'>
                         <Label className='text-black'>Address line 1*</Label>
                         <Input
-                            value={customerDetails.addressLine1}
+                            value={customerDetails.address1}
                             onChange={(e) => {
                                 dispatch(
                                     updateCustomerDetails({
-                                        addressLine1: e.target.value,
+                                        address1: e.target.value,
                                     })
                                 );
-                                if (validationErrors.addressLine1) {
+                                if (validationErrors.address1) {
                                     setValidationErrors((prev) => {
                                         const newErrors = { ...prev };
-                                        delete newErrors.addressLine1;
+                                        delete newErrors.address1;
                                         return newErrors;
                                     });
                                 }
                             }}
                             placeholder='Enter address'
                             className={`bg-white border-[#4a4b4d] text-black placeholder:text-gray-600 ${
-                                validationErrors.addressLine1
+                                validationErrors.address1
                                     ? 'border-red-500'
                                     : ''
                             }`}
                         />
-                        {validationErrors.addressLine1 && (
+                        {validationErrors.address1 && (
                             <p className='text-red-500 text-sm'>
-                                {validationErrors.addressLine1}
+                                {validationErrors.address1}
                             </p>
                         )}
                     </div>
                     <div className='space-y-2'>
                         <Label className='text-black'>Locate Yourself</Label>
-                        <div className='flex items-center justify-center h-10 border border-[#4a4b4d] rounded-md bg-white'>
-                            <MapPin className='w-5 h-5 text-[#fbbf24]' />
+                        <div className='flex items-center space-x-2'>
+                            <Button
+                                type='button'
+                                variant='outline'
+                                className='border-[#4a4b4d] text-[#fbbf24] bg-white hover:bg-[#fbbf24] hover:text-black flex items-center'
+                                onClick={() => {
+                                    if (navigator.geolocation) {
+                                        navigator.geolocation.getCurrentPosition(
+                                            (position) => {
+                                                const { latitude, longitude } =
+                                                    position.coords;
+                                                dispatch(
+                                                    updateCustomerDetails({
+                                                        longLat: `${longitude},${latitude}`,
+                                                    })
+                                                );
+                                            },
+                                            (error) => {
+                                                alert(
+                                                    'Unable to get location: ' +
+                                                        error.message
+                                                );
+                                            }
+                                        );
+                                    } else {
+                                        alert(
+                                            'Geolocation is not supported by your browser.'
+                                        );
+                                    }
+                                }}
+                            >
+                                <MapPin className='w-5 h-5 mr-2' />
+                                Locate Me
+                            </Button>
+                            {customerDetails.longLat && (
+                                <span className='text-xs text-gray-600'>
+                                    Location set ✓: {customerDetails.longLat}
+                                </span>
+                            )}
                         </div>
+                        {validationErrors.longLat && (
+                            <p className='text-red-500 text-sm'>
+                                {validationErrors.longLat}
+                            </p>
+                        )}
                     </div>
                 </div>
 
                 <div className='mt-6'>
                     <Label className='text-black'>Address line 2</Label>
                     <Input
-                        value={customerDetails.addressLine2}
+                        value={customerDetails.address2}
                         onChange={(e) =>
                             dispatch(
                                 updateCustomerDetails({
-                                    addressLine2: e.target.value,
+                                    address2: e.target.value,
                                 })
                             )
                         }
@@ -989,17 +1035,17 @@ function Book() {
                         <Select
                             // className='w-full'
                             defaultValue='2'
-                            value={customerDetails.city}
+                            value={customerDetails.cityId?.toString() || ''}
                             onValueChange={(value) => {
                                 dispatch(
                                     updateCustomerDetails({
-                                        city: value,
+                                        cityId: value,
                                     })
                                 );
-                                if (validationErrors.city) {
+                                if (validationErrors.cityId) {
                                     setValidationErrors((prev) => {
                                         const newErrors = { ...prev };
-                                        delete newErrors.city;
+                                        delete newErrors.cityId;
                                         return newErrors;
                                     });
                                 }
@@ -1007,7 +1053,7 @@ function Book() {
                         >
                             <SelectTrigger
                                 className={`bg-white border-[#4a4b4d] text-black placeholder:text-gray-600 w-full ${
-                                    validationErrors.city
+                                    validationErrors.cityId
                                         ? 'border-red-500'
                                         : ''
                                 }`}
@@ -1020,13 +1066,13 @@ function Book() {
                                 <SelectItem value='4'>Bengaluru</SelectItem>
                             </SelectContent>
                         </Select>
-                        {validationErrors.city && (
+                        {validationErrors.cityId && (
                             <p className='text-red-500 text-sm'>
-                                {validationErrors.city}
+                                {validationErrors.cityId}
                             </p>
                         )}
                     </div>
-                    <div className='space-y-2'>
+                    {/* <div className='space-y-2'>
                         <Label className='text-black'>State*</Label>
                         <Select
                             value={customerDetails.state}
@@ -1068,11 +1114,11 @@ function Book() {
                                 {validationErrors.state}
                             </p>
                         )}
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-6'>
-                    <div className='space-y-2'>
+                    {/* <div className='space-y-2'>
                         <Label className='text-black'>Country*</Label>
                         <Input
                             value={customerDetails.country}
@@ -1100,7 +1146,7 @@ function Book() {
                                 {validationErrors.country}
                             </p>
                         )}
-                    </div>
+                    </div> */}
                     <div className='space-y-2'>
                         <Label className='text-black'>PIN Code*</Label>
                         <Input

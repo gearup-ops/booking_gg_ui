@@ -40,8 +40,8 @@ export default function AccountPage() {
         firstName: 'John',
         lastName: 'Doe',
         email: 'jondoe@gmail.com',
-        addressLine1: '123 Main St',
-        addressLine2: 'Phase 1',
+        address1: '123 Main St',
+        address2: 'Phase 1',
         city: 'Pune',
         state: 'Maharashtra',
         country: 'India',
@@ -63,8 +63,8 @@ export default function AccountPage() {
                 firstName: user.firstName || '',
                 lastName: user.lastName || '',
                 email: user.email || '',
-                addressLine1: user.addressLine1 || '',
-                addressLine2: user.addressLine2 || '',
+                address1: user.address1 || '',
+                address2: user.address2 || '',
                 city: user.city || '',
                 state: user.state || '',
                 country: user.country || '',
@@ -88,8 +88,8 @@ export default function AccountPage() {
                 firstName: user.firstName || '',
                 lastName: user.lastName || '',
                 email: user.email || '',
-                addressLine1: user.addressLine1 || '',
-                addressLine2: user.addressLine2 || '',
+                address1: user.address1 || '',
+                address2: user.address2 || '',
                 city: user.city || '',
                 state: user.state || '',
                 country: user.country || '',
@@ -237,11 +237,11 @@ export default function AccountPage() {
                                 Address line 1
                             </Label>
                             <Input
-                                value={editedProfile.addressLine1}
+                                value={editedProfile.address1}
                                 onChange={(e) =>
                                     setEditedProfile({
                                         ...editedProfile,
-                                        addressLine1: e.target.value,
+                                        address1: e.target.value,
                                     })
                                 }
                                 disabled={!isEditing}
@@ -253,11 +253,11 @@ export default function AccountPage() {
                                 Address line 2
                             </Label>
                             <Input
-                                value={editedProfile.addressLine2}
+                                value={editedProfile.address2}
                                 onChange={(e) =>
                                     setEditedProfile({
                                         ...editedProfile,
-                                        addressLine2: e.target.value,
+                                        address2: e.target.value,
                                     })
                                 }
                                 disabled={!isEditing}
@@ -504,7 +504,7 @@ export default function AccountPage() {
                                                                 {
                                                                     order
                                                                         .customerDetails
-                                                                        .addressLine1
+                                                                        .address1
                                                                 }
                                                                 ,{' '}
                                                                 {

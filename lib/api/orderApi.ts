@@ -14,16 +14,24 @@ export interface AddOrderRequest {
     serviceId: string;
     cycles: CycleDetails[];
     customerDetails: {
+        id?: number;
         firstName: string;
         lastName: string;
-        gender: 'male' | 'female';
+        email?: string;
+        gender: string;
         phoneNumber: string;
-        addressLine1: string;
-        addressLine2?: string;
-        city: string;
-        state: string;
-        country: string;
+        address1: string;
+        address2?: string;
+        cityId?: number;
         pinCode: string;
+        longLat?: string;
+        isActive?: boolean;
+        isRegistered?: boolean;
+        createdBy?: string;
+        followUpDate?: string; // ISO date string
+        createdAt?: string; // ISO timestamp
+        updatedAt?: string; // ISO timestamp
+        fcm?: string;
     };
     scheduledDate?: string;
     timeSlot?: string;
