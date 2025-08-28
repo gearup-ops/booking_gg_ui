@@ -11,10 +11,11 @@ import StatsSection from '@/components/stats-section';
 import BrandsSection from '@/components/brands-section';
 import FAQSection from '@/components/faq-section';
 import Footer from '@/components/footer';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getHomePageDataAction } from '@/lib/actions/contentActions';
 import type { AppDispatch } from '@/lib/store';
+import { getUserByIdAction } from '@/lib/actions/userActions';
 
 export default function HomePage() {
     // Example usage with sample data
@@ -37,6 +38,7 @@ export default function HomePage() {
     const { homePageData, isLoading } = useSelector(
         (state: any) => state.content
     );
+    const { user, isAuthenticated } = useSelector((state: any) => state.auth);
 
     const testimonials =
         homePageData?.s5?.map((item: any) => ({
@@ -50,8 +52,71 @@ export default function HomePage() {
         }
     }, [dispatch]);
 
+    // City options
+    const cities = [
+        { id: 3, name: 'Pune' },
+        { id: 1, name: 'Mumbai' },
+        { id: 4, name: 'Bengalure' },
+    ];
+
+    // Popup state
+    const [showPopup, setShowPopup] = useState(true);
+    const [selectedCityId, setSelectedCityId] = useState(cities[0].id);
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token && !isAuthenticated) {
+            // Dispatch an action to fetch user details using the token
+            dispatch(getUserByIdAction(token));
+        }
+    }, [selectedCityId]);
+
+    const handleClosePopup = () => {
+        localStorage.setItem('cityId', selectedCityId.toString());
+        setShowPopup(false);
+    };
+
+    useEffect(() => {
+        if (localStorage.getItem('cityId')) {
+            setShowPopup(false);
+        } else {
+            setShowPopup(true);
+        }
+    }, [localStorage.getItem('cityId')]);
+
     return (
         <div className='min-h-screen bg-[#060608] text-white'>
+            {showPopup && (
+                <div className='fixed inset-0 bg-black/60 flex items-center justify-center z-50'>
+                    <div className='bg-white text-black rounded-lg p-6 min-w-[300px] shadow-lg'>
+                        <h2 className='text-lg font-semibold mb-4'>
+                            Select your city
+                        </h2>
+                        <div className='flex flex-row gap-2 mb-4'>
+                            {cities.map((city) => (
+                                <button
+                                    key={city.id}
+                                    className={`w-full p-2 border rounded ${
+                                        selectedCityId === city.id
+                                            ? 'bg-[#fbbf24] text-white border-blue-600'
+                                            : 'bg-white text-black border-gray-300'
+                                    }`}
+                                    onClick={() => setSelectedCityId(city.id)}
+                                    type='button'
+                                >
+                                    {city.name}
+                                </button>
+                            ))}
+                        </div>
+                        <button
+                            className='bg-[#000] text-[#fbbf24] px-4 py-2 rounded w-full'
+                            onClick={handleClosePopup}
+                        >
+                            Confirm
+                        </button>
+                    </div>
+                </div>
+            )}
             <Header />
             <HeroSection />
             <FeaturesSection />

@@ -2,7 +2,8 @@ import { User } from '../slices/authSlice';
 import { apiClient } from './client';
 
 export interface SendOtpRequest {
-    phoneNumber: string;
+    phone: string;
+    confirmationResult?: any;
 }
 
 export interface SendOtpResponse {
@@ -12,21 +13,18 @@ export interface SendOtpResponse {
 }
 
 export interface RegisterRequest {
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-    email?: string;
-    gender: string;
+    phone: string;
+    fcm?: string;
 }
 
 export interface RegisterResponse {
-    success: boolean;
+    code: boolean;
     message: string;
-    user: User;
+    token: string;
 }
 
 export interface VerifyOtpRequest {
-    phoneNumber: string;
+    phone: string;
     otp: string;
     otpId: string;
 }
@@ -39,7 +37,7 @@ export interface VerifyOtpResponse {
         id: string;
         firstName: string;
         lastName: string;
-        phoneNumber: string;
+        phone: string;
         email?: string;
     };
 }
@@ -63,7 +61,7 @@ export const userApi = {
     },
 
     register: async (data: RegisterRequest): Promise<RegisterResponse> => {
-        const response = await apiClient.post('/api/user/v1/register', data);
+        const response = await apiClient.post('/user/v1/register', data);
         return response.data;
     },
 
@@ -74,7 +72,7 @@ export const userApi = {
 
     getUserById: async (userId: string) => {
         const response = await apiClient.get(
-            `/api/user/v1/getUserById/${userId}`
+            `/user/v1/getUserById/${userId}`
         );
         return response.data;
     },

@@ -363,11 +363,11 @@ export default function BookingModal() {
                 <div className='space-y-2'>
                     <Label className='text-gray-700'>Phone Number*</Label>
                     <Input
-                        value={customerDetails.phoneNumber}
+                        value={customerDetails.phone}
                         onChange={(e) =>
                             dispatch(
                                 updateCustomerDetails({
-                                    phoneNumber: e.target.value,
+                                    phone: e.target.value,
                                 })
                             )
                         }

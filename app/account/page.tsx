@@ -520,7 +520,7 @@ export default function AccountPage() {
                                                                 {
                                                                     order
                                                                         .customerDetails
-                                                                        .phoneNumber
+                                                                        .phone
                                                                 }
                                                             </span>
                                                         </div>

@@ -11,7 +11,7 @@ interface CustomerDetails {
     lastName: string;
     email?: string;
     gender: string;
-    phoneNumber: string;
+    phone: string;
     address1: string;
     address2?: string;
     cityId?: number | string;
@@ -55,7 +55,7 @@ const initialState: OrderState = {
         firstName: '',
         lastName: '',
         gender: 'male',
-        phoneNumber: '',
+        phone: '',
         address1: '',
         address2: '',
         cityId: 3,
@@ -88,7 +88,7 @@ const initialState: OrderState = {
                 firstName: '',
                 lastName: '',
                 gender: 'male',
-                phoneNumber: '',
+                phone: '',
                 address1: '',
                 address2: '',
                 cityId: 0,
@@ -124,7 +124,7 @@ const initialState: OrderState = {
                 firstName: 'Jane',
                 lastName: 'Smith',
                 gender: 'female',
-                phoneNumber: '9876543210',
+                phone: '9876543210',
                 address1: '456 Park Ave',
                 address2: '',
                 cityId: 2,

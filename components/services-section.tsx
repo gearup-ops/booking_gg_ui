@@ -68,7 +68,10 @@ export default function ServicesSection() {
             .sort((a: Service, b: Service) => a.orderNo - b.orderNo) || [];
 
     useEffect(() => {
-        dispatch(getServicesAction({ city: 3 }));
+        const cityId = localStorage.getItem('cityId');
+        if (cityId) {
+            dispatch(getServicesAction({ city: Number(cityId) }));
+        }
     }, [dispatch]);
 
     useEffect(() => {

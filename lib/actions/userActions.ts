@@ -11,7 +11,10 @@ export const sendOtpAction = createAsyncThunk(
     'auth/sendOtp',
     async (data: SendOtpRequest, { rejectWithValue }) => {
         try {
-            return { otpId: '0000' };
+            return {
+                confirmationResult: data.confirmationResult,
+                phone: data.phone,
+            };
             // const response = await userApi.sendOtp(data);
             // return response;
         } catch (error: any) {
@@ -27,6 +30,8 @@ export const registerUserAction = createAsyncThunk(
     async (data: RegisterRequest, { rejectWithValue }) => {
         try {
             const response = await userApi.register(data);
+            console.log('Registration response:', response);
+
             return response;
         } catch (error: any) {
             return rejectWithValue(
@@ -46,7 +51,7 @@ export const verifyOtpAction = createAsyncThunk(
                     id: 'dummy-user-id',
                     firstName: 'John',
                     lastName: 'Doe',
-                    phoneNumber: data.phoneNumber,
+                    phone: data.phone,
                     email: 'jondoe@gmail.com',
                     address1: '123 Main St',
                     address2: 'Apt 4B',
@@ -73,24 +78,24 @@ export const getUserByIdAction = createAsyncThunk(
     'auth/getUserById',
     async (userId: string, { rejectWithValue }) => {
         try {
-            return {
-                token: 'dummy-token',
-                user: {
-                    id: 'dummy-user-id',
-                    firstName: 'John',
-                    lastName: 'Doe',
-                    phoneNumber: '9876543210',
-                    email: 'jondoe@gmail.com',
-                    address1: '123 Main St',
-                    address2: 'Apt 4B',
-                    city: 'Springfield',
-                    state: 'Maharashtra',
-                    country: 'India',
-                    pinCode: '411057',
-                },
-            };
-            // const response = await userApi.getUserById(userId);
-            // return response;
+            // return {
+            //     token: 'dummy-token',
+            //     user: {
+            //         id: 'dummy-user-id',
+            //         firstName: 'John',
+            //         lastName: 'Doe',
+            //         phone: '9876543210',
+            //         email: 'jondoe@gmail.com',
+            //         address1: '123 Main St',
+            //         address2: 'Apt 4B',
+            //         city: 'Springfield',
+            //         state: 'Maharashtra',
+            //         country: 'India',
+            //         pinCode: '411057',
+            //     },
+            // };
+            const response = await userApi.getUserById(userId);
+            return response;
         } catch (error: any) {
             return rejectWithValue(
                 error.response?.data?.message || 'Failed to fetch user'

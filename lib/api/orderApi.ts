@@ -19,7 +19,7 @@ export interface AddOrderRequest {
         lastName: string;
         email?: string;
         gender: string;
-        phoneNumber: string;
+        phone: string;
         address1: string;
         address2?: string;
         cityId?: number;

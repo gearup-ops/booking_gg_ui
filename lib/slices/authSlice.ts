@@ -13,7 +13,7 @@ export interface User {
     lastName: string;
     email?: string;
     gender: string;
-    phoneNumber: string;
+    phone: string;
     address1: string;
     address2?: string;
     cityId?: number;
@@ -32,9 +32,9 @@ interface AuthState {
     isAuthenticated: boolean;
     user: User | null;
     loginStep: 'phone' | 'otp' | 'completed';
-    phoneNumber: string;
+    phone: string;
     otp: string;
-    otpId: string | null;
+    confirmationResult: any | null;
     isLoading: boolean;
     error: string | null;
     token: string | null;
@@ -43,12 +43,12 @@ interface AuthState {
 const initialState: AuthState = {
     // isAuthenticated: false,
     // user: null,
-    isAuthenticated: true,
+    isAuthenticated: false,
     user: null,
     loginStep: 'phone',
-    phoneNumber: '',
+    phone: '',
     otp: '',
-    otpId: null,
+    confirmationResult: null,
     isLoading: false,
     error: null,
     token: null,
@@ -58,8 +58,8 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        setPhoneNumber: (state, action: PayloadAction<string>) => {
-            state.phoneNumber = action.payload;
+        setphone: (state, action: PayloadAction<string>) => {
+            state.phone = action.payload;
             state.error = null;
         },
         setOtp: (state, action: PayloadAction<string>) => {
@@ -76,18 +76,16 @@ const authSlice = createSlice({
             state.isAuthenticated = false;
             state.user = null;
             state.loginStep = 'phone';
-            state.phoneNumber = '';
+            state.phone = '';
             state.otp = '';
-            state.otpId = null;
             state.error = null;
             state.token = null;
             localStorage.removeItem('authToken');
         },
         resetAuth: (state) => {
             state.loginStep = 'phone';
-            state.phoneNumber = '';
+            state.phone = '';
             state.otp = '';
-            state.otpId = null;
             state.error = null;
             state.isLoading = false;
         },
@@ -104,7 +102,8 @@ const authSlice = createSlice({
             })
             .addCase(sendOtpAction.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.otpId = action.payload.otpId;
+                state.confirmationResult = action.payload.confirmationResult;
+                state.phone = action.payload.phone;
                 state.loginStep = 'otp';
             })
             .addCase(sendOtpAction.rejected, (state, action) => {
@@ -120,7 +119,7 @@ const authSlice = createSlice({
             })
             .addCase(registerUserAction.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.user = action.payload.user;
+                state.token = action.payload.token;
             })
             .addCase(registerUserAction.rejected, (state, action) => {
                 state.isLoading = false;
@@ -136,7 +135,7 @@ const authSlice = createSlice({
             .addCase(verifyOtpAction.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isAuthenticated = true;
-                state.user = action.payload.user;
+                // state.toekn = action.payload.toekn;
                 state.token = action.payload.token;
                 state.loginStep = 'completed';
             })
@@ -177,13 +176,7 @@ const authSlice = createSlice({
     },
 });
 
-export const {
-    setPhoneNumber,
-    setOtp,
-    setLoginStep,
-    logout,
-    resetAuth,
-    clearError,
-} = authSlice.actions;
+export const { setphone, setOtp, setLoginStep, logout, resetAuth, clearError } =
+    authSlice.actions;
 
 export default authSlice.reducer;

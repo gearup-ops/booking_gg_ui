@@ -91,7 +91,7 @@ function Book() {
                 updateCustomerDetails({
                     firstName: user.firstName || '',
                     lastName: user.lastName || '',
-                    phoneNumber: user.phoneNumber || '',
+                    phone: user.phone || '',
                     address1: user.address1 || '',
                     address2: user.address2 || '',
                     cityId: user.cityId || '',
@@ -144,12 +144,12 @@ function Book() {
             ) {
                 errors.email = 'Please enter a valid email address';
             }
-            if (!customerDetails.phoneNumber.trim()) {
-                errors.phoneNumber = 'Phone number is required';
+            if (!customerDetails.phone.trim()) {
+                errors.phone = 'Phone number is required';
             } else if (
-                !/^\d{10}$/.test(customerDetails.phoneNumber.replace(/\D/g, ''))
+                !/^\d{10}$/.test(customerDetails.phone.replace(/\D/g, ''))
             ) {
-                errors.phoneNumber = 'Phone number must be exactly 10 digits';
+                errors.phone = 'Phone number must be exactly 10 digits';
             }
             if (!customerDetails.address1.trim()) {
                 errors.address1 = 'Address line 1 is required';
@@ -249,7 +249,7 @@ function Book() {
                         lastName: customerDetails.lastName,
                         email: customerDetails.email || '',
                         gender: customerDetails.gender,
-                        phoneNumber: customerDetails.phoneNumber,
+                        phone: customerDetails.phone,
                         address1: customerDetails.address1,
                         address2: customerDetails.address2,
                         cityId: customerDetails.cityId,
@@ -862,34 +862,32 @@ function Book() {
                         <Label className='text-black'>Phone Number*</Label>
                         <Input
                             type='tel'
-                            value={customerDetails.phoneNumber}
+                            value={customerDetails.phone}
                             onChange={(e) => {
                                 const value = e.target.value
                                     .replace(/\D/g, '')
                                     .slice(0, 10);
                                 dispatch(
                                     updateCustomerDetails({
-                                        phoneNumber: value,
+                                        phone: value,
                                     })
                                 );
-                                if (validationErrors.phoneNumber) {
+                                if (validationErrors.phone) {
                                     setValidationErrors((prev) => {
                                         const newErrors = { ...prev };
-                                        delete newErrors.phoneNumber;
+                                        delete newErrors.phone;
                                         return newErrors;
                                     });
                                 }
                             }}
                             placeholder='Enter 10-digit phone number'
                             className={`bg-white border-[#4a4b4d] text-black placeholder:text-gray-600 ${
-                                validationErrors.phoneNumber
-                                    ? 'border-red-500'
-                                    : ''
+                                validationErrors.phone ? 'border-red-500' : ''
                             }`}
                         />
-                        {validationErrors.phoneNumber && (
+                        {validationErrors.phone && (
                             <p className='text-red-500 text-sm'>
-                                {validationErrors.phoneNumber}
+                                {validationErrors.phone}
                             </p>
                         )}
                     </div>
