@@ -15,7 +15,7 @@ interface CustomerDetails {
     address1: string;
     address2?: string;
     cityId?: number | string;
-    pinCode: string;
+    pincode: string;
     longLat?: string;
     isActive?: boolean;
     isRegistered?: boolean;
@@ -61,7 +61,7 @@ const initialState: OrderState = {
         cityId: 3,
         // state: '',
         // country: '',
-        pinCode: '',
+        pincode: '',
     },
     isExistingUser: false,
     existingCycles: [],
@@ -94,7 +94,7 @@ const initialState: OrderState = {
                 cityId: 0,
                 // state: '',
                 // country: '',
-                pinCode: '',
+                pincode: '',
             },
             status: 'pending',
             scheduledDate: '2024-06-01',
@@ -130,7 +130,7 @@ const initialState: OrderState = {
                 cityId: 2,
                 // state: 'Maharashtra',
                 // country: 'India',
-                pinCode: '400001',
+                pincode: '400001',
             },
             status: 'confirmed',
             scheduledDate: '2024-06-02',
@@ -202,8 +202,8 @@ const orderSlice = createSlice({
             state.selectedExistingCycle = action.payload;
         },
         checkLocationAvailability: (state, action: PayloadAction<string>) => {
-            const unavailablePinCodes = ['110001', '400001', '600001'];
-            state.isLocationAvailable = !unavailablePinCodes.includes(
+            const unavailablepincodes = ['110001', '400001', '600001'];
+            state.isLocationAvailable = !unavailablepincodes.includes(
                 action.payload
             );
         },

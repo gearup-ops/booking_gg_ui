@@ -16,8 +16,8 @@ export interface User {
     phone: string;
     address1: string;
     address2?: string;
-    cityId?: number;
-    pinCode: string;
+    cityId?: number | null;
+    pincode: string;
     longLat?: string;
     isActive?: boolean;
     isRegistered?: boolean;
@@ -80,7 +80,7 @@ const authSlice = createSlice({
             state.otp = '';
             state.error = null;
             state.token = null;
-            localStorage.removeItem('authToken');
+            localStorage.removeItem('token');
         },
         resetAuth: (state) => {
             state.loginStep = 'phone';
@@ -151,7 +151,7 @@ const authSlice = createSlice({
             })
             .addCase(getUserByIdAction.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.user = action.payload.user;
+                state.user = action.payload.data[0];
                 state.isAuthenticated = true;
             })
             .addCase(getUserByIdAction.rejected, (state, action) => {
@@ -167,7 +167,7 @@ const authSlice = createSlice({
             })
             .addCase(updateCustomerAction.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.user = { ...state.user, ...action.payload.user };
+                // state.user = { ...state.user, ...action.payload.user };
             })
             .addCase(updateCustomerAction.rejected, (state, action) => {
                 state.isLoading = false;

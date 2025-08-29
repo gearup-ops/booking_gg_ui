@@ -58,7 +58,7 @@ export const verifyOtpAction = createAsyncThunk(
                     city: 'Springfield',
                     state: 'Maharashtra',
                     country: 'India',
-                    pinCode: '411057',
+                    pincode: '411057',
                 },
             };
             // const response = await userApi.verifyOtp(data);
@@ -76,25 +76,9 @@ export const verifyOtpAction = createAsyncThunk(
 
 export const getUserByIdAction = createAsyncThunk(
     'auth/getUserById',
-    async (userId: string, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            // return {
-            //     token: 'dummy-token',
-            //     user: {
-            //         id: 'dummy-user-id',
-            //         firstName: 'John',
-            //         lastName: 'Doe',
-            //         phone: '9876543210',
-            //         email: 'jondoe@gmail.com',
-            //         address1: '123 Main St',
-            //         address2: 'Apt 4B',
-            //         city: 'Springfield',
-            //         state: 'Maharashtra',
-            //         country: 'India',
-            //         pinCode: '411057',
-            //     },
-            // };
-            const response = await userApi.getUserById(userId);
+            const response = await userApi.getUserById();
             return response;
         } catch (error: any) {
             return rejectWithValue(
@@ -106,12 +90,9 @@ export const getUserByIdAction = createAsyncThunk(
 
 export const updateCustomerAction = createAsyncThunk(
     'auth/updateCustomer',
-    async (
-        { userId, data }: { userId: string; data: UpdateCustomerRequest },
-        { rejectWithValue }
-    ) => {
+    async ({ data }: { data: UpdateCustomerRequest }, { rejectWithValue }) => {
         try {
-            const response = await userApi.updateCustomer(userId, data);
+            const response = await userApi.updateCustomer(data);
             return response;
         } catch (error: any) {
             return rejectWithValue(

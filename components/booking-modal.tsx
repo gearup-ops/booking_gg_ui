@@ -57,7 +57,7 @@ export default function BookingModal() {
             dispatch(setCurrentStep('customer-details'));
         } else if (currentStep === 'customer-details') {
             // Check location availability
-            dispatch(checkLocationAvailability(customerDetails.pinCode));
+            dispatch(checkLocationAvailability(customerDetails.pincode));
             if (isLocationAvailable && termsAccepted) {
                 dispatch(confirmBooking());
             }
@@ -459,11 +459,11 @@ export default function BookingModal() {
                 <div className='space-y-2'>
                     <Label className='text-gray-700'>PIN Code*</Label>
                     <Input
-                        value={customerDetails.pinCode}
+                        value={customerDetails.pincode}
                         onChange={(e) => {
                             dispatch(
                                 updateCustomerDetails({
-                                    pinCode: e.target.value,
+                                    pincode: e.target.value,
                                 })
                             );
                             if (e.target.value.length === 6) {
@@ -474,7 +474,7 @@ export default function BookingModal() {
                         }}
                         placeholder='Enter PIN code'
                         className={
-                            !isLocationAvailable && customerDetails.pinCode
+                            !isLocationAvailable && customerDetails.pincode
                                 ? 'border-red-500'
                                 : ''
                         }
@@ -482,7 +482,7 @@ export default function BookingModal() {
                 </div>
             </div>
 
-            {!isLocationAvailable && customerDetails.pinCode && (
+            {!isLocationAvailable && customerDetails.pincode && (
                 <div className='bg-red-50 border border-red-200 rounded-lg p-4'>
                     <h4 className='text-red-600 font-semibold mb-2'>Oh!</h4>
                     <p className='text-red-600 text-sm mb-2'>
@@ -523,11 +523,11 @@ export default function BookingModal() {
                 onClick={handleNext}
                 disabled={
                     !termsAccepted ||
-                    (!isLocationAvailable && customerDetails.pinCode.length > 0)
+                    (!isLocationAvailable && customerDetails.pincode.length > 0)
                 }
                 className='w-full bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold py-3 rounded-full disabled:opacity-50 disabled:cursor-not-allowed'
             >
-                {!isLocationAvailable && customerDetails.pinCode
+                {!isLocationAvailable && customerDetails.pincode
                     ? 'Submit'
                     : 'Next'}
             </Button>

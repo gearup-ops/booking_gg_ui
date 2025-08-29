@@ -56,7 +56,7 @@ export default function HomePage() {
     const cities = [
         { id: 3, name: 'Pune' },
         { id: 1, name: 'Mumbai' },
-        { id: 4, name: 'Bengalure' },
+        { id: 4, name: 'Bengalore' },
     ];
 
     // Popup state
@@ -67,7 +67,7 @@ export default function HomePage() {
         const token = localStorage.getItem('token');
         if (token && !isAuthenticated) {
             // Dispatch an action to fetch user details using the token
-            dispatch(getUserByIdAction(token));
+            dispatch(getUserByIdAction());
         }
     }, [selectedCityId]);
 

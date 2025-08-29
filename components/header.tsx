@@ -29,7 +29,9 @@ export default function Header() {
     ];
 
     const handleLogout = () => {
+        
         dispatch(logout());
+
         if (mobileMenuOpen) {
             dispatch(toggleMobileMenu());
         }
@@ -79,9 +81,9 @@ export default function Header() {
                                 <Link href='/account'>
                                     <Button className='flex items-center space-x-2'>
                                         <User className='w-4 h-4 text-[#fbbf24]' />
-                                        <span className='text-white text-sm'>
+                                        {/* <span className='text-white text-sm'>
                                             {user?.firstName} {user?.lastName}
-                                        </span>
+                                        </span> */}
                                     </Button>
                                 </Link>
                                 <Button

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RootState, AppDispatch } from '@/lib/store';
 import {
+    getUserByIdAction,
     registerUserAction,
     sendOtpAction,
     verifyOtpAction,
@@ -33,8 +34,9 @@ export default function LoginPage() {
     const [confirmation, setConfirmation] = useState<any>(null);
 
     useEffect(() => {
-        if (isAuthenticated) {
+        if (isAuthenticated || localStorage.getItem('token')) {
             router.push('/');
+            dispatch(getUserByIdAction());
         }
     }, [isAuthenticated, router]);
 

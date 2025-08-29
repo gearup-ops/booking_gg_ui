@@ -45,13 +45,14 @@ export interface VerifyOtpResponse {
 export interface UpdateCustomerRequest {
     firstName?: string;
     lastName?: string;
+    phone?: string;
     email?: string;
     address1?: string;
     address2?: string;
-    city?: string;
+    city?: number | null;
     state?: string;
     country?: string;
-    pinCode?: string;
+    pincode?: string;
 }
 
 export const userApi = {
@@ -70,18 +71,13 @@ export const userApi = {
         return response.data;
     },
 
-    getUserById: async (userId: string) => {
-        const response = await apiClient.get(
-            `/user/v1/getUserById/${userId}`
-        );
+    getUserById: async () => {
+        const response = await apiClient.get(`/user/v1/getUserById`);
         return response.data;
     },
 
-    updateCustomer: async (userId: string, data: UpdateCustomerRequest) => {
-        const response = await apiClient.put(
-            `/api/user/v1/updateCustomer/${userId}`,
-            data
-        );
+    updateCustomer: async (data: UpdateCustomerRequest) => {
+        const response = await apiClient.put(`/user/v1/updateCustomer`, data);
         return response.data;
     },
 };

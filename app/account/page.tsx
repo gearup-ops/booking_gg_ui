@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/header';
@@ -11,8 +11,10 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import type { RootState, AppDispatch } from '@/lib/store';
-import { getOrdersByUserIdAction } from '@/lib/actions/orderActions';
-import { updateCustomerAction } from '@/lib/actions/userActions';
+import {
+    getUserByIdAction,
+    updateCustomerAction,
+} from '@/lib/actions/userActions';
 import {
     ChevronDown,
     ChevronUp,
@@ -23,12 +25,34 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const cities = [
+    { id: 3, name: 'Pune' },
+    { id: 1, name: 'Mumbai' },
+    { id: 4, name: 'Bengalore' },
+];
+
+const cityMetaById = {
+    1: { name: 'Mumbai', state: 'Maharashtra', country: 'India' },
+    3: { name: 'Pune', state: 'Maharashtra', country: 'India' },
+    4: { name: 'Bengalore', state: 'Karnataka', country: 'India' },
+} as const;
+
+function getCityNameFromId(id: unknown) {
+    const cid = typeof id === 'string' ? Number.parseInt(id, 10) : Number(id);
+    if (Number.isNaN(cid)) return '';
+    const match = cities.find((c) => c.id === cid);
+    return match?.name || '';
+}
+
 export default function AccountPage() {
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
-    const { isAuthenticated, user } = useSelector(
-        (state: RootState) => state.auth
-    );
+    const {
+        isAuthenticated,
+        user,
+        isLoading: userLoading,
+        error,
+    } = useSelector((state: RootState) => state.auth);
     const { orders, isLoading } = useSelector(
         (state: RootState) => state.order
     );
@@ -37,16 +61,64 @@ export default function AccountPage() {
     const [isEditing, setIsEditing] = useState(false);
     const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
     const [editedProfile, setEditedProfile] = useState({
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'jondoe@gmail.com',
-        address1: '123 Main St',
-        address2: 'Phase 1',
-        city: 'Pune',
-        state: 'Maharashtra',
-        country: 'India',
-        pinCode: '411057',
+        firstName: '',
+        lastName: '',
+        email: '',
+        gender: '',
+        address1: '',
+        address2: '',
+        city: null as number | null,
+        state: '',
+        country: '',
+        pincode: '',
+        phone: '',
     });
+
+    const [validationErrors, setValidationErrors] = useState<
+        Record<string, string>
+    >({});
+
+    const derivedCity = useMemo(() => {
+        const input = editedProfile.city;
+        if (!input) return null;
+
+        // If the input is an ID-like value
+        const id = Number(input);
+        if (!Number.isNaN(id) && cityMetaById[id as 1 | 3 | 4]) {
+            return cityMetaById[id as 1 | 3 | 4];
+        }
+
+        // Otherwise, try by name (case-insensitive)
+        const match = cities.find(
+            (c) => c.name.toLowerCase() === String(input).toLowerCase()
+        );
+        if (match && cityMetaById[match.id as 1 | 3 | 4]) {
+            return cityMetaById[match.id as 1 | 3 | 4];
+        }
+        return null;
+    }, [editedProfile.city]);
+
+    const cityInfo = useMemo(() => {
+        if (user) {
+            const cityMeta =
+                derivedCity ||
+                (user.cityId !== undefined
+                    ? cityMetaById[user.cityId as keyof typeof cityMetaById]
+                    : undefined);
+            return {
+                city: cityMeta?.name || '',
+                state: cityMeta?.state || '',
+                country: cityMeta?.country || '',
+            };
+        }
+        return { city: '', state: '', country: '' };
+    }, [user, derivedCity]);
+
+    useEffect(() => {
+        if (!user && (isAuthenticated || localStorage.getItem('token'))) {
+            dispatch(getUserByIdAction());
+        }
+    }, [user, dispatch]);
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -55,30 +127,95 @@ export default function AccountPage() {
         }
 
         if (user) {
-            // Fetch user orders
-            // dispatch(getOrdersByUserIdAction(user.id));
-
             // Initialize profile form
             setEditedProfile({
                 firstName: user.firstName || '',
                 lastName: user.lastName || '',
                 email: user.email || '',
+                gender: user.gender || '',
                 address1: user.address1 || '',
                 address2: user.address2 || '',
-                city: user.city || '',
-                state: user.state || '',
-                country: user.country || '',
-                pinCode: user.pinCode || '',
+                city: user.cityId || null,
+                pincode: user.pincode || '',
+                phone: user.phone || '',
+                state: '', // kept to avoid structural changes in form
+                country: '', // kept to avoid structural changes in form
             });
+            setValidationErrors({});
         }
     }, [isAuthenticated, user, router, dispatch]);
 
+    const clearFieldError = (field: string) => {
+        if (!validationErrors[field]) return;
+        setValidationErrors((prev) => {
+            const next = { ...prev };
+            delete next[field];
+            return next;
+        });
+    };
+
     const handleSaveProfile = async () => {
-        if (user) {
+        const errors: Record<string, string> = {};
+        const emailRe = /^\S+@\S+\.\S+$/;
+
+        const firstName = editedProfile.firstName.trim();
+        const lastName = editedProfile.lastName.trim();
+        const email = editedProfile.email.trim();
+        const gender = editedProfile.gender.trim();
+        const address1 = editedProfile.address1.trim();
+        const phone = (editedProfile.phone || '')
+            .replace(/\D/g, '')
+            .slice(0, 10);
+        const pincode = (editedProfile.pincode || '')
+            .replace(/\D/g, '')
+            .slice(0, 6);
+
+        if (!firstName) errors.firstName = 'First name is required';
+        if (!lastName) errors.lastName = 'Last name is required';
+        if (firstName.length < 2)
+            errors.firstName =
+                'First name should be at least 2 characters long';
+        if (lastName.length < 2)
+            errors.lastName = 'Last name should be at least 2 characters long';
+
+        if (!email) errors.email = 'Email is required';
+        else if (!emailRe.test(email))
+            errors.email = 'Enter a valid email address';
+
+        if (!gender) errors.gender = 'Please select your gender';
+
+        if (!phone) errors.phone = 'Phone is required';
+        else if (phone.length !== 10)
+            errors.phone = 'Enter a 10-digit phone number';
+
+        if (!address1 || address1.length < 2)
+            errors.address1 = 'Address line 1 is required';
+
+        if (!editedProfile.city) errors.city = 'Please select a city';
+
+        if (!pincode) errors.pincode = 'PIN code is required';
+        else if (pincode.length !== 6)
+            errors.pincode = 'Enter a 6-digit PIN code';
+
+        if (Object.keys(errors).length > 0) {
+            setValidationErrors(errors);
+            return;
+        }
+
+        if (user && isAuthenticated) {
+            const { state, country, ...data } = editedProfile;
             await dispatch(
-                updateCustomerAction({ userId: user.id, data: editedProfile })
+                updateCustomerAction({
+                    data: {
+                        ...data,
+                        // ensure sanitized before submit
+                        phone,
+                        pincode,
+                    },
+                })
             );
             setIsEditing(false);
+            setValidationErrors({});
         }
     };
 
@@ -88,15 +225,18 @@ export default function AccountPage() {
                 firstName: user.firstName || '',
                 lastName: user.lastName || '',
                 email: user.email || '',
+                gender: user.gender || '',
                 address1: user.address1 || '',
                 address2: user.address2 || '',
-                city: user.city || '',
-                state: user.state || '',
-                country: user.country || '',
-                pinCode: user.pinCode || '',
+                city: user.cityId || null,
+                pincode: user.pincode || '',
+                phone: user.phone || '',
+                state: editedProfile.state || '',
+                country: editedProfile.country || '',
             });
         }
         setIsEditing(false);
+        setValidationErrors({});
     };
 
     const getOrderStatusColor = (status: string) => {
@@ -180,7 +320,10 @@ export default function AccountPage() {
                             <Button
                                 variant='ghost'
                                 size='icon'
-                                onClick={() => setIsEditing(true)}
+                                onClick={() => {
+                                    setIsEditing(true);
+                                    setValidationErrors({});
+                                }}
                                 className='text-gray-600 hover:text-gray-900'
                             >
                                 <Edit2 className='w-5 h-5' />
@@ -193,44 +336,138 @@ export default function AccountPage() {
                             <Label className='text-gray-700'>First Name</Label>
                             <Input
                                 value={editedProfile.firstName}
-                                onChange={(e) =>
+                                onChange={(e) => {
                                     setEditedProfile({
                                         ...editedProfile,
                                         firstName: e.target.value,
-                                    })
-                                }
+                                    });
+                                    clearFieldError('firstName');
+                                }}
                                 disabled={!isEditing}
-                                className='bg-gray-50 border-gray-200 text-black'
+                                className={`bg-gray-50 text-black ${
+                                    validationErrors.firstName
+                                        ? 'border-red-500'
+                                        : 'border-gray-200'
+                                }`}
                             />
+                            {validationErrors.firstName && (
+                                <p className='text-red-500 text-sm'>
+                                    {validationErrors.firstName}
+                                </p>
+                            )}
                         </div>
                         <div className='space-y-2'>
                             <Label className='text-gray-700'>Last Name</Label>
                             <Input
                                 value={editedProfile.lastName}
-                                onChange={(e) =>
+                                onChange={(e) => {
                                     setEditedProfile({
                                         ...editedProfile,
                                         lastName: e.target.value,
-                                    })
-                                }
+                                    });
+                                    clearFieldError('lastName');
+                                }}
                                 disabled={!isEditing}
-                                className='bg-gray-50 border-gray-200 text-black'
+                                className={`bg-gray-50 text-black ${
+                                    validationErrors.lastName
+                                        ? 'border-red-500'
+                                        : 'border-gray-200'
+                                }`}
                             />
+                            {validationErrors.lastName && (
+                                <p className='text-red-500 text-sm'>
+                                    {validationErrors.lastName}
+                                </p>
+                            )}
                         </div>
-                        <div className='space-y-2 md:col-span-2'>
+
+                        <div className='space-y-2 '>
                             <Label className='text-gray-700'>Email</Label>
                             <Input
                                 type='email'
                                 value={editedProfile.email}
-                                onChange={(e) =>
+                                onChange={(e) => {
                                     setEditedProfile({
                                         ...editedProfile,
                                         email: e.target.value,
-                                    })
-                                }
+                                    });
+                                    clearFieldError('email');
+                                }}
                                 disabled={!isEditing}
-                                className='bg-gray-50 border-gray-200 text-black'
+                                className={`bg-gray-50 text-black ${
+                                    validationErrors.email
+                                        ? 'border-red-500'
+                                        : 'border-gray-200'
+                                }`}
                             />
+                            {validationErrors.email && (
+                                <p className='text-red-500 text-sm'>
+                                    {validationErrors.email}
+                                </p>
+                            )}
+                        </div>
+                        <div className='space-y-2 '>
+                            <Label className='text-gray-700'>Phone</Label>
+                            <Input
+                                type='tel'
+                                value={editedProfile.phone}
+                                onChange={(e) => {
+                                    const value = e.target.value
+                                        .replace(/\D/g, '')
+                                        .slice(0, 10);
+                                    setEditedProfile({
+                                        ...editedProfile,
+                                        phone: value,
+                                    });
+                                    clearFieldError('phone');
+                                }}
+                                disabled={!isEditing}
+                                placeholder='Enter 10-digit phone number'
+                                className={`bg-gray-50 text-black ${
+                                    validationErrors.phone
+                                        ? 'border-red-500'
+                                        : 'border-gray-200'
+                                }`}
+                            />
+                            {validationErrors.phone && (
+                                <p className='text-red-500 text-sm'>
+                                    {validationErrors.phone}
+                                </p>
+                            )}
+                        </div>
+                        <div className='space-y-2'>
+                            <Label className='text-gray-700'>Gender</Label>
+                            <select
+                                value={editedProfile.gender}
+                                onChange={(e) => {
+                                    setEditedProfile({
+                                        ...editedProfile,
+                                        gender: e.target.value,
+                                    });
+                                    clearFieldError('gender');
+                                }}
+                                disabled={!isEditing}
+                                className={`bg-gray-50 text-black rounded-md px-3 py-2 w-full border ${
+                                    validationErrors.gender
+                                        ? 'border-red-500'
+                                        : 'border-gray-200'
+                                } ${
+                                    !isEditing
+                                        ? 'cursor-not-allowed text-gray-400 bg-gray-100'
+                                        : ''
+                                }`}
+                            >
+                                <option value='' disabled>
+                                    Select Gender
+                                </option>
+                                <option value='male'>Male</option>
+                                <option value='female'>Female</option>
+                            </select>
+                            {validationErrors.gender && (
+                                <p className='text-red-500 text-sm'>
+                                    {validationErrors.gender}
+                                </p>
+                            )}
                         </div>
                         <div className='space-y-2 md:col-span-2'>
                             <Label className='text-gray-700'>
@@ -238,15 +475,25 @@ export default function AccountPage() {
                             </Label>
                             <Input
                                 value={editedProfile.address1}
-                                onChange={(e) =>
+                                onChange={(e) => {
                                     setEditedProfile({
                                         ...editedProfile,
                                         address1: e.target.value,
-                                    })
-                                }
+                                    });
+                                    clearFieldError('address1');
+                                }}
                                 disabled={!isEditing}
-                                className='bg-gray-50 border-gray-200 text-black'
+                                className={`bg-gray-50 text-black ${
+                                    validationErrors.address1
+                                        ? 'border-red-500'
+                                        : 'border-gray-200'
+                                }`}
                             />
+                            {validationErrors.address1 && (
+                                <p className='text-red-500 text-sm'>
+                                    {validationErrors.address1}
+                                </p>
+                            )}
                         </div>
                         <div className='space-y-2 md:col-span-2'>
                             <Label className='text-gray-700'>
@@ -266,22 +513,65 @@ export default function AccountPage() {
                         </div>
                         <div className='space-y-2'>
                             <Label className='text-gray-700'>City</Label>
-                            <Input
-                                value={editedProfile.city}
-                                onChange={(e) =>
+                            <select
+                                value={editedProfile.city ?? ''}
+                                onChange={(e) => {
                                     setEditedProfile({
                                         ...editedProfile,
-                                        city: e.target.value,
-                                    })
-                                }
+                                        city: e.target.value
+                                            ? Number(e.target.value)
+                                            : null,
+                                    });
+                                    clearFieldError('city');
+                                }}
                                 disabled={!isEditing}
-                                className='bg-gray-50 border-gray-200 text-black'
-                            />
+                                className={`bg-gray-50 text-black rounded-md px-3 py-2 w-full border ${
+                                    validationErrors.city
+                                        ? 'border-red-500'
+                                        : 'border-gray-200'
+                                } ${
+                                    !isEditing
+                                        ? 'cursor-not-allowed text-gray-400 bg-gray-100'
+                                        : ''
+                                }`}
+                            >
+                                <option
+                                    value=''
+                                    className={`text-gray-500 text-sm ${
+                                        !isEditing
+                                            ? 'bg-gray-100 text-gray-400'
+                                            : ''
+                                    }`}
+                                    disabled
+                                >
+                                    Select City
+                                </option>
+                                {cities.map((city) => (
+                                    <option key={city.id} value={city.id}>
+                                        {city.name}
+                                    </option>
+                                ))}
+                            </select>
+                            {derivedCity && (
+                                <p className='text-xs text-gray-600'>
+                                    {'Detected location: '}
+                                    {derivedCity.name}
+                                    {', '}
+                                    {derivedCity.state}
+                                    {', '}
+                                    {derivedCity.country}
+                                </p>
+                            )}
+                            {validationErrors.city && (
+                                <p className='text-red-500 text-sm'>
+                                    {validationErrors.city}
+                                </p>
+                            )}
                         </div>
                         <div className='space-y-2'>
                             <Label className='text-gray-700'>State</Label>
                             <Input
-                                value={editedProfile.state}
+                                value={cityInfo.state}
                                 onChange={(e) =>
                                     setEditedProfile({
                                         ...editedProfile,
@@ -295,7 +585,7 @@ export default function AccountPage() {
                         <div className='space-y-2'>
                             <Label className='text-gray-700'>Country</Label>
                             <Input
-                                value={editedProfile.country}
+                                value={cityInfo.country}
                                 onChange={(e) =>
                                     setEditedProfile({
                                         ...editedProfile,
@@ -309,16 +599,30 @@ export default function AccountPage() {
                         <div className='space-y-2'>
                             <Label className='text-gray-700'>PIN code</Label>
                             <Input
-                                value={editedProfile.pinCode}
-                                onChange={(e) =>
+                                value={editedProfile.pincode}
+                                onChange={(e) => {
+                                    const value = e.target.value
+                                        .replace(/\D/g, '')
+                                        .slice(0, 6);
                                     setEditedProfile({
                                         ...editedProfile,
-                                        pinCode: e.target.value,
-                                    })
-                                }
+                                        pincode: value,
+                                    });
+                                    clearFieldError('pincode');
+                                }}
                                 disabled={!isEditing}
-                                className='bg-gray-50 border-gray-200 text-black'
+                                placeholder='Enter 6-digit PIN code'
+                                className={`bg-gray-50 text-black ${
+                                    validationErrors.pincode
+                                        ? 'border-red-500'
+                                        : 'border-gray-200'
+                                }`}
                             />
+                            {validationErrors.pincode && (
+                                <p className='text-red-500 text-sm'>
+                                    {validationErrors.pincode}
+                                </p>
+                            )}
                         </div>
                     </div>
                     {isEditing && (
@@ -340,6 +644,13 @@ export default function AccountPage() {
                             </Button>
                         </div>
                     )}
+                    {!userLoading &&
+                        (error !== '' || error !== null) &&
+                        isEditing && (
+                            <p className='text-red-500 text-sm text-center mt-4'>
+                                {error}
+                            </p>
+                        )}
                 </CardContent>
             </Card>
         </motion.div>
@@ -366,7 +677,7 @@ export default function AccountPage() {
 
             <div className='space-y-4'>
                 {orders.map((order) => (
-                    <div>
+                    <div key={order.id}>
                         <Badge
                             className={`${getOrderStatusColor(
                                 order.status
@@ -507,11 +818,7 @@ export default function AccountPage() {
                                                                         .address1
                                                                 }
                                                                 ,{' '}
-                                                                {
-                                                                    order
-                                                                        .customerDetails
-                                                                        .city
-                                                                }
+                                                                {cityInfo.city}
                                                             </span>
                                                         </div>
                                                         <div className='flex items-center space-x-2'>
@@ -625,7 +932,10 @@ export default function AccountPage() {
                 <div className='flex justify-center mb-8'>
                     <div className='flex bg-[#3c3d3f] p-1 border-[#4a4b4d] border-b-2'>
                         {[
-                            { key: 'profile', label: 'Profile' },
+                            {
+                                key: 'profile',
+                                label: 'Profile',
+                            },
                             { key: 'orders', label: 'My Orders' },
                             { key: 'settings', label: 'Settings' },
                         ].map((tab) => (

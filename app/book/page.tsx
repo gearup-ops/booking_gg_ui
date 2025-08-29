@@ -97,7 +97,7 @@ function Book() {
                     cityId: user.cityId || '',
                     // state: user.state || '',
                     // country: user.country || '',
-                    pinCode: user.pinCode || '',
+                    pincode: user.pincode || '',
                 })
             );
         }
@@ -166,10 +166,10 @@ function Book() {
             // if (!customerDetails.country.trim()) {
             //     errors.country = 'Country is required';
             // }
-            if (!customerDetails.pinCode.trim()) {
-                errors.pinCode = 'PIN code is required';
-            } else if (!/^\d{6}$/.test(customerDetails.pinCode)) {
-                errors.pinCode = 'PIN code must be exactly 6 digits';
+            if (!customerDetails.pincode.trim()) {
+                errors.pincode = 'PIN code is required';
+            } else if (!/^\d{6}$/.test(customerDetails.pincode)) {
+                errors.pincode = 'PIN code must be exactly 6 digits';
             }
         }
 
@@ -232,7 +232,7 @@ function Book() {
                 return;
             }
 
-            if (!isLocationAvailable && customerDetails.pinCode.length > 0) {
+            if (!isLocationAvailable && customerDetails.pincode.length > 0) {
                 setValidationErrors({});
             }
 
@@ -255,7 +255,7 @@ function Book() {
                         cityId: customerDetails.cityId,
                         // state: customerDetails.state,
                         // country: customerDetails.country,
-                        pinCode: customerDetails.pinCode,
+                        pincode: customerDetails.pincode,
                     })
                 );
 
@@ -1149,20 +1149,20 @@ function Book() {
                         <Label className='text-black'>PIN Code*</Label>
                         <Input
                             type='text'
-                            value={customerDetails.pinCode}
+                            value={customerDetails.pincode}
                             onChange={(e) => {
                                 const value = e.target.value
                                     .replace(/\D/g, '')
                                     .slice(0, 6);
                                 dispatch(
                                     updateCustomerDetails({
-                                        pinCode: value,
+                                        pincode: value,
                                     })
                                 );
-                                if (validationErrors.pinCode) {
+                                if (validationErrors.pincode) {
                                     setValidationErrors((prev) => {
                                         const newErrors = { ...prev };
-                                        delete newErrors.pinCode;
+                                        delete newErrors.pincode;
                                         return newErrors;
                                     });
                                 }
@@ -1173,21 +1173,21 @@ function Book() {
                             placeholder='Enter 6-digit PIN code'
                             className={`bg-white border-[#4a4b4d] text-black placeholder:text-gray-600 ${
                                 (!isLocationAvailable &&
-                                    customerDetails.pinCode) ||
-                                validationErrors.pinCode
+                                    customerDetails.pincode) ||
+                                validationErrors.pincode
                                     ? 'border-red-500'
                                     : ''
                             }`}
                         />
-                        {validationErrors.pinCode && (
+                        {validationErrors.pincode && (
                             <p className='text-red-500 text-sm'>
-                                {validationErrors.pinCode}
+                                {validationErrors.pincode}
                             </p>
                         )}
                     </div>
                 </div>
 
-                {!isLocationAvailable && customerDetails.pinCode && (
+                {!isLocationAvailable && customerDetails.pincode && (
                     <div className='bg-red-900/20 border border-red-500/50 rounded-lg p-4 mt-6'>
                         <h4 className='text-red-400 font-semibold mb-2'>Oh!</h4>
                         <p className='text-red-300 text-sm mb-2'>

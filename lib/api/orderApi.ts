@@ -23,7 +23,7 @@ export interface AddOrderRequest {
         address1: string;
         address2?: string;
         cityId?: number;
-        pinCode: string;
+        pincode: string;
         longLat?: string;
         isActive?: boolean;
         isRegistered?: boolean;

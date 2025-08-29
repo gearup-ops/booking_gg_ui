@@ -68,12 +68,12 @@ export default function HeroSection() {
                         >
                             {isAuthenticated ? (
                                 <div className='space-y-2'>
-                                    {user && (
+                                    {/* {user && (
                                         <p className='text-[#fbbf24] text-sm'>
                                             Welcome back, {user?.firstName}{' '}
                                             {user?.lastName}!
                                         </p>
-                                    )}
+                                    )} */}
                                     <Link href='/services'>
                                         <Button className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold px-8 py-3 text-lg transition-all duration-300 hover:scale-105'>
                                             Book Service Now
