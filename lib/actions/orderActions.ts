@@ -23,9 +23,9 @@ export const addOrderAction = createAsyncThunk(
 
 export const getOrdersByUserIdAction = createAsyncThunk(
     'order/getOrdersByUserId',
-    async (userId: string, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const response = await orderApi.getOrdersByUserId(userId);
+            const response = await orderApi.getOrdersByUserId();
             return response;
         } catch (error: any) {
             return rejectWithValue(

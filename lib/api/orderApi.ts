@@ -73,7 +73,7 @@ export interface AddOrderResponse {
 
 export interface GetOrdersResponse {
     success: boolean;
-    orders: Order[];
+    data: { docs: Order[] };
 }
 
 export const orderApi = {
@@ -82,9 +82,9 @@ export const orderApi = {
         return response.data;
     },
 
-    getOrdersByUserId: async (userId: string): Promise<GetOrdersResponse> => {
+    getOrdersByUserId: async (): Promise<GetOrdersResponse> => {
         const response = await apiClient.get(
-            `/api/v1/orders/getOrdersByUserId/${userId}`
+            `/v1/orders/getOrdersByUserId`
         );
         return response.data;
     },

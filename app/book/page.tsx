@@ -34,6 +34,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, Upload, MapPin } from 'lucide-react';
 import Image from 'next/image';
+import { getUserByIdAction } from '@/lib/actions/userActions';
 
 function Book() {
     const dispatch = useDispatch<AppDispatch>();
@@ -47,11 +48,11 @@ function Book() {
     const { isAuthenticated, user } = useSelector(
         (state: RootState) => state.auth
     );
+
     const {
         currentStep,
         selectedService,
         cycles,
-        customerDetails,
         isExistingUser,
         existingCycles,
         selectedExistingCycle,
@@ -64,7 +65,7 @@ function Book() {
 
     // Initialize service from URL params
     useEffect(() => {
-        if (!isAuthenticated) {
+        if (!isAuthenticated || !localStorage.getItem('token')) {
             router.push('/login');
             return;
         }
@@ -86,11 +87,12 @@ function Book() {
         }
 
         // Pre-fill customer details from user data
-        if (user && !customerDetails.firstName) {
+        if (user) {
             dispatch(
                 updateCustomerDetails({
                     firstName: user.firstName || '',
                     lastName: user.lastName || '',
+                    email: user.email || '',
                     phone: user.phone || '',
                     address1: user.address1 || '',
                     address2: user.address2 || '',
@@ -106,7 +108,6 @@ function Book() {
         searchParams,
         selectedService,
         user,
-        customerDetails.firstName,
         router,
         dispatch,
     ]);
@@ -130,52 +131,48 @@ function Book() {
                     errors[`cycle-${index}-type`] = 'Cycle type is required';
                 }
             });
-        } else if (currentStep === 'customer-details') {
-            if (!customerDetails.firstName.trim()) {
+        } else if (currentStep === 'customer-details' && user) {
+            if (!user.firstName.trim()) {
                 errors.firstName = 'First name is required';
             }
-            if (!customerDetails.lastName.trim()) {
+            if (!user.lastName.trim()) {
                 errors.lastName = 'Last name is required';
             }
-            if (!customerDetails.email?.trim()) {
+            if (!user.email?.trim()) {
                 errors.email = 'Email is required';
-            } else if (
-                !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerDetails.email)
-            ) {
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)) {
                 errors.email = 'Please enter a valid email address';
             }
-            if (!customerDetails.phone.trim()) {
+            if (!user.phone.trim()) {
                 errors.phone = 'Phone number is required';
-            } else if (
-                !/^\d{10}$/.test(customerDetails.phone.replace(/\D/g, ''))
-            ) {
+            } else if (!/^\d{10}$/.test(user.phone.replace(/\D/g, ''))) {
                 errors.phone = 'Phone number must be exactly 10 digits';
             }
-            if (!customerDetails.address1.trim()) {
+            if (!user.address1.trim()) {
                 errors.address1 = 'Address line 1 is required';
             }
-            if (customerDetails.cityId === '') {
+            if (user.cityId === null || user.cityId === undefined) {
                 errors.cityId = 'City is required';
             }
-            if (!isLocationAvailable || !customerDetails.longLat?.trim()) {
+            if (!isLocationAvailable || !user.longLat?.trim()) {
                 errors.longLat = 'Please locate yourself';
             }
-            // if (!customerDetails.state.trim()) {
+            // if (!user.state.trim()) {
             //     errors.state = 'State is required';
             // }
-            // if (!customerDetails.country.trim()) {
+            // if (!user.country.trim()) {
             //     errors.country = 'Country is required';
             // }
-            if (!customerDetails.pincode.trim()) {
+            if (!user.pincode.trim()) {
                 errors.pincode = 'PIN code is required';
-            } else if (!/^\d{6}$/.test(customerDetails.pincode)) {
+            } else if (!/^\d{6}$/.test(user.pincode)) {
                 errors.pincode = 'PIN code must be exactly 6 digits';
             }
         }
 
         setValidationErrors(errors);
         return Object.keys(errors).length === 0;
-    }, [currentStep, cycles, customerDetails]);
+    }, [currentStep, cycles, user]);
 
     const handleFileUpload = useCallback(
         (index: number, file: File) => {
@@ -232,11 +229,11 @@ function Book() {
                 return;
             }
 
-            if (!isLocationAvailable && customerDetails.pincode.length > 0) {
+            if (!isLocationAvailable && user && user.pincode.length > 0) {
                 setValidationErrors({});
             }
 
-            if (selectedService) {
+            if (selectedService && user) {
                 dispatch(setLoading(true));
 
                 const formData = new FormData();
@@ -245,17 +242,17 @@ function Book() {
                 formData.append(
                     'customer',
                     JSON.stringify({
-                        firstName: customerDetails.firstName,
-                        lastName: customerDetails.lastName,
-                        email: customerDetails.email || '',
-                        gender: customerDetails.gender,
-                        phone: customerDetails.phone,
-                        address1: customerDetails.address1,
-                        address2: customerDetails.address2,
-                        cityId: customerDetails.cityId,
-                        // state: customerDetails.state,
-                        // country: customerDetails.country,
-                        pincode: customerDetails.pincode,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        email: user.email || '',
+                        gender: user.gender,
+                        phone: user.phone,
+                        address1: user.address1,
+                        address2: user.address2,
+                        city: user.cityId,
+                        // state: user.state,
+                        // country: user.country,
+                        pincode: user.pincode,
                     })
                 );
 
@@ -327,7 +324,7 @@ function Book() {
         currentStep,
         termsAccepted,
         isLocationAvailable,
-        customerDetails,
+        user,
         user,
         selectedService,
         cycles,
@@ -341,6 +338,12 @@ function Book() {
             dispatch(setCurrentStep('customer-details'));
         }
     };
+
+    useEffect(() => {
+        if (isAuthenticated && !user) {
+            dispatch(getUserByIdAction());
+        }
+    }, [dispatch]);
 
     const progressSteps = useMemo(() => {
         const steps = [
@@ -766,7 +769,7 @@ function Book() {
                     <div className='space-y-2'>
                         <Label className='text-black'>First Name*</Label>
                         <Input
-                            value={customerDetails.firstName}
+                            value={user?.firstName}
                             onChange={(e) => {
                                 dispatch(
                                     updateCustomerDetails({
@@ -797,7 +800,7 @@ function Book() {
                     <div className='space-y-2'>
                         <Label className='text-black'>Last Name*</Label>
                         <Input
-                            value={customerDetails.lastName}
+                            value={user?.lastName}
                             onChange={(e) => {
                                 dispatch(
                                     updateCustomerDetails({
@@ -832,7 +835,7 @@ function Book() {
                         <Label className='text-black'>Email Address*</Label>
                         <Input
                             type='email'
-                            value={customerDetails.email || ''}
+                            value={user?.email || ''}
                             onChange={(e) => {
                                 dispatch(
                                     updateCustomerDetails({
@@ -862,7 +865,7 @@ function Book() {
                         <Label className='text-black'>Phone Number*</Label>
                         <Input
                             type='tel'
-                            value={customerDetails.phone}
+                            value={user?.phone}
                             onChange={(e) => {
                                 const value = e.target.value
                                     .replace(/\D/g, '')
@@ -897,7 +900,7 @@ function Book() {
                     <div className='space-y-2'>
                         <Label className='text-black'>Gender</Label>
                         <RadioGroup
-                            value={customerDetails.gender}
+                            value={user?.gender}
                             onValueChange={(value: 'male' | 'female') =>
                                 dispatch(
                                     updateCustomerDetails({ gender: value })
@@ -933,7 +936,7 @@ function Book() {
                     <div className='space-y-2'>
                         <Label className='text-black'>Address line 1*</Label>
                         <Input
-                            value={customerDetails.address1}
+                            value={user?.address1}
                             onChange={(e) => {
                                 dispatch(
                                     updateCustomerDetails({
@@ -997,9 +1000,9 @@ function Book() {
                                 <MapPin className='w-5 h-5 mr-2' />
                                 Locate Me
                             </Button>
-                            {customerDetails.longLat && (
+                            {user?.longLat && (
                                 <span className='text-xs text-gray-600'>
-                                    Location set ✓: {customerDetails.longLat}
+                                    Location set ✓: {user?.longLat}
                                 </span>
                             )}
                         </div>
@@ -1014,7 +1017,7 @@ function Book() {
                 <div className='mt-6'>
                     <Label className='text-black'>Address line 2</Label>
                     <Input
-                        value={customerDetails.address2}
+                        value={user?.address2}
                         onChange={(e) =>
                             dispatch(
                                 updateCustomerDetails({
@@ -1032,8 +1035,8 @@ function Book() {
                         <Label className='text-black'>City*</Label>
                         <Select
                             // className='w-full'
-                            defaultValue='2'
-                            value={customerDetails.cityId?.toString() || ''}
+                            defaultValue='3'
+                            value={user?.cityId?.toString() || ''}
                             onValueChange={(value) => {
                                 dispatch(
                                     updateCustomerDetails({
@@ -1073,7 +1076,7 @@ function Book() {
                     {/* <div className='space-y-2'>
                         <Label className='text-black'>State*</Label>
                         <Select
-                            value={customerDetails.state}
+                            value={user.state}
                             onValueChange={(value) => {
                                 dispatch(
                                     updateCustomerDetails({
@@ -1119,7 +1122,7 @@ function Book() {
                     {/* <div className='space-y-2'>
                         <Label className='text-black'>Country*</Label>
                         <Input
-                            value={customerDetails.country}
+                            value={user.country}
                             onChange={(e) => {
                                 dispatch(
                                     updateCustomerDetails({
@@ -1149,7 +1152,7 @@ function Book() {
                         <Label className='text-black'>PIN Code*</Label>
                         <Input
                             type='text'
-                            value={customerDetails.pincode}
+                            value={user?.pincode}
                             onChange={(e) => {
                                 const value = e.target.value
                                     .replace(/\D/g, '')
@@ -1172,8 +1175,7 @@ function Book() {
                             }}
                             placeholder='Enter 6-digit PIN code'
                             className={`bg-white border-[#4a4b4d] text-black placeholder:text-gray-600 ${
-                                (!isLocationAvailable &&
-                                    customerDetails.pincode) ||
+                                (!isLocationAvailable && user?.pincode) ||
                                 validationErrors.pincode
                                     ? 'border-red-500'
                                     : ''
@@ -1187,7 +1189,7 @@ function Book() {
                     </div>
                 </div>
 
-                {!isLocationAvailable && customerDetails.pincode && (
+                {!isLocationAvailable && user?.pincode && (
                     <div className='bg-red-900/20 border border-red-500/50 rounded-lg p-4 mt-6'>
                         <h4 className='text-red-400 font-semibold mb-2'>Oh!</h4>
                         <p className='text-red-300 text-sm mb-2'>

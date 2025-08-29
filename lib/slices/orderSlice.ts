@@ -243,7 +243,7 @@ const orderSlice = createSlice({
             })
             .addCase(getOrdersByUserIdAction.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.orders = action.payload.orders;
+                state.orders = action.payload.data.docs;
             })
             .addCase(getOrdersByUserIdAction.rejected, (state, action) => {
                 state.isLoading = false;

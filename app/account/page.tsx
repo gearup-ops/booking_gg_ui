@@ -24,6 +24,7 @@ import {
     Phone,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getOrdersByUserIdAction } from '@/lib/actions/orderActions';
 
 const cities = [
     { id: 3, name: 'Pune' },
@@ -57,7 +58,17 @@ export default function AccountPage() {
         (state: RootState) => state.order
     );
 
+    console.log(isLoading);
+
+    console.log('Orders:', orders);
+
     const [activeTab, setActiveTab] = useState('profile');
+
+    useEffect(() => {
+        if (activeTab === 'orders' && isAuthenticated) {
+            dispatch(getOrdersByUserIdAction());
+        }
+    }, [activeTab, router, isAuthenticated, dispatch]);
     const [isEditing, setIsEditing] = useState(false);
     const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
     const [editedProfile, setEditedProfile] = useState({
