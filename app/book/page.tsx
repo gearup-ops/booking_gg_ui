@@ -34,7 +34,10 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, Upload, MapPin } from 'lucide-react';
 import Image from 'next/image';
-import { getUserByIdAction } from '@/lib/actions/userActions';
+import {
+    getUserByIdAction,
+    updateCustomerAction,
+} from '@/lib/actions/userActions';
 
 function Book() {
     const dispatch = useDispatch<AppDispatch>();
@@ -71,7 +74,7 @@ function Book() {
         }
 
         const serviceId = searchParams.get('serviceId');
-        const serviceType = searchParams.get('type') as 'gear' | 'non-gear';
+        const serviceType = searchParams.get('type') as 'gear' | 'nonGear';
         const serviceName = searchParams.get('name');
         const servicePrice = searchParams.get('price');
 
@@ -96,7 +99,7 @@ function Book() {
                     phone: user.phone || '',
                     address1: user.address1 || '',
                     address2: user.address2 || '',
-                    cityId: user.cityId || '',
+                    city: user.cityId || '',
                     // state: user.state || '',
                     // country: user.country || '',
                     pincode: user.pincode || '',
@@ -154,9 +157,9 @@ function Book() {
             if (user.cityId === null || user.cityId === undefined) {
                 errors.cityId = 'City is required';
             }
-            if (!isLocationAvailable || !user.longLat?.trim()) {
-                errors.longLat = 'Please locate yourself';
-            }
+            // if (!isLocationAvailable || !user.longLat?.trim()) {
+            //     errors.longLat = 'Please locate yourself';
+            // }
             // if (!user.state.trim()) {
             //     errors.state = 'State is required';
             // }
@@ -219,7 +222,20 @@ function Book() {
             return;
         }
 
-        if (currentStep === 'customer-details') {
+        if (currentStep === 'customer-details' && user) {
+            dispatch(
+                updateCustomerAction({
+                    firstName: user.firstName || '',
+                    lastName: user.lastName || '',
+                    email: user.email || '',
+                    gender: user.gender || '',
+                    address1: user.address1 || '',
+                    address2: user.address2 || '',
+                    city: user.cityId || null,
+                    pincode: user.pincode || '',
+                    phone: user.phone || '',
+                })
+            );
             dispatch(setCurrentStep('cycle-details'));
         } else if (currentStep === 'cycle-details') {
             if (!termsAccepted) {
@@ -238,45 +254,6 @@ function Book() {
 
                 const formData = new FormData();
 
-                // Add basic order data
-                formData.append(
-                    'customer',
-                    JSON.stringify({
-                        firstName: user.firstName,
-                        lastName: user.lastName,
-                        email: user.email || '',
-                        gender: user.gender,
-                        phone: user.phone,
-                        address1: user.address1,
-                        address2: user.address2,
-                        city: user.cityId,
-                        // state: user.state,
-                        // country: user.country,
-                        pincode: user.pincode,
-                    })
-                );
-
-                formData.append(
-                    'order',
-                    JSON.stringify({
-                        cycles: cycles.map((cycle, index) => ({
-                            id: cycle.id ?? undefined,
-                            brand: cycle.brand,
-                            type: cycle.type,
-                            image:
-                                cycle.image instanceof File ? '' : cycle.image,
-                            isNew: true,
-                            service_id: selectedService.id,
-                        })),
-                    })
-                );
-
-                // cycles.forEach((cycle, index) => {
-                //     if (cycle.image instanceof File) {
-                //         formData.append(`file`, cycle.image);
-                //     }
-                // });
-
                 cycles.forEach((cycle, index) => {
                     if (cycle.image instanceof File) {
                         const cycleName = cycle.brand || `cycle${index + 1}`;
@@ -292,20 +269,33 @@ function Book() {
                     }
                 });
 
-                // // Add cycle data and images
-                // cycles.forEach((cycle, index) => {
-                //     formData.append(`cycles[${index}][brand]`, cycle.brand);
-                //     formData.append(`cycles[${index}][type]`, cycle.type);
-                //     formData.append(
-                //         `cycles[${index}][serviceId]`,
-                //         String(selectedService.id)
-                //     );
-                //     formData.append(`cycles[${index}][order]`, 'true');
+                formData.append('address1', user.address1);
+                formData.append('address2', user?.address2 || '');
+                formData.append(
+                    'city',
+                    (user?.cityId && user?.cityId.toString()) || 'null'
+                );
+                formData.append('pincode', user.pincode);
 
-                //     if (cycle.image instanceof File) {
-                //         formData.append(`cycles[${index}][image]`, cycle.image);
-                //     }
-                // });
+                // Add cycle data and images
+                cycles.forEach((cycle, index) => {
+                    formData.append(`cycles[${index}][brand]`, cycle.brand);
+                    formData.append(`cycles[${index}][type]`, cycle.type);
+                    formData.append(
+                        `cycles[${index}][serviceId]`,
+                        String(selectedService.id)
+                    );
+                    formData.append(`cycles[${index}][order]`, 'true');
+                    formData.append(`cycles[${index}][image]`, '');
+
+                    // if (cycle.image instanceof File) {
+                    //     formData.append(`cycles[${index}][image]`, cycle.image);
+                    // }
+                });
+
+                for (const [key, value] of formData.entries()) {
+                    console.log(key, value);
+                }
 
                 dispatch(addOrderAction(formData))
                     .unwrap()
@@ -330,6 +320,10 @@ function Book() {
         cycles,
         dispatch,
     ]);
+
+    useEffect(() => {
+        dispatch(setCurrentStep('customer-details'));
+    }, []);
 
     const handlePrevStep = () => {
         if (currentStep === 'customer-details') {
@@ -577,12 +571,12 @@ function Book() {
                                         </div>
                                         <div className='flex items-center space-x-2'>
                                             <RadioGroupItem
-                                                value='non-gear'
-                                                id={`non-gear-${index}`}
+                                                value='nonGear'
+                                                id={`nonGear-${index}`}
                                                 className='border-[#fbbf24] text-[#fbbf24]'
                                             />
                                             <Label
-                                                htmlFor={`non-gear-${index}`}
+                                                htmlFor={`nonGear-${index}`}
                                                 className='text-black'
                                             >
                                                 Non - gear
@@ -1040,7 +1034,7 @@ function Book() {
                             onValueChange={(value) => {
                                 dispatch(
                                     updateCustomerDetails({
-                                        cityId: value,
+                                        city: value,
                                     })
                                 );
                                 if (validationErrors.cityId) {
@@ -1238,7 +1232,7 @@ function Book() {
                         You can track your booking
                     </span>
                     <Button
-                        onClick={() => router.push('/track-booking')}
+                        onClick={() => router.push('/account?tab=orders')}
                         className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold px-4 py-1 text-sm rounded-full'
                     >
                         Here

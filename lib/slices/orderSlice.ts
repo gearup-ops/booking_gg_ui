@@ -14,7 +14,7 @@ interface CustomerDetails {
     phone: string;
     address1: string;
     address2?: string;
-    cityId?: number | string;
+    city?: number | string | null;
     pincode: string;
     longLat?: string;
     isActive?: boolean;
@@ -31,7 +31,7 @@ interface OrderState {
     selectedService: {
         id: number;
         name: string;
-        type: 'gear' | 'non-gear';
+        type: 'gear' | 'nonGear';
         price: number;
     } | null;
     cycles: CycleDetails[];
@@ -58,7 +58,7 @@ const initialState: OrderState = {
         phone: '',
         address1: '',
         address2: '',
-        cityId: 3,
+        cityId: null,
         // state: '',
         // country: '',
         pincode: '',
@@ -69,80 +69,7 @@ const initialState: OrderState = {
     isLocationAvailable: true,
     orderId: null,
     termsAccepted: false,
-    orders: [
-        {
-            id: 'order1',
-            userId: 'user1',
-            serviceId: 'service1',
-            serviceName: 'Full Service',
-            cycles: [
-                {
-                    // id: 'cycle1',
-                    brand: 'Hero',
-                    type: 'gear',
-                    image: 'photo1.jpg',
-                    serviceId: null,
-                },
-            ],
-            customerDetails: {
-                firstName: '',
-                lastName: '',
-                gender: 'male',
-                phone: '',
-                address1: '',
-                address2: '',
-                cityId: 0,
-                // state: '',
-                // country: '',
-                pincode: '',
-            },
-            status: 'pending',
-            scheduledDate: '2024-06-01',
-            timeSlot: '10:00-12:00',
-            totalAmount: 500,
-            createdAt: '2024-05-30T10:00:00Z',
-            updatedAt: '2024-05-30T10:00:00Z',
-            technicianId: 'tech1',
-            technicianName: 'Alice',
-            notes: 'Handle with care',
-        },
-        {
-            id: 'order2',
-            userId: 'user2',
-            serviceId: 'service2',
-            serviceName: 'Basic Service',
-            cycles: [
-                {
-                    // id: 'cycle2',
-                    brand: 'BSA',
-                    type: 'non-gear',
-                    image: 'photo2.jpg',
-                    serviceId: null,
-                },
-            ],
-            customerDetails: {
-                firstName: 'Jane',
-                lastName: 'Smith',
-                gender: 'female',
-                phone: '9876543210',
-                address1: '456 Park Ave',
-                address2: '',
-                cityId: 2,
-                // state: 'Maharashtra',
-                // country: 'India',
-                pincode: '400001',
-            },
-            status: 'confirmed',
-            scheduledDate: '2024-06-02',
-            timeSlot: '14:00-16:00',
-            totalAmount: 300,
-            createdAt: '2024-05-31T11:00:00Z',
-            updatedAt: '2024-05-31T11:00:00Z',
-            technicianId: 'tech2',
-            technicianName: 'Bob',
-            notes: '',
-        },
-    ],
+    orders: [],
     isLoading: false,
     error: null,
 };

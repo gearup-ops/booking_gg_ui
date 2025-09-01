@@ -16,6 +16,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getHomePageDataAction } from '@/lib/actions/contentActions';
 import type { AppDispatch } from '@/lib/store';
 import { getUserByIdAction } from '@/lib/actions/userActions';
+import { setAuthenticated } from '@/lib/slices/authSlice';
 
 export default function HomePage() {
     // Example usage with sample data
@@ -64,25 +65,38 @@ export default function HomePage() {
     const [selectedCityId, setSelectedCityId] = useState(cities[0].id);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        const token = window?.localStorage.getItem('token');
         if (token && !isAuthenticated) {
             // Dispatch an action to fetch user details using the token
-            dispatch(getUserByIdAction());
+            const res = dispatch(getUserByIdAction()).unwrap();
+            console.log(
+                res
+                    .then((a) => {
+                        console.log(a);
+                        if (a.data) {
+                            dispatch(setAuthenticated(true));
+                        }
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                        window?.localStorage.removeItem('token');
+                    })
+            );
         }
     }, [selectedCityId]);
 
     const handleClosePopup = () => {
-        localStorage.setItem('cityId', selectedCityId.toString());
+        window?.localStorage.setItem('cityId', selectedCityId.toString());
         setShowPopup(false);
     };
 
     useEffect(() => {
-        if (localStorage.getItem('cityId')) {
+        if (window?.localStorage.getItem('cityId')) {
             setShowPopup(false);
         } else {
             setShowPopup(true);
         }
-    }, [localStorage.getItem('cityId')]);
+    }, [window?.localStorage.getItem('cityId')]);
 
     return (
         <div className='min-h-screen bg-[#060608] text-white'>

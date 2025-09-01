@@ -46,10 +46,11 @@ export interface UpdateCustomerRequest {
     firstName?: string;
     lastName?: string;
     phone?: string;
+    gender?: string;
     email?: string;
     address1?: string;
     address2?: string;
-    city?: number | null;
+    city?: number | string | null;
     state?: string;
     country?: string;
     pincode?: string;

@@ -90,7 +90,7 @@ export const getUserByIdAction = createAsyncThunk(
 
 export const updateCustomerAction = createAsyncThunk(
     'auth/updateCustomer',
-    async ({ data }: { data: UpdateCustomerRequest }, { rejectWithValue }) => {
+    async (data: UpdateCustomerRequest, { rejectWithValue }) => {
         try {
             const response = await userApi.updateCustomer(data);
             return response;
