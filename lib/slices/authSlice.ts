@@ -6,6 +6,7 @@ import {
     getUserByIdAction,
     updateCustomerAction,
 } from '../actions/userActions';
+import { removeFromLocalStorage, setLocaleStorage } from '../utils';
 
 export interface User {
     id?: number;
@@ -83,7 +84,7 @@ const authSlice = createSlice({
             state.otp = '';
             state.error = null;
             state.token = null;
-            localStorage.removeItem('token');
+            removeFromLocalStorage('token');
         },
         resetAuth: (state) => {
             state.loginStep = 'phone';
@@ -156,6 +157,7 @@ const authSlice = createSlice({
                 state.isLoading = false;
                 state.user = action.payload.data[0];
                 state.isAuthenticated = true;
+                setLocaleStorage('cityId', action.payload.data[0].cityId);
             })
             .addCase(getUserByIdAction.rejected, (state, action) => {
                 state.isLoading = false;
@@ -179,7 +181,14 @@ const authSlice = createSlice({
     },
 });
 
-export const {setAuthenticated, setphone, setOtp, setLoginStep, logout, resetAuth, clearError } =
-    authSlice.actions;
+export const {
+    setAuthenticated,
+    setphone,
+    setOtp,
+    setLoginStep,
+    logout,
+    resetAuth,
+    clearError,
+} = authSlice.actions;
 
 export default authSlice.reducer;

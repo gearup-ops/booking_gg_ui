@@ -17,6 +17,7 @@ import { getHomePageDataAction } from '@/lib/actions/contentActions';
 import type { AppDispatch } from '@/lib/store';
 import { getUserByIdAction } from '@/lib/actions/userActions';
 import { setAuthenticated } from '@/lib/slices/authSlice';
+import { getLocaleStorage, removeFromLocalStorage, setLocaleStorage } from '@/lib/utils';
 
 export default function HomePage() {
     // Example usage with sample data
@@ -61,11 +62,13 @@ export default function HomePage() {
     ];
 
     // Popup state
-    const [showPopup, setShowPopup] = useState(true);
+    const [showPopup, setShowPopup] = useState(
+        getLocaleStorage('cityId') ? false : true
+    );
     const [selectedCityId, setSelectedCityId] = useState(cities[0].id);
 
     useEffect(() => {
-        const token = window?.localStorage.getItem('token');
+        const token = getLocaleStorage('token');
         if (token && !isAuthenticated) {
             // Dispatch an action to fetch user details using the token
             const res = dispatch(getUserByIdAction()).unwrap();
@@ -79,24 +82,24 @@ export default function HomePage() {
                     })
                     .catch((e) => {
                         console.log(e);
-                        window?.localStorage.removeItem('token');
+                        removeFromLocalStorage('token');
                     })
             );
         }
     }, [selectedCityId]);
 
     const handleClosePopup = () => {
-        window?.localStorage.setItem('cityId', selectedCityId.toString());
+        setLocaleStorage('cityId', selectedCityId.toString());
         setShowPopup(false);
     };
 
     useEffect(() => {
-        if (window?.localStorage.getItem('cityId')) {
+        if (getLocaleStorage('cityId')) {
             setShowPopup(false);
         } else {
             setShowPopup(true);
         }
-    }, [window?.localStorage.getItem('cityId')]);
+    }, [getLocaleStorage('cityId')]);
 
     return (
         <div className='min-h-screen bg-[#060608] text-white'>

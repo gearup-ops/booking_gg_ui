@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getLocaleStorage, removeFromLocalStorage } from '../utils';
 
 const API_BASE_URL =
     process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/api';
@@ -14,7 +15,7 @@ export const apiClient = axios.create({
 // Request interceptor to add auth token
 apiClient.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token');
+        const token = getLocaleStorage('token');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -30,7 +31,7 @@ apiClient.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
-            localStorage.removeItem('token');
+            removeFromLocalStorage('token');
             window.location.href = '/login';
         }
         return Promise.reject(error);

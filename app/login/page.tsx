@@ -22,6 +22,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { firebaseAuth, setupRecaptcha } from '@/lib/firebaseClient';
 import { signInWithPhoneNumber } from 'firebase/auth';
+import { getLocaleStorage, setLocaleStorage } from '@/lib/utils';
 
 export default function LoginPage() {
     const dispatch = useDispatch<AppDispatch>();
@@ -34,7 +35,7 @@ export default function LoginPage() {
     const [confirmation, setConfirmation] = useState<any>(null);
 
     useEffect(() => {
-        if (isAuthenticated || localStorage.getItem('token')) {
+        if (isAuthenticated || getLocaleStorage('token')) {
             router.push('/');
             dispatch(getUserByIdAction());
         }
@@ -113,7 +114,7 @@ export default function LoginPage() {
             ).unwrap();
 
             if (res?.token) {
-                localStorage.setItem('token', res.token);
+                setLocaleStorage('token', res.token);
                 router.push('/');
             }
         } catch (err: any) {

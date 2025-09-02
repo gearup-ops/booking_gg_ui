@@ -128,7 +128,7 @@
 //     }, [user, derivedCity]);
 
 //     useEffect(() => {
-//         if (!user && (isAuthenticated || localStorage.getItem('token'))) {
+//         if (!user && (isAuthenticated || getLocaleStorage('token'))) {
 //             dispatch(getUserByIdAction());
 //         }
 //     }, [user, dispatch]);
@@ -1220,7 +1220,7 @@ export default function AccountPage() {
     }, [user, derivedCity]);
 
     useEffect(() => {
-        if (!user && (isAuthenticated || localStorage.getItem('token'))) {
+        if (!user && (isAuthenticated || getLocaleStorage('token'))) {
             dispatch(getUserByIdAction());
         }
     }, [user, dispatch]);
@@ -1311,12 +1311,10 @@ export default function AccountPage() {
             const { state, country, ...data } = editedProfile;
             await dispatch(
                 updateCustomerAction({
-                     
-                        ...data,
-                        // ensure sanitized before submit
-                        phone,
-                        pincode,
-                    
+                    ...data,
+                    // ensure sanitized before submit
+                    phone,
+                    pincode,
                 })
             );
             setIsEditing(false);

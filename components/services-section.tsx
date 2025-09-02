@@ -9,6 +9,7 @@ import type { RootState, AppDispatch } from '@/lib/store';
 import { getServicesAction } from '@/lib/actions/serviceActions';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { getLocaleStorage } from '@/lib/utils';
 
 interface ServicePrice {
     id: number;
@@ -68,7 +69,7 @@ export default function ServicesSection() {
             .sort((a: Service, b: Service) => a.orderNo - b.orderNo) || [];
 
     useEffect(() => {
-        const cityId = localStorage.getItem('cityId');
+        const cityId = getLocaleStorage('cityId');
         if (cityId) {
             dispatch(getServicesAction({ city: Number(cityId) }));
         }

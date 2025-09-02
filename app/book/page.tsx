@@ -38,6 +38,7 @@ import {
     getUserByIdAction,
     updateCustomerAction,
 } from '@/lib/actions/userActions';
+import { getLocaleStorage } from '@/lib/utils';
 
 function Book() {
     const dispatch = useDispatch<AppDispatch>();
@@ -68,7 +69,7 @@ function Book() {
 
     // Initialize service from URL params
     useEffect(() => {
-        if (!isAuthenticated || !localStorage.getItem('token')) {
+        if (!isAuthenticated || !getLocaleStorage('token')) {
             router.push('/login');
             return;
         }
