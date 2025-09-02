@@ -147,9 +147,12 @@ export default function BookingModal() {
                         </SelectTrigger>
                         <SelectContent>
                             {existingCycles.map((cycle) => (
-                                <SelectItem key={cycle.id} value={cycle.id}>
+                                <SelectItem
+                                    key={cycle.id}
+                                    value={cycle.id?.toString() || ''}
+                                >
                                     {cycle.brand} - {cycle.type} (
-                                    {cycle.service})
+                                    {cycle.serviceId})
                                 </SelectItem>
                             ))}
                         </SelectContent>
@@ -232,7 +235,7 @@ export default function BookingModal() {
                                     </div>
                                     <div className='flex items-center space-x-2'>
                                         <RadioGroupItem
-                                            value='non-gear'
+                                            value='nonGear'
                                             id={`non-gear-${index}`}
                                         />
                                         <Label htmlFor={`non-gear-${index}`}>
@@ -249,7 +252,7 @@ export default function BookingModal() {
                                     Select Service
                                 </Label>
                                 <Select
-                                    value={cycle.service}
+                                    value={cycle?.serviceId?.toString()}
                                     onValueChange={(value) =>
                                         dispatch(
                                             updateCycleDetails({

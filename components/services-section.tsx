@@ -68,12 +68,13 @@ export default function ServicesSection() {
             ?.filter((service: Service) => service.isActive)
             .sort((a: Service, b: Service) => a.orderNo - b.orderNo) || [];
 
+    const cityId = getLocaleStorage('cityId');
+
     useEffect(() => {
-        const cityId = getLocaleStorage('cityId');
         if (cityId) {
             dispatch(getServicesAction({ city: Number(cityId) }));
         }
-    }, [dispatch]);
+    }, [dispatch, cityId]);
 
     useEffect(() => {
         if (activeServices.length > 0 && selectedServiceId === null) {

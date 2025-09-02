@@ -7,12 +7,13 @@ export const addOrderAction = createAsyncThunk(
         try {
             const response = await orderApi.addOrder(data);
             // return response;
-            return { order:{
-                id: '12345',
-                status: 'success',
-                message: 'Order created successfully',
-            }
-            }
+            return {
+                order: {
+                    id: '12345',
+                    status: 'success',
+                    message: 'Order created successfully',
+                },
+            };
         } catch (error: any) {
             return rejectWithValue(
                 error.response?.data?.message || 'Failed to create order'
@@ -26,6 +27,23 @@ export const getOrdersByUserIdAction = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const response = await orderApi.getOrdersByUserId();
+            return response;
+        } catch (error: any) {
+            return rejectWithValue(
+                error.response?.data?.message || 'Failed to fetch orders'
+            );
+        }
+    }
+);
+
+export const cancelOrderAction = createAsyncThunk(
+    'order/cancelOrderAction',
+    async (
+        data: { orderId: number; status: string; reason: string },
+        { rejectWithValue }
+    ) => {
+        try {
+            const response = await orderApi.cancelOrder(data);
             return response;
         } catch (error: any) {
             return rejectWithValue(

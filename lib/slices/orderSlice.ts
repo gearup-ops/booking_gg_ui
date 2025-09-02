@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
     addOrderAction,
+    cancelOrderAction,
     getOrdersByUserIdAction,
 } from '../actions/orderActions';
 import { CycleDetails, Order } from '../api/orderApi';
@@ -50,7 +51,7 @@ interface OrderState {
 const initialState: OrderState = {
     currentStep: 'customer-details',
     selectedService: null,
-    cycles: [{ id: '1', brand: '', type: 'gear', image: '', serviceId: null }],
+    cycles: [{ id: '1', name: '', type: 'gear', image: '', serviceId: null }],
     customerDetails: {
         firstName: '',
         lastName: '',
@@ -58,7 +59,7 @@ const initialState: OrderState = {
         phone: '',
         address1: '',
         address2: '',
-        cityId: null,
+        city: null,
         // state: '',
         // country: '',
         pincode: '',
@@ -106,11 +107,14 @@ const orderSlice = createSlice({
                 };
             }
         },
+        setCycles: (state, action: PayloadAction<OrderState['cycles']>) => {
+            state.cycles = action.payload;
+        },
         addNewCycle: (state) => {
             const newId = (state.cycles.length + 1).toString();
             state.cycles.push({
                 id: newId,
-                brand: '',
+                name: '',
                 type: 'gear',
                 image: '',
                 serviceId: null,
@@ -176,6 +180,21 @@ const orderSlice = createSlice({
                 state.isLoading = false;
                 state.error = action.payload as string;
             });
+
+        builder
+            .addCase(cancelOrderAction.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(cancelOrderAction.fulfilled, (state, action) => {
+                state.isLoading = false;
+                alert('Order cancelled successfully');
+            })
+            .addCase(cancelOrderAction.rejected, (state, action) => {
+                state.error = action.payload as string;
+                alert(action.payload || 'Error in cancelling order');
+                state.isLoading = false;
+            });
     },
 });
 
@@ -191,6 +210,7 @@ export const {
     resetOrder,
     clearError,
     setLoading,
+    setCycles,
 } = orderSlice.actions;
 
 export default orderSlice.reducer;

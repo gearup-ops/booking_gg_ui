@@ -1,9 +1,9 @@
-import { apiClient } from './client';
+import { apiClient, apiRequest } from './client';
 
 export interface CycleDetails {
     id?: number | string;
-    brand: string;
-    type: 'gear' | 'non-gear';
+    name: string;
+    type: 'gear' | 'nonGear';
     image?: string | File | null;
     order?: boolean;
     serviceId: number | null;
@@ -78,14 +78,21 @@ export interface GetOrdersResponse {
 
 export const orderApi = {
     addOrder: async (data: AddOrderRequest): Promise<AddOrderResponse> => {
-        const response = await apiClient.post('/v1/orders/addOrder', data);
+        const response = await apiRequest('post', '/v1/orders/addOrder', data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
         return response.data;
     },
 
     getOrdersByUserId: async (): Promise<GetOrdersResponse> => {
-        const response = await apiClient.get(
-            `/v1/orders/getOrdersByUserId`
-        );
+        const response = await apiClient.get(`/v1/orders/getOrdersByUserId`);
+        return response.data;
+    },
+
+    cancelOrder: async (data: { orderId: number, status: string, reason: string}): Promise<any> => {
+        const response = await apiClient.put(`/v1/orders/updateOrder`, data);
         return response.data;
     },
 };

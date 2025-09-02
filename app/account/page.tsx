@@ -1008,7 +1008,11 @@ import {
     Phone,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getOrdersByUserIdAction } from '@/lib/actions/orderActions';
+import {
+    cancelOrderAction,
+    getOrdersByUserIdAction,
+} from '@/lib/actions/orderActions';
+import { getLocaleStorage } from '@/lib/utils';
 
 const cities = [
     { id: 3, name: 'Pune' },
@@ -1800,8 +1804,8 @@ export default function AccountPage() {
 
                     const bookingOn = formatDate(order?.bookingDate);
                     const serviceOn = formatDateTime(order?.serviceDate);
-                    const createdOn = formatDateTime(order?.createdat);
-                    const updatedOn = formatDateTime(order?.updatedat);
+                    const createdOn = formatDateTime(order?.createdAt);
+                    const updatedOn = formatDateTime(order?.updatedAt);
 
                     const receiptId = order?.reciptId || '';
 
@@ -1866,13 +1870,38 @@ export default function AccountPage() {
                                                             size='sm'
                                                             className='text-white bg-red-600'
                                                             onClick={() => {
-                                                                // TODO: implement cancel via dispatch when action is available
-                                                                // dispatch(cancelOrderAction({ id: order._id }))
+                                                                dispatch(
+                                                                    cancelOrderAction(
+                                                                        {
+                                                                            orderId:
+                                                                                parseInt(
+                                                                                    id
+                                                                                ),
+                                                                            status: 'Cancelled',
+                                                                            reason: 'Cancelled by customer itself',
+                                                                        }
+                                                                    )
+                                                                )
+                                                                    .unwrap()
+                                                                    .then(
+                                                                        () => {
+                                                                            dispatch(
+                                                                                getOrdersByUserIdAction()
+                                                                            );
+                                                                        }
+                                                                    )
+                                                                    .catch(
+                                                                        (e) => {
+                                                                            console.log(
+                                                                                e
+                                                                            );
+                                                                        }
+                                                                    );
                                                             }}
                                                         >
                                                             Cancel
                                                         </Button>
-                                                        <Button
+                                                        {/* <Button
                                                             variant='outline'
                                                             size='sm'
                                                             className='text-gray-600 border-gray-300 bg-transparent'
@@ -1882,7 +1911,7 @@ export default function AccountPage() {
                                                             }}
                                                         >
                                                             Reschedule
-                                                        </Button>
+                                                        </Button> */}
                                                     </>
                                                 )}
                                             <Button
@@ -1946,7 +1975,7 @@ export default function AccountPage() {
                                                     Scheduled:
                                                 </span>{' '}
                                                 <span className='text-gray-600'>
-                                                    {serviceOn || '-'}
+                                                    {serviceOn || 'Not Scheduled Yet'}
                                                 </span>
                                             </div>
                                             <div className='mt-1'>
@@ -1954,7 +1983,7 @@ export default function AccountPage() {
                                                     Total:
                                                 </span>{' '}
                                                 <span className='text-gray-600'>
-                                                    {total ? `₹${total}` : '-'}
+                                                    {total ? `₹${total}` : 'N/A'}
                                                 </span>
                                             </div>
                                             <div className='mt-1'>
@@ -2014,7 +2043,7 @@ export default function AccountPage() {
                                                             ]
                                                                 .filter(Boolean)
                                                                 .join(' ') ||
-                                                                '-'}
+                                                                'Not Assigned'}
                                                         </div>
                                                         {techPhone && (
                                                             <div className='text-gray-600'>
@@ -2108,7 +2137,7 @@ export default function AccountPage() {
                                                             Order ID
                                                         </span>
                                                         <p className='text-gray-600'>
-                                                            {id}
+                                                            {receiptId}
                                                         </p>
                                                     </div>
                                                     <div>

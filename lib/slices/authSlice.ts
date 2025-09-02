@@ -7,6 +7,7 @@ import {
     updateCustomerAction,
 } from '../actions/userActions';
 import { removeFromLocalStorage, setLocaleStorage } from '../utils';
+import { CycleDetails } from '../api/orderApi';
 
 export interface User {
     id?: number;
@@ -27,6 +28,7 @@ export interface User {
     createdAt?: string; // ISO timestamp
     updatedAt?: string; // ISO timestamp
     fcm?: string;
+    cycles?: CycleDetails[];
 }
 
 interface AuthState {

@@ -54,6 +54,7 @@ export interface UpdateCustomerRequest {
     state?: string;
     country?: string;
     pincode?: string;
+    longLat?: string;
 }
 
 export const userApi = {
