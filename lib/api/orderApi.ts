@@ -4,7 +4,7 @@ export interface CycleDetails {
     id?: number | string;
     name: string;
     type: 'gear' | 'nonGear';
-    image?: string | File | null;
+    image?: File | null;
     order?: boolean;
     serviceId: number | null;
 }

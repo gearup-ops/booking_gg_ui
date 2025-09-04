@@ -1577,21 +1577,6 @@ function Book() {
 
                 const formData = new FormData();
 
-                cycles.forEach((cycle, index) => {
-                    if (cycle.image instanceof File) {
-                        const cycleName = cycle.name || `cycle${index + 1}`;
-                        const fileExt = cycle.image.type.split('/')[1] || 'jpg';
-                        const renamedFile = new File(
-                            [cycle.image],
-                            `${cycle.id ?? index}_${cycleName
-                                .toLowerCase()
-                                .replace(/\s+/g, '_')}.${fileExt}`,
-                            { type: cycle.image.type }
-                        );
-                        formData.append('files[]', renamedFile);
-                    }
-                });
-
                 formData.append('address1', user.address1);
                 formData.append('address2', user?.address2 || '');
                 formData.append(
@@ -1600,7 +1585,6 @@ function Book() {
                 );
                 formData.append('pincode', user.pincode);
 
-                // Add cycle data and images
                 cycles.forEach((cycle, index) => {
                     formData.append(`cycles[${index}][brand]`, cycle.name);
                     formData.append(`cycles[${index}][type]`, cycle.type);
@@ -1608,25 +1592,40 @@ function Book() {
                         `cycles[${index}][serviceId]`,
                         String(cycle.serviceId || selectedService.id || '')
                     );
-                    formData.append(`cycles[${index}][order]`, String(cycle?.order || false));
+                    formData.append(
+                        `cycles[${index}][order]`,
+                        String(cycle?.order || false)
+                    );
 
-                    const imageName =
-                        cycle.image instanceof File
-                            ? `${cycle.id ?? index}_${(
-                                  cycle.name || `cycle${index + 1}`
-                              )
-                                  .toLowerCase()
-                                  .replace(/\s+/g, '_')}.${
-                                  cycle.image.type.split('/')[1] || 'jpg'
-                              }`
-                            : '';
+                    if (cycle.image instanceof File) {
+                        // extract original extension safely
+                        const ext =
+                            cycle.image.name.split('.').pop() ||
+                            cycle.image.type.split('/')[1] ||
+                            'jpg';
 
-                    formData.append(`cycles[${index}][image]`, imageName);
+                        // new file name format: userId_cycleName.ext
+                        const newFileName = `${
+                            user.id
+                        }_${cycle.name.toLowerCase()}.${ext}`;
+
+                        // create renamed file
+                        const renamedFile = new File(
+                            [cycle.image],
+                            newFileName,
+                            {
+                                type: cycle.image.type,
+                            }
+                        );
+
+                        // attach actual file to formData (not just path string)
+                        formData.append(
+                            `cycles[${index}][image]`,
+                            'uploads/cycles/' + newFileName
+                        );
+                        formData.append(`files`, renamedFile);
+                    }
                 });
-
-                for (const [key, value] of formData.entries()) {
-                    console.log(key, value);
-                }
 
                 dispatch(addOrderAction(formData))
                     .unwrap()
@@ -1636,7 +1635,10 @@ function Book() {
                     })
                     .catch((error) => {
                         console.error('Booking submission failed:', error);
-                        alert(error || 'Booking submission failed. Please try again.')
+                        alert(
+                            error ||
+                                'Booking submission failed. Please try again.'
+                        );
                         dispatch(setLoading(false));
                     });
             } else {
@@ -2543,9 +2545,10 @@ function Book() {
                 {orderId && (
                     <div className='bg-[#2a2b2d] p-4 rounded-lg'>
                         <p className='text-sm text-gray-600'>
-                            Order ID:{' '}
+                            {/* Order ID:{' '} */}
                             <span className='font-semibold text-[#fbbf24]'>
-                                {orderId}
+                                {/* {orderId} */}
+                                Thank You.
                             </span>
                         </p>
                     </div>
