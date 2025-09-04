@@ -1317,6 +1317,7 @@ import {
     updateCustomerAction,
 } from '@/lib/actions/userActions';
 import { getLocaleStorage } from '@/lib/utils';
+import { fetchStatic } from '@/lib/api/client';
 
 function Book() {
     const dispatch = useDispatch<AppDispatch>();
@@ -1624,6 +1625,8 @@ function Book() {
                             'uploads/cycles/' + newFileName
                         );
                         formData.append(`files`, renamedFile);
+                    } else{
+                        formData.append(`cycles[${index}][image]`, cycle?.image || '');
                     }
                 });
 
@@ -1976,7 +1979,7 @@ function Book() {
                                 </div>
                             </div>
 
-                            <div className='space-y-2'>
+                            {/* <div className='space-y-2'>
                                 <Label className='text-black'>
                                     Upload Bicycle photo*
                                 </Label>
@@ -2080,7 +2083,163 @@ function Book() {
                                         }
                                     </p>
                                 )}
+                            </div> */}
+                            <div className='space-y-2'>
+                                <Label className='text-black'>
+                                    Upload Bicycle photo*
+                                </Label>
+                                <div
+                                    className={`border-2 border-dashed rounded-lg p-8 text-center hover:border-[#fbbf24] transition-colors cursor-pointer ${
+                                        validationErrors[`cycle-${index}-photo`]
+                                            ? 'border-red-500'
+                                            : 'border-[#4a4b4d]'
+                                    }`}
+                                >
+                                    <input
+                                        type='file'
+                                        accept='image/*'
+                                        onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) {
+                                                handleFileUpload(index, file);
+                                            }
+                                        }}
+                                        className='hidden'
+                                        id={`file-upload-${index}`}
+                                    />
+
+                                    <label
+                                        htmlFor={`file-upload-${index}`}
+                                        className='cursor-pointer'
+                                    >
+                                        {/* CASE 1: File object uploaded */}
+                                        {cycle.image instanceof File ? (
+                                            <div className='space-y-3'>
+                                                <div className='flex items-center justify-center'>
+                                                    <img
+                                                        src={URL.createObjectURL(
+                                                            cycle.image
+                                                        )}
+                                                        alt='Cycle preview'
+                                                        className='w-24 h-24 object-cover rounded-lg'
+                                                    />
+                                                </div>
+                                                <div className='flex items-center justify-center space-x-2'>
+                                                    <CheckCircle2 className='w-5 h-5 text-green-500' />
+                                                    <span className='text-green-600 text-sm font-medium'>
+                                                        {cycle.image.name}
+                                                    </span>
+                                                </div>
+                                                <div className='flex items-center justify-center space-x-2'>
+                                                    <Button
+                                                        type='button'
+                                                        variant='outline'
+                                                        size='sm'
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            document
+                                                                .getElementById(
+                                                                    `file-upload-${index}`
+                                                                )
+                                                                ?.click();
+                                                        }}
+                                                        className='text-[#fbbf24] border-[#fbbf24] hover:bg-[#fbbf24] hover:text-black'
+                                                    >
+                                                        Change Image
+                                                    </Button>
+                                                    <Button
+                                                        type='button'
+                                                        variant='outline'
+                                                        size='sm'
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            handleRemoveImage(
+                                                                index
+                                                            );
+                                                        }}
+                                                        className='text-red-500 border-red-500 hover:bg-red-500 hover:text-white'
+                                                    >
+                                                        Remove
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        ) : cycle.image &&
+                                          typeof cycle.image === 'string' ? (
+                                            // CASE 2: Existing URL string
+                                            <div className='space-y-3'>
+                                                <div className='flex items-center justify-center'>
+                                                    <img
+                                                        src={`${fetchStatic}/${cycle.image}`}
+                                                        alt='Cycle preview'
+                                                        className='w-24 h-24 object-cover rounded-lg'
+                                                    />
+                                                </div>
+                                                <div className='flex items-center justify-center space-x-2'>
+                                                    <CheckCircle2 className='w-5 h-5 text-green-500' />
+                                                    <span className='text-green-600 text-sm font-medium'>
+                                                        Existing Image
+                                                    </span>
+                                                </div>
+                                                <div className='flex items-center justify-center space-x-2'>
+                                                    <Button
+                                                        type='button'
+                                                        variant='outline'
+                                                        size='sm'
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            document
+                                                                .getElementById(
+                                                                    `file-upload-${index}`
+                                                                )
+                                                                ?.click();
+                                                        }}
+                                                        className='text-[#fbbf24] border-[#fbbf24] hover:bg-[#fbbf24] hover:text-black'
+                                                    >
+                                                        Change Image
+                                                    </Button>
+                                                    <Button
+                                                        type='button'
+                                                        variant='outline'
+                                                        size='sm'
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            handleRemoveImage(
+                                                                index
+                                                            );
+                                                        }}
+                                                        className='text-red-500 border-red-500 hover:bg-red-500 hover:text-white'
+                                                    >
+                                                        Remove
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            // CASE 3: No image yet
+                                            <>
+                                                <Upload className='w-8 h-8 text-gray-600 mx-auto mb-2' />
+                                                <p className='text-gray-600 text-sm'>
+                                                    Click to upload or drag and
+                                                    drop
+                                                </p>
+                                                <p className='text-gray-500 text-xs'>
+                                                    PNG, JPG, GIF up to 10MB
+                                                </p>
+                                            </>
+                                        )}
+                                    </label>
+                                </div>
+
+                                {validationErrors[`cycle-${index}-photo`] && (
+                                    <p className='text-red-500 text-sm'>
+                                        {
+                                            validationErrors[
+                                                `cycle-${index}-photo`
+                                            ]
+                                        }
+                                    </p>
+                                )}
                             </div>
+
                             <hr className='my-4' />
                         </div>
                     ))}
