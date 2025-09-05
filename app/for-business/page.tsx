@@ -16,7 +16,7 @@ const forBusinessServiceData = {
         description:
             'Our custom cycle service provides tailored solutions for businesses, ensuring your fleet is always in top condition.',
         price: 399,
-        image: '/placeholder.svg?height=400&width=300&text=Custom+Cycles',
+        image: '/images/service1.png',
         features: [
             {
                 title: 'stem bolt',
@@ -65,7 +65,7 @@ const forBusinessServiceData = {
         description:
             'We provide genuine and high-quality spare parts for all types of bicycles, ensuring durability and performance for your business fleet.',
         price: 199, // Example price
-        image: '/placeholder.svg?height=400&width=300&text=Spare+Parts',
+        image: '/images/service2.png',
         features: [
             {
                 title: 'Wide selection',
@@ -94,7 +94,7 @@ const forBusinessServiceData = {
         description:
             'Efficient assembly and disassembly services for large fleets, ideal for businesses managing multiple bicycles.',
         price: 299, // Example price
-        image: '/placeholder.svg?height=400&width=300&text=Assemble+Dismantle',
+        image: '/images/service3.png',
         features: [
             {
                 title: 'Fleet assembly',
@@ -123,7 +123,7 @@ const forBusinessServiceData = {
         description:
             'A comprehensive annual maintenance package designed for businesses to keep their bicycle fleet in optimal condition year-round.',
         price: 1299, // Example price
-        image: '/placeholder.svg?height=400&width=300&text=Annual+Maintenance+Business',
+        image: '/images/service4.png',
         features: [
             {
                 title: 'Scheduled inspections',
@@ -165,7 +165,7 @@ export default function ForBusinessPage() {
         } else {
             // Proceed with booking
             alert(
-                'Booking functionality for business would be implemented here'
+                'For Business email us at gearupcycle@gmail.com'
             );
         }
     };
@@ -209,7 +209,7 @@ export default function ForBusinessPage() {
                     <div className='grid lg:grid-cols-2 gap-12 items-start px-4'>
                         {/* Service Image */}
                         <div className='relative'>
-                            <div className='bg-[#3c3d3f] rounded-2xl p-8 border-4 border-[#fbbf24]'>
+                            <div className='bg-[#3c3d3f] rounded-2xl border-4 border-[#fbbf24]'>
                                 <Image
                                     src={
                                         currentService.image ||

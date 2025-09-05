@@ -6,50 +6,67 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RootState, AppDispatch } from '@/lib/store';
-import { sendOtpAction, verifyOtpAction } from '@/lib/actions/userActions';
 import {
-    setPhoneNumber,
+    getUserByIdAction,
+    registerUserAction,
+    sendOtpAction,
+    verifyOtpAction,
+} from '@/lib/actions/userActions';
+import {
+    setphone,
     setOtp,
     resetAuth,
     clearError,
 } from '@/lib/slices/authSlice';
 import Image from 'next/image';
 import Link from 'next/link';
+import { firebaseAuth, setupRecaptcha } from '@/lib/firebaseClient';
+import { signInWithPhoneNumber } from 'firebase/auth';
+import { getLocaleStorage, setLocaleStorage } from '@/lib/utils';
 
 export default function LoginPage() {
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
-    const {
-        loginStep,
-        phoneNumber,
-        otp,
-        otpId,
-        isLoading,
-        error,
-        isAuthenticated,
-    } = useSelector((state: RootState) => state.auth);
-    console.log(loginStep);
+    const { loginStep, phone, otp, isLoading, error, isAuthenticated } =
+        useSelector((state: RootState) => state.auth);
 
-    const [otpInputs, setOtpInputs] = useState(['', '', '', '']);
+    const [otpInputs, setOtpInputs] = useState(['', '', '', '', '', '']);
     const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+    const [confirmation, setConfirmation] = useState<any>(null);
 
     useEffect(() => {
-        if (isAuthenticated) {
+        if (isAuthenticated || getLocaleStorage('token')) {
             router.push('/');
+            dispatch(getUserByIdAction());
         }
     }, [isAuthenticated, router]);
 
     useEffect(() => {
         dispatch(resetAuth());
-        setOtpInputs(['', '', '', '']);
+        setOtpInputs(['', '', '', '', '', '']);
     }, [dispatch]);
 
     const handleGetOTP = async () => {
-        if (!phoneNumber || phoneNumber.length < 10) {
+        if (!phone || phone.length < 10) {
             // Error message will be handled by the slice if API returns an error
             return;
         }
-        dispatch(sendOtpAction({ phoneNumber }));
+        setupRecaptcha(); // setup invisible recaptcha
+        try {
+            const confirmationResult = await signInWithPhoneNumber(
+                firebaseAuth,
+                `+91${phone}`,
+                window.recaptchaVerifier
+            );
+            setConfirmation(confirmationResult);
+            console.log(confirmationResult);
+
+            alert('OTP sent!');
+            dispatch(sendOtpAction({ confirmationResult, phone }));
+        } catch (err: any) {
+            console.error(err);
+            alert(err.message);
+        }
     };
 
     const handleOtpChange = (index: number, value: string) => {
@@ -74,18 +91,43 @@ export default function LoginPage() {
     };
 
     const handleSubmitOTP = async () => {
-        if (otp.length !== 4 || !otpId) {
+        if (!confirmation) return alert('No confirmation available');
+        if (otp.length !== 6) {
+            alert('Please enter a valid 6-digit OTP');
             // Error message will be handled by the slice if API returns an error
             return;
         }
-        dispatch(verifyOtpAction({ phoneNumber, otp, otpId }));
+        try {
+            const result = await confirmation.confirm(otp);
+            const user = result.user;
+            const token = await user.getIdToken();
+
+            console.log('User:', user);
+            console.log('Firebase Token:', token);
+
+            // Immediately call your backend API
+            const res = await dispatch(
+                registerUserAction({
+                    phone: user.phoneNumber.slice(3) || '',
+                    fcm: '',
+                })
+            ).unwrap();
+
+            if (res?.token) {
+                setLocaleStorage('token', res.token);
+                router.push('/');
+            }
+        } catch (err: any) {
+            console.error(err);
+            alert(err.message);
+        }
     };
 
     const handleResendOTP = () => {
-        setOtpInputs(['', '', '', '']);
+        setOtpInputs(['', '', '', '', '', '']);
         dispatch(setOtp(''));
         dispatch(clearError()); // Clear any previous OTP error
-        dispatch(sendOtpAction({ phoneNumber }));
+        dispatch(sendOtpAction({ phone }));
     };
 
     return (
@@ -143,14 +185,13 @@ export default function LoginPage() {
                                 </div>
 
                                 <div className='space-y-4 text-center'>
+                                    <div id='recaptcha-container'></div>
                                     <Input
                                         type='tel'
                                         placeholder='Phone Number'
-                                        value={phoneNumber}
+                                        value={phone}
                                         onChange={(e) =>
-                                            dispatch(
-                                                setPhoneNumber(e.target.value)
-                                            )
+                                            dispatch(setphone(e.target.value))
                                         }
                                         className='h-12 bg-[#fff] border-[#4a4b4d] text-black placeholder:text-gray-600 focus:border-[#fbbf24] focus:ring-[#fbbf24] text-lg'
                                         maxLength={10}
@@ -166,8 +207,8 @@ export default function LoginPage() {
                                         onClick={handleGetOTP}
                                         disabled={
                                             isLoading ||
-                                            !phoneNumber ||
-                                            phoneNumber.length < 10
+                                            !phone ||
+                                            phone.length < 10
                                         }
                                         className='h-12 bg-[#F5B41D] hover:bg-[#F5B41D] text-black font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed'
                                     >
@@ -185,7 +226,7 @@ export default function LoginPage() {
                                 <div className='space-y-6 text-center'>
                                     <p className='text-gray-300 text-sm text-left ml-8 lg:ml-0'>
                                         Type the verification code sent to{' '}
-                                        {phoneNumber}
+                                        {phone}
                                     </p>
                                     <div className='flex gap-6 justify-center'>
                                         {otpInputs.map((digit, index) => (
@@ -232,7 +273,7 @@ export default function LoginPage() {
 
                                     <Button
                                         onClick={handleSubmitOTP}
-                                        disabled={isLoading || otp.length !== 4}
+                                        disabled={isLoading || otp.length !== 6}
                                         className='h-12 bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed'
                                     >
                                         {isLoading ? 'Verifying...' : 'Submit'}

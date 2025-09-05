@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useSelector } from 'react-redux';
 
 const heroImages = [
     {
@@ -27,52 +28,53 @@ const services = [
     {
         title: 'Routine Maintenance',
         description:
-            'Regular maintenance is essential to keep your bicycle running smoothly and extend its lifespan. Our routine maintenance services include tune-ups, brake adjustments, gear adjustments, and other preventative measures.',
+            'Experience top-notch servicing for your beloved cycle. From routine maintenance to future problems inspection, our skilled mechanics ensure your bike is in optimal condition for a smooth and safe ride.',
     },
     {
-        title: 'Repairs',
+        title: 'On-site Repairs',
         description:
-            'We offer a comprehensive range of repair services to fix any issues with your bicycle. Whether you have a punctured tire, broken chain, or damaged brake, our skilled technicians will diagnose the problem and provide a reliable solution.',
+            "Say goodbye to the hassle of traveling. We offer on-site cycle servicing right at your society's parking lot, providing total transparency as we work in front of you.",
     },
     {
-        title: 'Upgrades',
+        title: 'Expert Advice & Upgrades',
         description:
-            'Upgrading your bicycle can improve its performance and enhance your riding experience. We offer a variety of upgrade services, including wheel upgrades, gear upgrades, brake upgrades, and other performance enhancements.',
+            "Our knowledgeable team of cycling enthusiasts is always ready to assist you. Whether you're a beginner or an experienced rider, we provide personalized advice to suit your specific needs.",
     },
-    {
-        title: 'Bike Assembly',
-        description:
-            "If you've recently purchased a new bicycle or are planning to assemble one from scratch, our team can help. We provide bike assembly services to ensure that your bicycle is properly assembled and safe to ride.",
-    },
-    {
-        title: 'Consultation',
-        description:
-            "We understand that maintaining and repairing bicycles can be confusing, especially if you're new to cycling. That's why we offer consultation services to help you understand your bicycle better and make informed decisions about maintenance and repairs.",
-    },
-];
-
-const stats = [
-    { number: '100+', label: 'Bicycles serviced in 2023' },
-    { number: '70+', label: 'Expert Technicians on duty' },
-    { number: '25+', label: 'Happy customers' },
 ];
 
 const brands = [
-    { name: 'HERO', logo: '/placeholder.svg?height=60&width=120&text=HERO' },
-    { name: 'TREK', logo: '/placeholder.svg?height=60&width=120&text=TREK' },
+    { name: 'HERO', logo: '/images/brands/hero.svg' },
+    { name: 'TREK', logo: '/images/brands/trek.svg' },
     {
         name: 'Schnell',
-        logo: '/placeholder.svg?height=60&width=120&text=Schnell',
+        logo: '/images/brands/schnell.svg',
     },
-    { name: 'GIANT', logo: '/placeholder.svg?height=60&width=120&text=GIANT' },
+    { name: 'GIANT', logo: '/images/brands/giant.svg' },
     {
-        name: 'Performance',
-        logo: '/placeholder.svg?height=60&width=120&text=Performance',
+        name: 'Firefox',
+        logo: '/images/brands/firefox.svg',
     },
 ];
 
 export default function AboutPage() {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+    const { homePageData } = useSelector((state: any) => state.content);
+
+    const stats = homePageData?.s6?.data || [
+        {
+            no: '6000+',
+            tl: 'Bicycle serviced in 2023',
+        },
+        {
+            no: '8+',
+            tl: 'Experts Technicians on duty',
+        },
+        {
+            no: '92%',
+            tl: 'Happy Customers',
+        },
+    ];
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -150,8 +152,8 @@ export default function AboutPage() {
             </section>
 
             {/* Who We Are Section */}
-            <section className='py-16 bg-[#060608]'>
-                <div className='container mx-auto px-4'>
+            <section className='py-16 text-center w-full bg-[#060608]'>
+                <div className='container mx-auto px-4 w-full'>
                     <motion.h2
                         className='text-4xl md:text-5xl font-bold text-[#fbbf24] mb-8'
                         initial={{ opacity: 0, x: -20 }}
@@ -162,7 +164,7 @@ export default function AboutPage() {
                         Who We Are?
                     </motion.h2>
                     <motion.div
-                        className='max-w-4xl space-y-6 text-gray-300 text-lg leading-relaxed'
+                        className='w-full space-y-6 text-gray-300 text-lg leading-relaxed'
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
@@ -326,10 +328,10 @@ export default function AboutPage() {
                             >
                                 <div className='border-2 border-[#fbbf24] rounded-lg p-8 bg-[#3c3d3f] inline-block'>
                                     <div className='text-4xl font-bold text-[#fbbf24] mb-2'>
-                                        {stat.number}
+                                        {stat.no}
                                     </div>
                                     <div className='text-gray-300 text-sm'>
-                                        {stat.label}
+                                        {stat.tl}
                                     </div>
                                 </div>
                             </motion.div>
@@ -369,7 +371,12 @@ export default function AboutPage() {
                                 }}
                                 viewport={{ once: true }}
                             >
-                                {brand.name}
+                                {/* {brand.name} */}
+                                <img
+                                    src={brand.logo}
+                                    alt={brand.name}
+                                    className='h-12 object-contain'
+                                />
                             </motion.div>
                         ))}
                     </motion.div>

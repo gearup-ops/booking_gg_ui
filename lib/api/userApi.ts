@@ -1,7 +1,9 @@
+import { User } from '../slices/authSlice';
 import { apiClient } from './client';
 
 export interface SendOtpRequest {
-    phoneNumber: string;
+    phone: string;
+    confirmationResult?: any;
 }
 
 export interface SendOtpResponse {
@@ -11,27 +13,18 @@ export interface SendOtpResponse {
 }
 
 export interface RegisterRequest {
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-    email?: string;
-    gender: 'male' | 'female';
+    phone: string;
+    fcm?: string;
 }
 
 export interface RegisterResponse {
-    success: boolean;
+    code: boolean;
     message: string;
-    user: {
-        id: string;
-        firstName: string;
-        lastName: string;
-        phoneNumber: string;
-        email?: string;
-    };
+    token: string;
 }
 
 export interface VerifyOtpRequest {
-    phoneNumber: string;
+    phone: string;
     otp: string;
     otpId: string;
 }
@@ -44,7 +37,7 @@ export interface VerifyOtpResponse {
         id: string;
         firstName: string;
         lastName: string;
-        phoneNumber: string;
+        phone: string;
         email?: string;
     };
 }
@@ -52,13 +45,16 @@ export interface VerifyOtpResponse {
 export interface UpdateCustomerRequest {
     firstName?: string;
     lastName?: string;
+    phone?: string;
+    gender?: string;
     email?: string;
-    addressLine1?: string;
-    addressLine2?: string;
-    city?: string;
+    address1?: string;
+    address2?: string;
+    city?: number | string | null;
     state?: string;
     country?: string;
-    pinCode?: string;
+    pincode?: string;
+    longLat?: string;
 }
 
 export const userApi = {
@@ -68,7 +64,7 @@ export const userApi = {
     },
 
     register: async (data: RegisterRequest): Promise<RegisterResponse> => {
-        const response = await apiClient.post('/api/user/v1/register', data);
+        const response = await apiClient.post('/user/v1/register', data);
         return response.data;
     },
 
@@ -77,18 +73,13 @@ export const userApi = {
         return response.data;
     },
 
-    getUserById: async (userId: string) => {
-        const response = await apiClient.get(
-            `/api/user/v1/getUserById/${userId}`
-        );
+    getUserById: async () => {
+        const response = await apiClient.get(`/user/v1/getUserById`);
         return response.data;
     },
 
-    updateCustomer: async (userId: string, data: UpdateCustomerRequest) => {
-        const response = await apiClient.put(
-            `/api/user/v1/updateCustomer/${userId}`,
-            data
-        );
+    updateCustomer: async (data: UpdateCustomerRequest) => {
+        const response = await apiClient.put(`/user/v1/updateCustomer`, data);
         return response.data;
     },
 };

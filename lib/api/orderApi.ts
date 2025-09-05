@@ -1,10 +1,10 @@
-import { apiClient } from './client';
+import { apiClient, apiRequest } from './client';
 
 export interface CycleDetails {
     id?: number | string;
-    brand: string;
-    type: 'gear' | 'non-gear';
-    image?: string | File | null;
+    name: string;
+    type: 'gear' | 'nonGear';
+    image?: File | null;
     order?: boolean;
     serviceId: number | null;
 }
@@ -14,16 +14,24 @@ export interface AddOrderRequest {
     serviceId: string;
     cycles: CycleDetails[];
     customerDetails: {
+        id?: number;
         firstName: string;
         lastName: string;
-        gender: 'male' | 'female';
-        phoneNumber: string;
-        addressLine1: string;
-        addressLine2?: string;
-        city: string;
-        state: string;
-        country: string;
-        pinCode: string;
+        email?: string;
+        gender: string;
+        phone: string;
+        address1: string;
+        address2?: string;
+        cityId?: number;
+        pincode: string;
+        longLat?: string;
+        isActive?: boolean;
+        isRegistered?: boolean;
+        createdBy?: string;
+        followUpDate?: string; // ISO date string
+        createdAt?: string; // ISO timestamp
+        updatedAt?: string; // ISO timestamp
+        fcm?: string;
     };
     scheduledDate?: string;
     timeSlot?: string;
@@ -65,19 +73,26 @@ export interface AddOrderResponse {
 
 export interface GetOrdersResponse {
     success: boolean;
-    orders: Order[];
+    data: { docs: Order[] };
 }
 
 export const orderApi = {
     addOrder: async (data: AddOrderRequest): Promise<AddOrderResponse> => {
-        const response = await apiClient.post('/v1/orders/addOrder', data);
+        const response = await apiRequest('post', '/v1/orders/addOrder', data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
         return response.data;
     },
 
-    getOrdersByUserId: async (userId: string): Promise<GetOrdersResponse> => {
-        const response = await apiClient.get(
-            `/api/v1/orders/getOrdersByUserId/${userId}`
-        );
+    getOrdersByUserId: async (): Promise<GetOrdersResponse> => {
+        const response = await apiClient.get(`/v1/orders/getOrdersByUserId`);
+        return response.data;
+    },
+
+    cancelOrder: async (data: { orderId: number, status: string, reason: string}): Promise<any> => {
+        const response = await apiClient.put(`/v1/orders/updateOrder`, data);
         return response.data;
     },
 };

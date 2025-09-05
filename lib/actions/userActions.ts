@@ -11,7 +11,10 @@ export const sendOtpAction = createAsyncThunk(
     'auth/sendOtp',
     async (data: SendOtpRequest, { rejectWithValue }) => {
         try {
-            return { otpId: '0000' };
+            return {
+                confirmationResult: data.confirmationResult,
+                phone: data.phone,
+            };
             // const response = await userApi.sendOtp(data);
             // return response;
         } catch (error: any) {
@@ -27,6 +30,8 @@ export const registerUserAction = createAsyncThunk(
     async (data: RegisterRequest, { rejectWithValue }) => {
         try {
             const response = await userApi.register(data);
+            console.log('Registration response:', response);
+
             return response;
         } catch (error: any) {
             return rejectWithValue(
@@ -46,14 +51,14 @@ export const verifyOtpAction = createAsyncThunk(
                     id: 'dummy-user-id',
                     firstName: 'John',
                     lastName: 'Doe',
-                    phoneNumber: data.phoneNumber,
+                    phone: data.phone,
                     email: 'jondoe@gmail.com',
-                    addressLine1: '123 Main St',
-                    addressLine2: 'Apt 4B',
+                    address1: '123 Main St',
+                    address2: 'Apt 4B',
                     city: 'Springfield',
                     state: 'Maharashtra',
                     country: 'India',
-                    pinCode: '411057',
+                    pincode: '411057',
                 },
             };
             // const response = await userApi.verifyOtp(data);
@@ -71,26 +76,10 @@ export const verifyOtpAction = createAsyncThunk(
 
 export const getUserByIdAction = createAsyncThunk(
     'auth/getUserById',
-    async (userId: string, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            return {
-                token: 'dummy-token',
-                user: {
-                    id: 'dummy-user-id',
-                    firstName: 'John',
-                    lastName: 'Doe',
-                    phoneNumber: '9876543210',
-                    email: 'jondoe@gmail.com',
-                    addressLine1: '123 Main St',
-                    addressLine2: 'Apt 4B',
-                    city: 'Springfield',
-                    state: 'Maharashtra',
-                    country: 'India',
-                    pinCode: '411057',
-                },
-            };
-            // const response = await userApi.getUserById(userId);
-            // return response;
+            const response = await userApi.getUserById();
+            return response;
         } catch (error: any) {
             return rejectWithValue(
                 error.response?.data?.message || 'Failed to fetch user'
@@ -101,12 +90,9 @@ export const getUserByIdAction = createAsyncThunk(
 
 export const updateCustomerAction = createAsyncThunk(
     'auth/updateCustomer',
-    async (
-        { userId, data }: { userId: string; data: UpdateCustomerRequest },
-        { rejectWithValue }
-    ) => {
+    async (data: UpdateCustomerRequest, { rejectWithValue }) => {
         try {
-            const response = await userApi.updateCustomer(userId, data);
+            const response = await userApi.updateCustomer(data);
             return response;
         } catch (error: any) {
             return rejectWithValue(

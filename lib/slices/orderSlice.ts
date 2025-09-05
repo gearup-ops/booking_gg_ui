@@ -1,22 +1,30 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
     addOrderAction,
+    cancelOrderAction,
     getOrdersByUserIdAction,
 } from '../actions/orderActions';
 import { CycleDetails, Order } from '../api/orderApi';
 
 interface CustomerDetails {
+    id?: number;
     firstName: string;
     lastName: string;
     email?: string;
-    gender: 'male' | 'female';
-    phoneNumber: string;
-    addressLine1: string;
-    addressLine2: string;
-    city: string;
-    state: string;
-    country: string;
-    pinCode: string;
+    gender: string;
+    phone: string;
+    address1: string;
+    address2?: string;
+    city?: number | string | null;
+    pincode: string;
+    longLat?: string;
+    isActive?: boolean;
+    isRegistered?: boolean;
+    createdBy?: string;
+    followUpDate?: string; // ISO date string
+    createdAt?: string; // ISO timestamp
+    updatedAt?: string; // ISO timestamp
+    fcm?: string;
 }
 
 interface OrderState {
@@ -24,7 +32,7 @@ interface OrderState {
     selectedService: {
         id: number;
         name: string;
-        type: 'gear' | 'non-gear';
+        type: 'gear' | 'nonGear';
         price: number;
     } | null;
     cycles: CycleDetails[];
@@ -43,18 +51,18 @@ interface OrderState {
 const initialState: OrderState = {
     currentStep: 'customer-details',
     selectedService: null,
-    cycles: [{ id: '1', brand: '', type: 'gear', image: '', serviceId: null }],
+    cycles: [{ id: '1', name: '', type: 'gear', image: '', serviceId: null }],
     customerDetails: {
         firstName: '',
         lastName: '',
         gender: 'male',
-        phoneNumber: '',
-        addressLine1: '',
-        addressLine2: '',
-        city: '',
-        state: '',
-        country: '',
-        pinCode: '',
+        phone: '',
+        address1: '',
+        address2: '',
+        city: null,
+        // state: '',
+        // country: '',
+        pincode: '',
     },
     isExistingUser: false,
     existingCycles: [],
@@ -62,80 +70,7 @@ const initialState: OrderState = {
     isLocationAvailable: true,
     orderId: null,
     termsAccepted: false,
-    orders: [
-        {
-            id: 'order1',
-            userId: 'user1',
-            serviceId: 'service1',
-            serviceName: 'Full Service',
-            cycles: [
-                {
-                    // id: 'cycle1',
-                    brand: 'Hero',
-                    type: 'gear',
-                    image: 'photo1.jpg',
-                    serviceId: null,
-                },
-            ],
-            customerDetails: {
-                firstName: '',
-                lastName: '',
-                gender: 'male',
-                phoneNumber: '',
-                addressLine1: '',
-                addressLine2: '',
-                city: '',
-                state: '',
-                country: '',
-                pinCode: '',
-            },
-            status: 'pending',
-            scheduledDate: '2024-06-01',
-            timeSlot: '10:00-12:00',
-            totalAmount: 500,
-            createdAt: '2024-05-30T10:00:00Z',
-            updatedAt: '2024-05-30T10:00:00Z',
-            technicianId: 'tech1',
-            technicianName: 'Alice',
-            notes: 'Handle with care',
-        },
-        {
-            id: 'order2',
-            userId: 'user2',
-            serviceId: 'service2',
-            serviceName: 'Basic Service',
-            cycles: [
-                {
-                    // id: 'cycle2',
-                    brand: 'BSA',
-                    type: 'non-gear',
-                    image: 'photo2.jpg',
-                    serviceId: null,
-                },
-            ],
-            customerDetails: {
-                firstName: 'Jane',
-                lastName: 'Smith',
-                gender: 'female',
-                phoneNumber: '9876543210',
-                addressLine1: '456 Park Ave',
-                addressLine2: '',
-                city: 'Mumbai',
-                state: 'Maharashtra',
-                country: 'India',
-                pinCode: '400001',
-            },
-            status: 'confirmed',
-            scheduledDate: '2024-06-02',
-            timeSlot: '14:00-16:00',
-            totalAmount: 300,
-            createdAt: '2024-05-31T11:00:00Z',
-            updatedAt: '2024-05-31T11:00:00Z',
-            technicianId: 'tech2',
-            technicianName: 'Bob',
-            notes: '',
-        },
-    ],
+    orders: [],
     isLoading: false,
     error: null,
 };
@@ -172,11 +107,14 @@ const orderSlice = createSlice({
                 };
             }
         },
+        setCycles: (state, action: PayloadAction<OrderState['cycles']>) => {
+            state.cycles = action.payload;
+        },
         addNewCycle: (state) => {
             const newId = (state.cycles.length + 1).toString();
             state.cycles.push({
                 id: newId,
-                brand: '',
+                name: '',
                 type: 'gear',
                 image: '',
                 serviceId: null,
@@ -195,8 +133,8 @@ const orderSlice = createSlice({
             state.selectedExistingCycle = action.payload;
         },
         checkLocationAvailability: (state, action: PayloadAction<string>) => {
-            const unavailablePinCodes = ['110001', '400001', '600001'];
-            state.isLocationAvailable = !unavailablePinCodes.includes(
+            const unavailablepincodes = ['110001', '400001', '600001'];
+            state.isLocationAvailable = !unavailablepincodes.includes(
                 action.payload
             );
         },
@@ -236,11 +174,26 @@ const orderSlice = createSlice({
             })
             .addCase(getOrdersByUserIdAction.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.orders = action.payload.orders;
+                state.orders = action.payload.data.docs;
             })
             .addCase(getOrdersByUserIdAction.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload as string;
+            });
+
+        builder
+            .addCase(cancelOrderAction.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(cancelOrderAction.fulfilled, (state, action) => {
+                state.isLoading = false;
+                alert('Order cancelled successfully');
+            })
+            .addCase(cancelOrderAction.rejected, (state, action) => {
+                state.error = action.payload as string;
+                alert(action.payload || 'Error in cancelling order');
+                state.isLoading = false;
             });
     },
 });
@@ -257,6 +210,7 @@ export const {
     resetOrder,
     clearError,
     setLoading,
+    setCycles,
 } = orderSlice.actions;
 
 export default orderSlice.reducer;

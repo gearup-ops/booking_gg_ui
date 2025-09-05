@@ -12,6 +12,18 @@ export default function HeroSection() {
         (state: RootState) => state.auth
     );
 
+    const { homePageData, isLoading } = useSelector(
+        (state: RootState) => state.content
+    );
+
+    if (!homePageData && isLoading) {
+        return (
+            <div className='flex items-center justify-center min-h-screen bg-[#060608]'>
+                <p className='text-white'>Loading...</p>
+            </div>
+        );
+    }
+
     return (
         <section className='relative min-h-screen bg-[#060608] overflow-hidden'>
             {/* Background gradient overlay */}
@@ -31,10 +43,11 @@ export default function HeroSection() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 0.2 }}
                         >
-                            Pedal with{' '}
+                            {homePageData?.s1?.hl}
+                            {/* Pedal with{' '}
                             <span className='text-[#fbbf24]'>Peace of</span>
                             <br />
-                            mind
+                            mind */}
                         </motion.h1>
                         <motion.p
                             className='text-xl text-gray-300 leading-relaxed'
@@ -42,9 +55,10 @@ export default function HeroSection() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 0.4 }}
                         >
-                            Our expert technicians service your companion at
+                            {homePageData?.s1?.tl}
+                            {/* Our expert technicians service your companion at
                             home. Professional bike servicing at your
-                            convenience, wherever you are.
+                            convenience, wherever you are. */}
                         </motion.p>
                         <motion.div
                             className='flex flex-col sm:flex-row gap-4'
@@ -54,17 +68,20 @@ export default function HeroSection() {
                         >
                             {isAuthenticated ? (
                                 <div className='space-y-2'>
-                                    <p className='text-[#fbbf24] text-sm'>
-                                        Welcome back, {user?.name}!
-                                    </p>
-                                    <Link href='/book'>
+                                    {/* {user && (
+                                        <p className='text-[#fbbf24] text-sm'>
+                                            Welcome back, {user?.firstName}{' '}
+                                            {user?.lastName}!
+                                        </p>
+                                    )} */}
+                                    <Link href='/services'>
                                         <Button className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold px-8 py-3 text-lg transition-all duration-300 hover:scale-105'>
                                             Book Service Now
                                         </Button>
                                     </Link>
                                 </div>
                             ) : (
-                                <Link href='/login'>
+                                <Link href='/services'>
                                     <Button className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold px-8 py-3 text-lg transition-all duration-300 hover:scale-105'>
                                         Book Service
                                     </Button>
@@ -89,7 +106,7 @@ export default function HeroSection() {
                             alt='Professional bicycle maintenance service'
                             width={600}
                             height={500}
-                            className='rounded-lg shadow-2xl'
+                            className='rounded-lg'
                         />
                     </motion.div>
                 </div>
