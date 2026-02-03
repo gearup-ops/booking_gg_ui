@@ -23,6 +23,11 @@ import Link from 'next/link';
 import { firebaseAuth, setupRecaptcha } from '@/lib/firebaseClient';
 import { signInWithPhoneNumber } from 'firebase/auth';
 import { getLocaleStorage, setLocaleStorage } from '@/lib/utils';
+declare global {
+    interface Window {
+        FB: any;
+    }
+}
 
 export default function LoginPage() {
     const dispatch = useDispatch<AppDispatch>();
@@ -56,7 +61,7 @@ export default function LoginPage() {
             const confirmationResult = await signInWithPhoneNumber(
                 firebaseAuth,
                 `+91${phone}`,
-                window.recaptchaVerifier
+                (window as any).recaptchaVerifier
             );
             setConfirmation(confirmationResult);
             console.log(confirmationResult);

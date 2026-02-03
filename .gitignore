@@ -51,3 +51,5 @@ Thumbs.db
 # Builds
 /.next
 /next-env.d.ts
+
+.env
