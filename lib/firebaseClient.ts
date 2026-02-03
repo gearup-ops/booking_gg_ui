@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from 'firebase/app';
-import { getAnalytics } from 'firebase/analytics';
-import { getAuth, RecaptchaVerifier } from 'firebase/auth';
+import { getApps, initializeApp } from 'firebase/app';
+import { getAnalytics, isSupported } from 'firebase/analytics';
+import { Auth, getAuth } from 'firebase/auth';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -18,22 +18,40 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-export const firebaseAuth = getAuth(app);
+let app: any;
+let auth: Auth | undefined;
+
+if (typeof window !== 'undefined') {
+    if (!getApps().length) {
+        app = initializeApp(firebaseConfig);
+    } else {
+        app = getApps()[0];
+    }
+
+    if (typeof window !== 'undefined') {
+        auth = getAuth(app);
+    }
+
+    isSupported().then((supported) => {
+        if (supported) {
+            getAnalytics(app);
+        }
+    });
+}
+
+export const firebaseAuth = auth!;
 
 // Setup Recaptcha
-export const setupRecaptcha = () => {
-    if (!window.recaptchaVerifier) {
-        window.recaptchaVerifier = new RecaptchaVerifier(
-            firebaseAuth,
-            'recaptcha-container', // <div> id where recaptcha renders
-            {
-                size: 'invisible', // invisible is smoother UX
-                callback: () => {
-                    console.log('Recaptcha verified');
-                },
-            }
-        );
-    }
-};
+// export const setupRecaptcha = async () => {
+//     if (typeof window === 'undefined') return;
+//     if (typeof window !== 'undefined') {
+//         const { RecaptchaVerifier } = await import('firebase/auth');
+//         if (!(window as any).recaptchaVerifier) {
+//             (window as any).recaptchaVerifier = new RecaptchaVerifier(
+//                 firebaseAuth!,
+//                 'recaptcha-container',
+//                 { size: 'invisible' }
+//             );
+//         }
+//     }
+// };

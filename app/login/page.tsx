@@ -20,14 +20,15 @@ import {
 } from '@/lib/slices/authSlice';
 import Image from 'next/image';
 import Link from 'next/link';
-import { firebaseAuth, setupRecaptcha } from '@/lib/firebaseClient';
+import { firebaseAuth } from '@/lib/firebaseClient';
 import { signInWithPhoneNumber } from 'firebase/auth';
 import { getLocaleStorage, setLocaleStorage } from '@/lib/utils';
-declare global {
-    interface Window {
-        FB: any;
-    }
-}
+import { setupRecaptcha } from '@/lib/setupRecapcha';
+// declare global {
+//     interface Window {
+//         FB: any;
+//     }
+// }
 
 export default function LoginPage() {
     const dispatch = useDispatch<AppDispatch>();
@@ -56,13 +57,17 @@ export default function LoginPage() {
             // Error message will be handled by the slice if API returns an error
             return;
         }
-        setupRecaptcha(); // setup invisible recaptcha
+        const verifier = await setupRecaptcha();
+        // setupRecaptcha(); // setup invisible recaptcha
         try {
-            const confirmationResult = await signInWithPhoneNumber(
-                firebaseAuth,
-                `+91${phone}`,
-                (window as any).recaptchaVerifier
-            );
+            let confirmationResult;
+            if (typeof window !== 'undefined') {
+                confirmationResult = await signInWithPhoneNumber(
+                    firebaseAuth,
+                    `+91${phone}`,
+                    verifier
+                );
+            }
             setConfirmation(confirmationResult);
             console.log(confirmationResult);
 
