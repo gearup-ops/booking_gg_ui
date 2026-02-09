@@ -42,7 +42,7 @@ export default function TestimonialsSection({
                     Happy riders!
                 </h2>
 
-                <div className='relative flex items-center gap-6'>
+                <div className='relative flex flex-col lg:flex-row items-center gap-6'>
                     {/* Left Arrow */}
                     <button
                         onClick={goToPrevious}
@@ -69,9 +69,9 @@ export default function TestimonialsSection({
                     {/* Testimonial Content */}
                     <div className='flex-1 bg-white rounded-lg p-6 relative'>
                         {/* Speech bubble arrow */}
-                        <div className='absolute left-0 top-6 w-0 h-0 border-t-[10px] border-t-transparent border-b-[10px] border-b-transparent border-r-[15px] border-r-white -translate-x-[15px]'></div>
+                        <div className='absolute left-1/2 -top-[15px] -translate-x-1/2 lg:left-0 lg:top-6 lg:translate-x-[-15px] w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[15px] border-b-white lg:border-t-[10px] lg:border-t-transparent lg:border-b-[10px] lg:border-b-transparent lg:border-r-[15px] lg:border-r-white'></div>
 
-                        <p className='text-gray-800 text-sm leading-relaxed'>
+                        <p className='text-gray-800 text-sm leading-relaxed max-h-[200px] lg:max-h-none overflow-y-auto lg:overflow-visible pr-2 lg:pr-0'>
                             {currentTestimonial.desc}
                         </p>
                     </div>
