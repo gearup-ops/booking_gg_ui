@@ -14,10 +14,15 @@ import Footer from '@/components/footer';
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getHomePageDataAction } from '@/lib/actions/contentActions';
+import { getCitiesAction } from '@/lib/actions/cityActions';
 import type { AppDispatch } from '@/lib/store';
 import { getUserByIdAction } from '@/lib/actions/userActions';
 import { setAuthenticated } from '@/lib/slices/authSlice';
-import { getLocaleStorage, removeFromLocalStorage, setLocaleStorage } from '@/lib/utils';
+import {
+    getLocaleStorage,
+    removeFromLocalStorage,
+    setLocaleStorage,
+} from '@/lib/utils';
 
 export default function HomePage() {
     // Example usage with sample data
@@ -41,6 +46,9 @@ export default function HomePage() {
         (state: any) => state.content
     );
     const { user, isAuthenticated } = useSelector((state: any) => state.auth);
+    const { cities, isLoading: isCityLoading } = useSelector(
+        (state: any) => state.city
+    );
 
     const testimonials =
         homePageData?.s5?.map((item: any) => ({
@@ -52,20 +60,27 @@ export default function HomePage() {
         if (!homePageData && !isLoading) {
             dispatch(getHomePageDataAction());
         }
+        dispatch(getCitiesAction());
     }, [dispatch]);
 
     // City options
-    const cities = [
-        { id: 3, name: 'Pune' },
-        { id: 1, name: 'Mumbai' },
-        { id: 4, name: 'Bengalore' },
-    ];
+    // const cities = [
+    //     { id: 3, name: 'Pune' },
+    //     { id: 1, name: 'Mumbai' },
+    //     { id: 4, name: 'Bengalore' },
+    // ];
 
     // Popup state
     const [showPopup, setShowPopup] = useState(
         getLocaleStorage('cityId') ? false : true
     );
-    const [selectedCityId, setSelectedCityId] = useState(cities[0].id);
+    const [selectedCityId, setSelectedCityId] = useState<number | null>(null);
+
+    useEffect(() => {
+        if (cities && cities.length > 0 && selectedCityId === null) {
+            setSelectedCityId(cities[0].id);
+        }
+    }, [cities, selectedCityId]);
 
     useEffect(() => {
         const token = getLocaleStorage('token');
@@ -89,8 +104,10 @@ export default function HomePage() {
     }, [selectedCityId]);
 
     const handleClosePopup = () => {
-        setLocaleStorage('cityId', selectedCityId.toString());
-        setShowPopup(false);
+        if (selectedCityId !== null) {
+            setLocaleStorage('cityId', selectedCityId.toString());
+            setShowPopup(false);
+        }
     };
 
     useEffect(() => {
@@ -110,7 +127,7 @@ export default function HomePage() {
                             Select your city
                         </h2>
                         <div className='flex flex-row gap-2 mb-4'>
-                            {cities.map((city) => (
+                            {cities.map((city: any) => (
                                 <button
                                     key={city.id}
                                     className={`w-full p-2 border rounded ${

@@ -15,6 +15,7 @@ import {
     getUserByIdAction,
     updateCustomerAction,
 } from '@/lib/actions/userActions';
+import { getCitiesAction } from '@/lib/actions/cityActions';
 import {
     ChevronDown,
     ChevronUp,
@@ -30,19 +31,19 @@ import {
 } from '@/lib/actions/orderActions';
 import { getLocaleStorage } from '@/lib/utils';
 
-const cities = [
-    { id: 3, name: 'Pune' },
-    { id: 1, name: 'Mumbai' },
-    { id: 4, name: 'Bengalore' },
-];
+// const cities = [
+//     { id: 3, name: 'Pune' },
+//     { id: 1, name: 'Mumbai' },
+//     { id: 4, name: 'Bengalore' },
+// ];
 
-const cityMetaById = {
-    1: { name: 'Mumbai', state: 'Maharashtra', country: 'India' },
-    3: { name: 'Pune', state: 'Maharashtra', country: 'India' },
-    4: { name: 'Bengalore', state: 'Karnataka', country: 'India' },
-} as const;
+// const cityMetaById = {
+//     1: { name: 'Mumbai', state: 'Maharashtra', country: 'India' },
+//     3: { name: 'Pune', state: 'Maharashtra', country: 'India' },
+//     4: { name: 'Bengalore', state: 'Karnataka', country: 'India' },
+// } as const;
 
-function getCityNameFromId(id: unknown) {
+function getCityNameFromId(id: unknown, cities: any[]) {
     const cid = typeof id === 'string' ? Number.parseInt(id, 10) : Number(id);
     if (Number.isNaN(cid)) return '';
     const match = cities.find((c) => c.id === cid);
@@ -171,6 +172,7 @@ export function Account() {
     const { orders, isLoading } = useSelector(
         (state: RootState) => state.order
     );
+    const { cities } = useSelector((state: any) => state.city);
     console.log();
 
     const [activeTab, setActiveTab] = useState(tab ? tab : 'profile');
@@ -181,6 +183,7 @@ export function Account() {
         }
         if (activeTab === 'profile' && isAuthenticated) {
             dispatch(getUserByIdAction());
+            dispatch(getCitiesAction());
         }
     }, [activeTab, router, isAuthenticated, dispatch]);
     const [isEditing, setIsEditing] = useState(false);
@@ -209,26 +212,27 @@ export function Account() {
 
         // If the input is an ID-like value
         const id = Number(input);
-        if (!Number.isNaN(id) && cityMetaById[id as 1 | 3 | 4]) {
-            return cityMetaById[id as 1 | 3 | 4];
+        const matchById = cities.find((c: any) => c.id === id);
+        if (!Number.isNaN(id) && matchById) {
+            return matchById;
         }
 
         // Otherwise, try by name (case-insensitive)
-        const match = cities.find(
-            (c) => c.name.toLowerCase() === String(input).toLowerCase()
+        const matchByName = cities.find(
+            (c: any) => c.name.toLowerCase() === String(input).toLowerCase()
         );
-        if (match && cityMetaById[match.id as 1 | 3 | 4]) {
-            return cityMetaById[match.id as 1 | 3 | 4];
+        if (matchByName) {
+            return matchByName;
         }
         return null;
-    }, [editedProfile.city]);
+    }, [editedProfile.city, cities]);
 
     const cityInfo = useMemo(() => {
         if (user) {
             const cityMeta =
                 derivedCity ||
                 (user.cityId !== undefined
-                    ? cityMetaById[user.cityId as keyof typeof cityMetaById]
+                    ? cities.find((c: any) => c.id === user.cityId)
                     : undefined);
             return {
                 city: cityMeta?.name || '',
@@ -237,7 +241,7 @@ export function Account() {
             };
         }
         return { city: '', state: '', country: '' };
-    }, [user, derivedCity]);
+    }, [user, derivedCity, cities]);
 
     useEffect(() => {
         if (!user && (isAuthenticated || getLocaleStorage('token'))) {
@@ -674,7 +678,7 @@ export function Account() {
                                 >
                                     Select City
                                 </option>
-                                {cities.map((city) => (
+                                {cities.map((city: any) => (
                                     <option key={city.id} value={city.id}>
                                         {city.name}
                                     </option>
