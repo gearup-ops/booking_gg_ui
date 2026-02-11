@@ -5,6 +5,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+    InputOTP,
+    InputOTPGroup,
+    InputOTPSlot,
+} from '@/components/ui/input-otp';
 import { RootState, AppDispatch } from '@/lib/store';
 import {
     getUserByIdAction,
@@ -24,20 +29,14 @@ import { firebaseAuth } from '@/lib/firebaseClient';
 import { signInWithPhoneNumber } from 'firebase/auth';
 import { getLocaleStorage, setLocaleStorage } from '@/lib/utils';
 import { setupRecaptcha } from '@/lib/setupRecapcha';
-// declare global {
-//     interface Window {
-//         FB: any;
-//     }
-// }
+import { REGEXP_ONLY_DIGITS, REGEXP_ONLY_DIGITS_AND_CHARS } from 'input-otp';
 
 export default function LoginPage() {
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
     const { loginStep, phone, otp, isLoading, error, isAuthenticated } =
         useSelector((state: RootState) => state.auth);
-
-    const [otpInputs, setOtpInputs] = useState(['', '', '', '', '', '']);
-    const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+    const [otpInputs, setOtpInputs] = useState<string>('');
     const [confirmation, setConfirmation] = useState<any>(null);
 
     useEffect(() => {
@@ -49,8 +48,12 @@ export default function LoginPage() {
 
     useEffect(() => {
         dispatch(resetAuth());
-        setOtpInputs(['', '', '', '', '', '']);
+        setOtpInputs('');
     }, [dispatch]);
+
+    useEffect(() => {
+        dispatch(setOtp(otpInputs));
+    }, [otpInputs, dispatch]);
 
     const handleGetOTP = async () => {
         if (!phone || phone.length < 10) {
@@ -79,25 +82,8 @@ export default function LoginPage() {
         }
     };
 
-    const handleOtpChange = (index: number, value: string) => {
-        if (value.length <= 1 && /^\d*$/.test(value)) {
-            const newOtpInputs = [...otpInputs];
-            newOtpInputs[index] = value;
-            setOtpInputs(newOtpInputs);
-
-            const otpString = newOtpInputs.join('');
-            dispatch(setOtp(otpString));
-
-            if (value && index < 3) {
-                otpRefs.current[index + 1]?.focus();
-            }
-        }
-    };
-
-    const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
-        if (e.key === 'Backspace' && !otpInputs[index] && index > 0) {
-            otpRefs.current[index - 1]?.focus();
-        }
+    const handleOtpChange = (value: string) => {
+        setOtpInputs(value);
     };
 
     const handleSubmitOTP = async () => {
@@ -111,9 +97,6 @@ export default function LoginPage() {
             const result = await confirmation.confirm(otp);
             const user = result.user;
             const token = await user.getIdToken();
-
-            console.log('User:', user);
-            console.log('Firebase Token:', token);
 
             // Immediately call your backend API
             const res = await dispatch(
@@ -134,7 +117,7 @@ export default function LoginPage() {
     };
 
     const handleResendOTP = () => {
-        setOtpInputs(['', '', '', '', '', '']);
+        setOtpInputs('');
         dispatch(setOtp(''));
         dispatch(clearError()); // Clear any previous OTP error
         dispatch(sendOtpAction({ phone }));
@@ -239,27 +222,40 @@ export default function LoginPage() {
                                         {phone}
                                     </p>
                                     <div className='flex gap-6 justify-center'>
-                                        {otpInputs.map((digit, index) => (
-                                            <Input
-                                                key={index}
-                                                ref={(el) => {
-                                                    otpRefs.current[index] = el;
-                                                }}
-                                                type='text'
-                                                value={digit}
-                                                onChange={(e) =>
-                                                    handleOtpChange(
-                                                        index,
-                                                        e.target.value
-                                                    )
-                                                }
-                                                onKeyDown={(e) =>
-                                                    handleKeyDown(index, e)
-                                                }
-                                                className='w-14 h-14 text-center bg-white border-[#4a4b4d] text-black text-xl font-semibold focus:border-[#fbbf24] focus:ring-[#fbbf24]'
-                                                maxLength={1}
-                                            />
-                                        ))}
+                                        <InputOTP
+                                            maxLength={6}
+                                            defaultValue={otpInputs}
+                                            pattern={REGEXP_ONLY_DIGITS}
+                                            onChange={(e) => handleOtpChange(e)}
+                                            value={otpInputs}
+                                        >
+                                            <InputOTPGroup className='text-center gap-3 text-black text-xl font-bold'>
+                                                <InputOTPSlot
+                                                    index={0}
+                                                    className='border-none rounded-md bg-white w-12 h-12'
+                                                />
+                                                <InputOTPSlot
+                                                    index={1}
+                                                    className='border-none rounded-md bg-white w-12 h-12'
+                                                />
+                                                <InputOTPSlot
+                                                    index={2}
+                                                    className='border-none rounded-md bg-white w-12 h-12'
+                                                />
+                                                <InputOTPSlot
+                                                    index={3}
+                                                    className='border-none rounded-md bg-white w-12 h-12'
+                                                />
+                                                <InputOTPSlot
+                                                    index={4}
+                                                    className='border-none rounded-md bg-white w-12 h-12'
+                                                />
+                                                <InputOTPSlot
+                                                    index={5}
+                                                    className='border-none rounded-md bg-white w-12 h-12'
+                                                />
+                                            </InputOTPGroup>
+                                        </InputOTP>
                                     </div>
 
                                     <div className='flex space-x-2 items-center text-sm ml-8 lg:ml-0'>
