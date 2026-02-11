@@ -180,7 +180,7 @@ export default function Footer() {
                     </div>
 
                     {/* Subscribe */}
-                    <div>
+                    {/* <div>
                         <h3 className='font-semibold mb-4 text-white'>
                             Subscribe Us
                         </h3>
@@ -199,7 +199,7 @@ export default function Footer() {
                                 Submit
                             </Button>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className='border-t border-[#4a4b4d] mt-8 pt-8 text-center text-sm text-gray-300'>
