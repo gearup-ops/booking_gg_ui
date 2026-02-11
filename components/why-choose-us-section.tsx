@@ -52,7 +52,7 @@ export default function WhyChooseUsSection() {
                             {homePageData?.s3?.tl2 ||
                                 'Book an appointment and experience our convenient and high-quality service'}
                         </p>
-                        <Button
+                        {/* <Button
                             onClick={() => {
                                 if (homePageData?.s3?.url) {
                                     window.location.href = homePageData.s3.url;
@@ -61,7 +61,7 @@ export default function WhyChooseUsSection() {
                             className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold'
                         >
                             Learn More
-                        </Button>
+                        </Button> */}
                     </div>
                     <div className='lg:col-span-1'>
                         <Image
