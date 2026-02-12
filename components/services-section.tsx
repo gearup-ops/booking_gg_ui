@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2 } from 'lucide-react';
@@ -57,7 +57,21 @@ export default function ServicesSection() {
         null
     );
 
+    const scrollRef = useRef<HTMLDivElement>(null);
     const [isGearBike, setIsGearBike] = useState(true);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 1024);
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
     const { isAuthenticated } = useSelector((state: RootState) => state.auth);
     const { services, isLoading } = useSelector(
         (state: RootState) => state.services
@@ -81,6 +95,26 @@ export default function ServicesSection() {
             setSelectedServiceId(activeServices[0]._id);
         }
     }, [activeServices, selectedServiceId]);
+
+    useEffect(() => {
+        if (selectedServiceId && scrollRef.current) {
+            const index = activeServices.findIndex(
+                (service) => service._id === selectedServiceId
+            );
+            if (index !== -1) {
+                const element = scrollRef.current.children[
+                    index
+                ] as HTMLElement;
+                if (element) {
+                    element.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'nearest',
+                        inline: 'center',
+                    });
+                }
+            }
+        }
+    }, [selectedServiceId, activeServices]);
 
     const currentService = activeServices.find(
         (service: Service) => service._id === selectedServiceId
@@ -199,7 +233,8 @@ export default function ServicesSection() {
                     <div className='grid lg:grid-cols-2 gap-8 items-start'>
                         {/* Left Panel: Service List */}
                         <motion.div
-                            className='space-y-4 flex lg:flex-col overflow-auto lg:overflow-hidden gap-6'
+                            ref={scrollRef}
+                            className='flex lg:flex-col gap-6 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 px-4 lg:px-0 snap-x snap-mandatory scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
                             initial={{ opacity: 0, x: -20 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.6, delay: 0.3 }}
@@ -217,7 +252,7 @@ export default function ServicesSection() {
                                                     service._id
                                                 )
                                             }
-                                            className={`min-w-2xs lg:w-full text-left p-4 rounded-lg border-2 transition-all duration-300 flex justify-between items-center ${
+                                            className={`min-w-[85vw] lg:min-w-0 lg:w-full shrink-0 snap-center text-left p-4 rounded-lg border-2 transition-all duration-300 flex justify-between items-center ${
                                                 selectedServiceId ===
                                                 service._id
                                                     ? 'bg-[#f5b41d] text-black border-[#f5b41d]'
@@ -225,7 +260,10 @@ export default function ServicesSection() {
                                             }`}
                                             whileHover={{ scale: 1.02 }}
                                             whileTap={{ scale: 0.98 }}
-                                            initial={{ opacity: 0, y: 20 }}
+                                            initial={{
+                                                opacity: 0,
+                                                y: isMobile ? 0 : 20,
+                                            }}
                                             whileInView={{ opacity: 1, y: 0 }}
                                             transition={{
                                                 duration: 0.4,
@@ -273,11 +311,6 @@ export default function ServicesSection() {
                                         <h3 className='text-2xl font-bold text-black'>
                                             {currentService.serviceName}
                                         </h3>
-                                        {/* <p className='text-gray-700 text-sm'>
-                                            {
-                                                currentService.serviceShortDescription
-                                            }
-                                        </p> */}
                                     </div>
                                     <div className='absolute right-4 lg:right-16 text-2xl lg:text-4xl font-bold text-white bg-[#3c9306] w-fit px-4 py-2 rounded-l-full'>
                                         {getCurrentPrice(currentService)} Rs
@@ -296,6 +329,10 @@ export default function ServicesSection() {
                                         className='w-full h-48 object-cover rounded-lg'
                                     />
                                 </div>
+
+                                <p className='text-gray-700 text-sm'>
+                                    {currentService.serviceShortDescription}
+                                </p>
 
                                 {getServiceChecks(currentService).length !==
                                 0 ? (
