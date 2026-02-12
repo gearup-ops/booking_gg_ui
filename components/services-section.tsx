@@ -297,9 +297,12 @@ export default function ServicesSection() {
                                     />
                                 </div>
 
-                                <h4 className='text-lg font-semibold text-black mb-3'>
-                                    What we provide?
-                                </h4>
+                                {getServiceChecks(currentService).length !==
+                                0 ? (
+                                    <h4 className='text-lg font-semibold text-black mb-3'>
+                                        What we provide?
+                                    </h4>
+                                ) : null}
                                 <ul className='space-y-2 text-black'>
                                     {getServiceChecks(currentService).map(
                                         (checkItem: string, index: number) => (
