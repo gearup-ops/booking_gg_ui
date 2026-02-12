@@ -252,7 +252,7 @@ export default function ServicesSection() {
                                                     service._id
                                                 )
                                             }
-                                            className={`min-w-[85vw] lg:min-w-0 lg:w-full shrink-0 snap-center text-left p-4 rounded-lg border-2 transition-all duration-300 flex justify-between items-center ${
+                                            className={`min-w-[55vw] lg:min-w-0 lg:w-full shrink-0 snap-center text-left p-4 rounded-lg border-2 transition-all duration-300 flex justify-between items-center ${
                                                 selectedServiceId ===
                                                 service._id
                                                     ? 'bg-[#f5b41d] text-black border-[#f5b41d]'
@@ -286,8 +286,11 @@ export default function ServicesSection() {
                                                             : 'Non-Gear'}
                                                     </span>
                                                 </div>
+                                                <span className='font-bold text-lg md:hidden'>
+                                                    {currentPrice} Rs
+                                                </span>
                                             </div>
-                                            <span className='font-bold text-lg'>
+                                            <span className='font-bold text-lg hidden md:block'>
                                                 {currentPrice} Rs
                                             </span>
                                         </motion.button>
