@@ -51,7 +51,16 @@ interface OrderState {
 const initialState: OrderState = {
     currentStep: 'customer-details',
     selectedService: null,
-    cycles: [{ id: '1', name: '', type: 'gear', image: '', serviceId: null }],
+    cycles: [
+        {
+            id: '1',
+            name: '',
+            type: 'gear',
+            image: '',
+            serviceId: null,
+            order: true,
+        },
+    ],
     customerDetails: {
         firstName: '',
         lastName: '',
@@ -118,7 +127,13 @@ const orderSlice = createSlice({
                 type: 'gear',
                 image: '',
                 serviceId: null,
+                order: true,
             });
+        },
+        removeCycle: (state, action: PayloadAction<number>) => {
+            if (state.cycles.length > 1) {
+                state.cycles.splice(action.payload, 1);
+            }
         },
         updateCustomerDetails: (
             state,
@@ -211,6 +226,7 @@ export const {
     clearError,
     setLoading,
     setCycles,
+    removeCycle,
 } = orderSlice.actions;
 
 export default orderSlice.reducer;
