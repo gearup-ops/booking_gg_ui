@@ -1308,14 +1308,16 @@ import {
     setSelectedService,
     setLoading,
     setCycles,
+    removeCycle,
 } from '@/lib/slices/orderSlice';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, Upload, MapPin } from 'lucide-react';
+import { CheckCircle2, Upload, MapPin, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import {
     getUserByIdAction,
     updateCustomerAction,
 } from '@/lib/actions/userActions';
+import { getCitiesAction } from '@/lib/actions/cityActions';
 import { getLocaleStorage } from '@/lib/utils';
 import { fetchStatic } from '@/lib/api/client';
 
@@ -1346,6 +1348,11 @@ function Book() {
         isLoading,
         error,
     } = useSelector((state: RootState) => state.order);
+    const { cities } = useSelector((state: RootState) => state.city);
+
+    useEffect(() => {
+        dispatch(getCitiesAction());
+    }, [dispatch]);
 
     const [customer, setCustomer] = useState({
         firstName: user?.firstName || '',
@@ -1626,8 +1633,11 @@ function Book() {
                             'uploads/cycles/' + newFileName
                         );
                         formData.append(`files`, renamedFile);
-                    } else{
-                        formData.append(`cycles[${index}][image]`, cycle?.image || '');
+                    } else {
+                        formData.append(
+                            `cycles[${index}][image]`,
+                            cycle?.image || ''
+                        );
                     }
                 });
 
@@ -1770,7 +1780,7 @@ function Book() {
                             onClick={() => dispatch(addNewCycle())}
                             className='text-[#fbbf24] hover:text-[#f59e0b] hover:bg-[#2a2b2d]'
                         >
-                            + Add more Cycle
+                            + Add Cycle
                         </Button>
                     </div>
 
@@ -1779,87 +1789,100 @@ function Book() {
                             key={cycle.id ?? `cycle-${index}`}
                             className='space-y-4'
                         >
-                            {cycles.length > 1 && (
-                                <div className='flex w-full justify-between items-center'>
-                                    <div className='flex gap-4 items-center'>
-                                        <Checkbox
-                                            id={(index + 1).toString()}
-                                            checked={cycle.order || false}
-                                            onCheckedChange={(checked) => {
-                                                dispatch(
-                                                    updateCycleDetails({
-                                                        index,
-                                                        field: 'order',
-                                                        value: checked,
-                                                    })
-                                                );
-                                            }}
-                                            className='border-[#fbbf24] data-[state=checked]:bg-[#fbbf24] data-[state=checked]:text-black shrink-0 h-4 w-4 border-2'
-                                        />
-                                        <h4 className='font-medium text-black'>
-                                            Cycle {index + 1}
-                                        </h4>
-                                    </div>
-                                    <div className='flex gap-2 items-center'>
-                                        <label
-                                            htmlFor={`cycle${(
-                                                index + 1
-                                            ).toString()}`}
+                            <div className='flex w-full justify-between items-center'>
+                                <div className='flex gap-4 items-center'>
+                                    <Checkbox
+                                        id={(index + 1).toString()}
+                                        checked={cycle.order || false}
+                                        onCheckedChange={(checked) => {
+                                            dispatch(
+                                                updateCycleDetails({
+                                                    index,
+                                                    field: 'order',
+                                                    value: checked,
+                                                })
+                                            );
+                                        }}
+                                        className='border-[#fbbf24] data-[state=checked]:bg-[#fbbf24] data-[state=checked]:text-black shrink-0 h-4 w-4 border-2'
+                                    />
+                                    <h4 className='font-medium text-black'>
+                                        Cycle {index + 1}
+                                    </h4>
+                                </div>
+                                <div className='flex gap-2 items-center'>
+                                    <label
+                                        htmlFor={`cycle${(
+                                            index + 1
+                                        ).toString()}`}
+                                    >
+                                        Select Service
+                                    </label>
+                                    <select
+                                        id={`cycle${(index + 1).toString()}`}
+                                        value={
+                                            cycles[index].serviceId ||
+                                            selectedService?.id ||
+                                            ''
+                                        }
+                                        onChange={(e) => {
+                                            dispatch(
+                                                updateCycleDetails({
+                                                    index,
+                                                    field: 'serviceId',
+                                                    value: e.target.value,
+                                                })
+                                            );
+                                        }}
+                                        disabled={!cycles[index].order}
+                                        className={`bg-gray-50 text-black rounded-md px-3 py-2 w-full border`}
+                                    >
+                                        <option
+                                            value=''
+                                            className={`text-gray-500 text-sm ${
+                                                !cycles[index].order
+                                                    ? 'bg-gray-100 text-gray-400'
+                                                    : ''
+                                            }`}
+                                            disabled
                                         >
                                             Select Service
-                                        </label>
-                                        <select
-                                            id={`cycle${(
-                                                index + 1
-                                            ).toString()}`}
-                                            value={
-                                                cycles[index].serviceId ||
-                                                selectedService?.id ||
-                                                ''
-                                            }
-                                            onChange={(e) => {
-                                                dispatch(
-                                                    updateCycleDetails({
-                                                        index,
-                                                        field: 'serviceId',
-                                                        value: e.target.value,
-                                                    })
-                                                );
-                                            }}
-                                            disabled={!cycles[index].order}
-                                            className={`bg-gray-50 text-black rounded-md px-3 py-2 w-full border`}
-                                        >
+                                        </option>
+                                        {services.map((service) => (
                                             <option
-                                                value=''
-                                                className={`text-gray-500 text-sm ${
-                                                    !cycles[index].order
-                                                        ? 'bg-gray-100 text-gray-400'
-                                                        : ''
-                                                }`}
-                                                disabled
+                                                key={service._id}
+                                                value={service._id.toString()}
                                             >
-                                                Select Service
+                                                {service.serviceName}
                                             </option>
-                                            {services.map((service) => (
-                                                <option
-                                                    key={service._id}
-                                                    value={service._id.toString()}
-                                                >
-                                                    {service.serviceName}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
+                                        ))}
+                                    </select>
+                                    {cycles.length > 1 && (
+                                        <Button
+                                            variant='ghost'
+                                            size='icon'
+                                            onClick={() =>
+                                                dispatch(removeCycle(index))
+                                            }
+                                            className='text-red-500 hover:text-red-700 hover:bg-red-50'
+                                        >
+                                            <Trash2 className='w-4 h-4' />
+                                        </Button>
+                                    )}
                                 </div>
-                            )}
+                            </div>
 
-                            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                            <div
+                                className={`grid grid-cols-1 md:grid-cols-2 gap-4 transition-opacity duration-200 ${
+                                    !cycle.order ? 'opacity-50' : 'opacity-100'
+                                }`}
+                            >
                                 <div className='space-y-2'>
                                     <Label className='text-black'>
                                         Cycle Brand*
                                     </Label>
                                     <Input
                                         required
+                                        disabled={!cycle.order}
                                         value={cycle.name}
                                         onChange={(e) => {
                                             dispatch(
@@ -1913,6 +1936,7 @@ function Book() {
                                     </Label>
                                     <RadioGroup
                                         value={cycle.type}
+                                        disabled={!cycle.order}
                                         onValueChange={(value) => {
                                             dispatch(
                                                 updateCycleDetails({
@@ -2099,6 +2123,7 @@ function Book() {
                                     <input
                                         type='file'
                                         accept='image/*'
+                                        disabled={!cycle.order}
                                         onChange={(e) => {
                                             const file = e.target.files?.[0];
                                             if (file) {
@@ -2136,6 +2161,7 @@ function Book() {
                                                         type='button'
                                                         variant='outline'
                                                         size='sm'
+                                                        disabled={!cycle.order}
                                                         onClick={(e) => {
                                                             e.preventDefault();
                                                             document
@@ -2152,6 +2178,7 @@ function Book() {
                                                         type='button'
                                                         variant='outline'
                                                         size='sm'
+                                                        disabled={!cycle.order}
                                                         onClick={(e) => {
                                                             e.preventDefault();
                                                             handleRemoveImage(
@@ -2186,6 +2213,7 @@ function Book() {
                                                         type='button'
                                                         variant='outline'
                                                         size='sm'
+                                                        disabled={!cycle.order}
                                                         onClick={(e) => {
                                                             e.preventDefault();
                                                             document
@@ -2202,6 +2230,7 @@ function Book() {
                                                         type='button'
                                                         variant='outline'
                                                         size='sm'
+                                                        disabled={!cycle.order}
                                                         onClick={(e) => {
                                                             e.preventDefault();
                                                             handleRemoveImage(
@@ -2595,9 +2624,14 @@ function Book() {
                                 <SelectValue placeholder='Select city' />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value='3'>Pune</SelectItem>
-                                <SelectItem value='1'>Mumbai</SelectItem>
-                                <SelectItem value='4'>Bengaluru</SelectItem>
+                                {cities.map((city) => (
+                                    <SelectItem
+                                        key={city.id}
+                                        value={city.id.toString()}
+                                    >
+                                        {city.name}
+                                    </SelectItem>
+                                ))}
                             </SelectContent>
                         </Select>
                         {validationErrors.cityId && (
