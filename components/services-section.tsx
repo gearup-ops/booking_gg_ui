@@ -334,7 +334,10 @@ export default function ServicesSection() {
                                 </div>
 
                                 <p className='text-gray-700 text-sm'>
-                                    {currentService.serviceShortDescription}
+                                    {currentService?.serviceShortDescription?.slice(
+                                        0,
+                                        100
+                                    ) + '...'}
                                 </p>
 
                                 {getServiceChecks(currentService).length !==

@@ -183,7 +183,7 @@ export default function ServicesPage() {
 
                             {/* Service Features */}
                             <div className='space-y-6'>
-                                {/* <p>{currentService.serviceShortDescription}</p> */}
+                                <p>{currentService.serviceShortDescription}</p>
                                 {getServiceChecks(currentService).map(
                                     (checkItem: string, index: number) => (
                                         <div
