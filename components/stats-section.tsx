@@ -4,9 +4,9 @@ export default function StatsSection() {
     const { homePageData } = useSelector((state: any) => state.content);
 
     const stats = homePageData?.s6?.data || [
-        { no: '6000+', tl: 'Bicycles serviced in 2023' },
-        { no: '20+', tl: 'Expert Technicians on Staff' },
-        { no: '92%+', tl: 'Happy customers' },
+        { no: '70000+', tl: 'Bicycles serviced in PAN India' },
+        { no: '24+', tl: 'Expert Technicians on Staff' },
+        { no: '84%+', tl: 'Happy customers' },
     ];
 
     return (
