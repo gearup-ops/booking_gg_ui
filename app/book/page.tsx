@@ -1537,13 +1537,13 @@ function Book() {
 
     console.log(cycles);
 
-    const handleNext = useCallback(() => {
+    const handleNext = useCallback(async () => {
         if (!validateRequiredFields()) {
             return;
         }
 
         if (currentStep === 'customer-details' && user) {
-            dispatch(
+            await dispatch(
                 updateCustomerAction({
                     firstName: customer.firstName || user.firstName || '',
                     lastName: customer.lastName || user.lastName || '',
@@ -1559,6 +1559,7 @@ function Book() {
                     longLat: customer.longLat || (user as any)?.longLat || '',
                 })
             );
+            await dispatch(getUserByIdAction());
             dispatch(setCurrentStep('cycle-details'));
         } else if (currentStep === 'cycle-details') {
             if (!termsAccepted) {

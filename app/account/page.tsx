@@ -341,6 +341,7 @@ export function Account() {
                     pincode,
                 })
             );
+            await dispatch(getUserByIdAction());
             setIsEditing(false);
             setValidationErrors({});
         }
