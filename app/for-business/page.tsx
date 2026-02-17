@@ -245,7 +245,7 @@ export default function ForBusinessPage() {
                     </div>
 
                     {/* Gear Toggle */}
-                    <div className='flex lg:ml-88 justify-center mt-12'>
+                    {/* <div className='flex lg:ml-88 justify-center mt-12'>
                         <div className='bg-[#3c3d3f] rounded-full p-2 flex items-center space-x-4 border border-[#4a4b4d]'>
                             <span
                                 className={`px-4 py-2 rounded-full transition-colors ${
@@ -269,10 +269,10 @@ export default function ForBusinessPage() {
                                 Non-Gear
                             </span>
                         </div>
-                    </div>
+                    </div> */}
 
                     {/* Pricing and Book Now */}
-                    <div className='ml-8 lg:ml-[800px] mt-6 text-center'>
+                    {/* <div className='ml-8 lg:ml-[800px] mt-6 text-center'>
                         <div className='flex justify-start gap-6 lg:gap-20 bg-[#19191a] p-8'>
                             <div className='text-4xl font-bold text-[#fbbf24]'>
                                 {currentService.price} RS
@@ -284,7 +284,7 @@ export default function ForBusinessPage() {
                                 {isAuthenticated ? 'Book Now' : 'Login to Book'}
                             </Button>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </section>
 

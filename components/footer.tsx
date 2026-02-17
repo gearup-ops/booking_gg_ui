@@ -36,14 +36,20 @@ export default function Footer() {
                             comfort of their homes.
                         </p>
                         <div className='flex space-x-4'>
-                            <Button
+                            {/* <Button
                                 variant='ghost'
                                 size='icon'
                                 className='text-[#fbbf24] hover:bg-[#3c3d3f]'
                             >
                                 <Linkedin className='w-5 h-5' />
-                            </Button>
+                            </Button> */}
                             <Button
+                                onClick={() =>
+                                    window.open(
+                                        'https://www.instagram.com/geargrowcycle',
+                                        '_blank'
+                                    )
+                                }
                                 variant='ghost'
                                 size='icon'
                                 className='text-[#fbbf24] hover:bg-[#3c3d3f]'
@@ -54,15 +60,14 @@ export default function Footer() {
                                 variant='ghost'
                                 size='icon'
                                 className='text-[#fbbf24] hover:bg-[#3c3d3f]'
+                                onClick={() =>
+                                    window.open(
+                                        'https://www.facebook.com/geargrowcycle',
+                                        '_blank'
+                                    )
+                                }
                             >
                                 <Facebook className='w-5 h-5' />
-                            </Button>
-                            <Button
-                                variant='ghost'
-                                size='icon'
-                                className='text-[#fbbf24] hover:bg-[#3c3d3f]'
-                            >
-                                <Twitter className='w-5 h-5' />
                             </Button>
                         </div>
                     </div>
@@ -203,7 +208,10 @@ export default function Footer() {
                 </div>
 
                 <div className='border-t border-[#4a4b4d] mt-8 pt-8 text-center text-sm text-gray-300'>
-                    <p>&copy; 2024 GearGrow Cycle. All rights reserved.</p>
+                    <p>
+                        &copy; {new Date().getFullYear()} GearGrow Cycle. All
+                        rights reserved.
+                    </p>
                 </div>
             </div>
         </motion.footer>

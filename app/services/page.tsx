@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
@@ -57,6 +57,7 @@ export default function ServicesPage() {
     const [selectedServiceId, setSelectedServiceId] = useState<number | null>(
         null
     );
+    const scrollRef = useRef<HTMLDivElement>(null);
     const [hasGear, setHasGear] = useState(true);
 
     const { isAuthenticated } = useSelector((state: RootState) => state.auth);
@@ -78,6 +79,26 @@ export default function ServicesPage() {
             setSelectedServiceId(activeServices[0]._id);
         }
     }, [activeServices, selectedServiceId]);
+
+    useEffect(() => {
+        if (selectedServiceId && scrollRef.current) {
+            const index = activeServices.findIndex(
+                (service) => service._id === selectedServiceId
+            );
+            if (index !== -1) {
+                const element = scrollRef.current.children[
+                    index
+                ] as HTMLElement;
+                if (element) {
+                    element.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'nearest',
+                        inline: 'center',
+                    });
+                }
+            }
+        }
+    }, [selectedServiceId, activeServices]);
 
     const currentService = activeServices.find(
         (service: Service) => service._id === selectedServiceId
@@ -133,7 +154,10 @@ export default function ServicesPage() {
             {/* Service Tabs */}
             <section className='py-8 bg-[#3c3d3f]'>
                 <div className='container mx-auto px-4'>
-                    <div className='flex flex-row overflow-x-scroll lg:overflow-auto gap-4 justify-start'>
+                    <div
+                        ref={scrollRef}
+                        className='flex flex-row overflow-x-scroll lg:overflow-auto gap-4 justify-start'
+                    >
                         {activeServices.map((service: Service) => (
                             <button
                                 key={service._id}
@@ -169,8 +193,9 @@ export default function ServicesPage() {
                                 <div className='bg-[#3c3d3f] rounded-2xl border-4 border-[#fbbf24]'>
                                     <Image
                                         src={
-                                            `/images/service${currentService.orderNo}.png` ||
-                                            '/images/about2.png'
+                                            currentService.orderNo < 5
+                                                ? `/images/service${currentService.orderNo}.png`
+                                                : '/bicycle-maintenance-setup.png'
                                             // currentService.serviceImageUrl
                                         }
                                         alt={currentService.serviceName}

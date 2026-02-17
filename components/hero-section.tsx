@@ -87,12 +87,12 @@ export default function HeroSection() {
                                     </Button>
                                 </Link>
                             )}
-                            <Button
+                            {/* <Button
                                 variant='outline'
                                 className='border-gray-600 text-white hover:bg-[#3c3d3f] px-8 py-3 text-lg transition-all duration-300'
                             >
                                 Learn More
-                            </Button>
+                            </Button> */}
                         </motion.div>
                     </motion.div>
                     <motion.div

@@ -23,6 +23,7 @@ import {
     removeFromLocalStorage,
     setLocaleStorage,
 } from '@/lib/utils';
+import { ArrowUp } from 'lucide-react';
 
 export default function HomePage() {
     // Example usage with sample data
@@ -49,6 +50,31 @@ export default function HomePage() {
     const { cities, isLoading: isCityLoading } = useSelector(
         (state: any) => state.city
     );
+
+    const [showTopBtn, setShowTopBtn] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 100) {
+                setShowTopBtn(true);
+            } else {
+                setShowTopBtn(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
+    const goToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        });
+    };
 
     const testimonials =
         homePageData?.s5?.map((item: any) => ({
@@ -162,6 +188,15 @@ export default function HomePage() {
             <BrandsSection />
             <FAQSection />
             <Footer />
+            {showTopBtn && (
+                <button
+                    onClick={goToTop}
+                    className='fixed bottom-8 right-8 z-50 p-3 rounded-full bg-[#fbbf24] text-black shadow-lg hover:bg-[#f59e0b] transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-[#fbbf24] focus:ring-offset-2 focus:ring-offset-[#060608]'
+                    aria-label='Scroll to top'
+                >
+                    <ArrowUp className='h-6 w-6' />
+                </button>
+            )}
         </div>
     );
 }

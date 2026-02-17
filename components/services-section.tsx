@@ -97,7 +97,7 @@ export default function ServicesSection() {
     }, [activeServices, selectedServiceId]);
 
     useEffect(() => {
-        if (selectedServiceId && scrollRef.current) {
+        if (selectedServiceId && scrollRef.current && isMobile) {
             const index = activeServices.findIndex(
                 (service) => service._id === selectedServiceId
             );
@@ -106,15 +106,20 @@ export default function ServicesSection() {
                     index
                 ] as HTMLElement;
                 if (element) {
-                    element.scrollIntoView({
+                    const container = scrollRef.current;
+                    const scrollLeft =
+                        element.offsetLeft -
+                        container.clientWidth / 2 +
+                        element.clientWidth / 2;
+
+                    container.scrollTo({
+                        left: scrollLeft,
                         behavior: 'smooth',
-                        block: 'nearest',
-                        inline: 'center',
                     });
                 }
             }
         }
-    }, [selectedServiceId, activeServices]);
+    }, [selectedServiceId, activeServices, isMobile]);
 
     const currentService = activeServices.find(
         (service: Service) => service._id === selectedServiceId
@@ -159,7 +164,7 @@ export default function ServicesSection() {
         return (
             <section className='bg-[#3c3d3f]'>
                 <div className='relative w-full h-auto flex items-center justify-center overflow-hidden py-20 px-4 lg:px-0'>
-                    <div className='container mx-auto px-4 lg:px-16 py-16 bg-black opacity-50 rounded-2xl max-w-6xl relative'>
+                    <div className='container mx-auto px-4 lg:px-16 py-16 bg-black/50 rounded-2xl max-w-6xl relative'>
                         <div className='text-center text-white'>
                             <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-[#f5b41d] mx-auto mb-4'></div>
                             <p>Loading services...</p>
@@ -182,7 +187,7 @@ export default function ServicesSection() {
                     />
                 </div>
 
-                <div className='container mx-auto px-4 lg:px-16 py-16 bg-black opacity-50 rounded-2xl max-w-6xl relative'>
+                <div className='container mx-auto px-4 lg:px-16 py-16 bg-black/50 rounded-2xl max-w-6xl relative'>
                     <motion.div
                         className='text-center mb-12'
                         initial={{ opacity: 0, y: 20 }}
@@ -234,7 +239,7 @@ export default function ServicesSection() {
                         {/* Left Panel: Service List */}
                         <motion.div
                             ref={scrollRef}
-                            className='flex lg:flex-col gap-6 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 px-4 lg:px-0 snap-x snap-mandatory scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+                            className='relative flex lg:flex-col gap-6 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 px-4 lg:px-0 snap-x snap-mandatory scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
                             initial={{ opacity: 0, x: -20 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.6, delay: 0.3 }}
