@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
@@ -50,7 +50,7 @@ const serviceCheckItems = [
     'Safety inspection',
 ];
 
-export default function ServicesPage() {
+function ServicesContent() {
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -291,5 +291,19 @@ export default function ServicesPage() {
 
             <Footer />
         </div>
+    );
+}
+
+export default function ServicesPage() {
+    return (
+        <Suspense
+            fallback={
+                <div className='min-h-screen bg-[#060608] text-white flex justify-center items-center'>
+                    Loading...
+                </div>
+            }
+        >
+            <ServicesContent />
+        </Suspense>
     );
 }
