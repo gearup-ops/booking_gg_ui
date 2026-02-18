@@ -135,7 +135,7 @@ export default function Footer() {
                         <ul className='space-y-2 text-sm text-gray-300'>
                             <li>
                                 <Link
-                                    href='/services'
+                                    href='/services?service=Standard Service'
                                     className='hover:text-white transition-colors'
                                 >
                                     Standard Service
@@ -143,7 +143,7 @@ export default function Footer() {
                             </li>
                             <li>
                                 <Link
-                                    href='/services'
+                                    href='/services?service=Premium Service'
                                     className='hover:text-white transition-colors'
                                 >
                                     Premium Service
@@ -151,15 +151,15 @@ export default function Footer() {
                             </li>
                             <li>
                                 <Link
-                                    href='/services'
+                                    href='/services?service=Assemble/Dismantle'
                                     className='hover:text-white transition-colors'
                                 >
-                                    Assemble- Dismantle
+                                    Assemble/Dismantle
                                 </Link>
                             </li>
                             <li>
                                 <a
-                                    href='#'
+                                    href='/services?service=Road Bike Service'
                                     className='hover:text-white transition-colors'
                                 >
                                     Road Bike Service
@@ -167,18 +167,18 @@ export default function Footer() {
                             </li>
                             <li>
                                 <a
-                                    href='#'
+                                    href='/services?service=E Bike Service'
                                     className='hover:text-white transition-colors'
                                 >
-                                    E Bike Service
+                                    E-Bike Service
                                 </a>
                             </li>
                             <li>
                                 <Link
-                                    href='/services'
+                                    href='/services?service=Full Service'
                                     className='hover:text-white transition-colors'
                                 >
-                                    Annual Maintenance
+                                    Full Service
                                 </Link>
                             </li>
                         </ul>

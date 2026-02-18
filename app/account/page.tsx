@@ -1264,6 +1264,7 @@ export function Account() {
                             { key: 'settings', label: 'Settings' },
                         ].map((tab) => (
                             <Button
+                                disabled={tab.key === 'settings'}
                                 key={tab.key}
                                 onClick={() => setActiveTab(tab.key)}
                                 className={`px-6 py-2 rounded-md transition-all duration-300 ${

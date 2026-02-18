@@ -12,7 +12,7 @@ export default function WhyChooseUsSection() {
             <div className='container px-16'>
                 <div className='grid lg:grid-cols-3 gap-12 items-center'>
                     <div className='lg:col-span-2 space-y-6'>
-                        <h2 className='text-3xl md:text-4xl font-bold text-[#fbbf24]'>
+                        <h2 className='text-center md:text-left text-3xl md:text-4xl font-bold text-[#fbbf24]'>
                             {homePageData?.s3?.hl || 'Why choose us?'}
                         </h2>
                         <p>

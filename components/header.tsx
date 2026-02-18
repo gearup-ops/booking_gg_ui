@@ -29,7 +29,6 @@ export default function Header() {
     ];
 
     const handleLogout = () => {
-        
         dispatch(logout());
 
         if (mobileMenuOpen) {
@@ -140,19 +139,22 @@ export default function Header() {
                         ))}
 
                         {isAuthenticated ? (
-                            <div className='pt-4 border-t border-[#4a4b4d] mt-4'>
-                                <Link href='/account'>
-                                    <div className='flex items-center space-x-2 mb-3'>
-                                        <User className='w-4 h-4 text-[#fbbf24]' />
-                                        <span className='text-white'>
+                            <div className='flex justify-between items-center pt-4 border-t border-[#4a4b4d] mt-4'>
+                                <Link
+                                    href='/account'
+                                    onClick={() => dispatch(toggleMobileMenu())}
+                                >
+                                    <Button className='flex items-center space-x-2 bg-[#fbbf24] hover:bg-[#f59e0b] text-black'>
+                                        <User className='w-4 h-4' />
+                                        <span>
                                             {user?.firstName} {user?.lastName}
                                         </span>
-                                    </div>
+                                    </Button>
                                 </Link>
+
                                 <Button
                                     onClick={handleLogout}
                                     variant='outline'
-                                    size='sm'
                                     className='border-[#4a4b4d] text-white hover:bg-[#3c3d3f]'
                                 >
                                     Logout

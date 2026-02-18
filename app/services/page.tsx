@@ -9,7 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import Image from 'next/image';
 import { RootState, AppDispatch } from '@/lib/store';
 import { getServicesAction } from '@/lib/actions/serviceActions';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface ServicePrice {
     id: number;
@@ -53,6 +53,7 @@ const serviceCheckItems = [
 export default function ServicesPage() {
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
+    const searchParams = useSearchParams();
 
     const [selectedServiceId, setSelectedServiceId] = useState<number | null>(
         null
@@ -76,9 +77,21 @@ export default function ServicesPage() {
 
     useEffect(() => {
         if (activeServices.length > 0 && selectedServiceId === null) {
+            const serviceName = searchParams.get('service');
+            if (serviceName) {
+                const service = activeServices.find(
+                    (s) =>
+                        s.serviceName.toLowerCase() ===
+                        serviceName.toLowerCase()
+                );
+                if (service) {
+                    setSelectedServiceId(service._id);
+                    return;
+                }
+            }
             setSelectedServiceId(activeServices[0]._id);
         }
-    }, [activeServices, selectedServiceId]);
+    }, [activeServices, selectedServiceId, searchParams]);
 
     useEffect(() => {
         if (selectedServiceId && scrollRef.current) {

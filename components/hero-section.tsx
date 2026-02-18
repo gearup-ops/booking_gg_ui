@@ -75,14 +75,14 @@ export default function HeroSection() {
                                         </p>
                                     )} */}
                                     <Link href='/services'>
-                                        <Button className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold px-8 py-3 text-lg transition-all duration-300 hover:scale-105'>
+                                        <Button className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold px-8 py-6 text-2xl transition-all duration-300 hover:scale-105'>
                                             Book Service Now
                                         </Button>
                                     </Link>
                                 </div>
                             ) : (
                                 <Link href='/services'>
-                                    <Button className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold px-8 py-3 text-lg transition-all duration-300 hover:scale-105'>
+                                    <Button className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold px-8 py-6 text-2xl transition-all duration-300 hover:scale-105'>
                                         Book Service
                                     </Button>
                                 </Link>
