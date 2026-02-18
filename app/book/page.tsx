@@ -31,6 +31,7 @@ import {
     setLoading,
     setCycles,
     removeCycle,
+    clearError,
 } from '@/lib/slices/orderSlice';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, Upload, MapPin, Trash2 } from 'lucide-react';
@@ -75,6 +76,10 @@ function Book() {
     useEffect(() => {
         dispatch(getCitiesAction());
     }, [dispatch]);
+
+    useEffect(() => {
+        dispatch(clearError());
+    }, []);
 
     useEffect(() => {
         window.scrollTo(0, 0);
