@@ -25,12 +25,14 @@ export interface ContactDetails {
     email: string;
     address: string;
     workingHours: string;
-    socialMedia: {
-        facebook?: string;
-        twitter?: string;
-        instagram?: string;
-        linkedin?: string;
-    };
+    facebook?: string;
+    twitter?: string;
+    instagram?: string;
+    linkedin?: string;
+    instaPageUrl?: string;
+    fbPageUrl?: string;
+    twitterPageUrl?: string;
+    whatsappPageUrl?: string;
 }
 
 export interface HomePageData {
@@ -82,7 +84,7 @@ export const contentApi = {
         success: boolean;
         data: AboutUsData;
     }> => {
-        const response = await apiClient.get('/api/v1/aboutUs/getAboutUsData');
+        const response = await apiClient.get('/v1/aboutUs/getAboutUsData');
         return response.data;
     },
 
@@ -90,7 +92,7 @@ export const contentApi = {
         success: boolean;
         data: ContactDetails;
     }> => {
-        const response = await apiClient.get('/api/contact/getContactDetails');
+        const response = await apiClient.get('/contact/getContactDetails');
         return response.data;
     },
 

@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useSelector } from 'react-redux';
+import Link from 'next/link';
 
 const heroImages = [
     {
@@ -409,9 +410,12 @@ export default function AboutPage() {
                                     </span>{' '}
                                     be a chore - let us take care of it for you!
                                 </h3>
-                                <Button className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold px-8 py-3'>
+                                <Link
+                                    href='/contact'
+                                    className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold px-8 py-3 rounded-md transition duration-300 ease-in-out'
+                                >
                                     Contact Now
-                                </Button>
+                                </Link>
                             </div>
                         </div>
                     </motion.div>

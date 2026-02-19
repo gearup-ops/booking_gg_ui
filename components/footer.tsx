@@ -1,4 +1,11 @@
-import { Facebook, Twitter, Instagram, Youtube, Linkedin } from 'lucide-react';
+import {
+    Facebook,
+    Twitter,
+    Instagram,
+    Youtube,
+    Linkedin,
+    MessageCircle,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
@@ -27,7 +34,7 @@ export default function Footer() {
                                 className='w-8 h-8'
                             />
                             <span className='text-xl font-bold text-white'>
-                                GearGrow Cycle
+                                Gear Grow Cycle
                             </span>
                         </div>
                         <p className='text-gray-300 text-sm'>
@@ -43,6 +50,19 @@ export default function Footer() {
                             >
                                 <Linkedin className='w-5 h-5' />
                             </Button> */}
+                            <Button
+                                onClick={() =>
+                                    window.open(
+                                        'https://wa.me/918888574242',
+                                        '_blank'
+                                    )
+                                }
+                                variant='ghost'
+                                size='icon'
+                                className='text-[#fbbf24] hover:bg-[#3c3d3f]'
+                            >
+                                <MessageCircle className='w-5 h-5' />
+                            </Button>
                             <Button
                                 onClick={() =>
                                     window.open(
@@ -114,6 +134,14 @@ export default function Footer() {
                                     className='hover:text-white transition-colors'
                                 >
                                     About
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href='/contact'
+                                    className='hover:text-white transition-colors'
+                                >
+                                    Contact us
                                 </Link>
                             </li>
                             <li>
@@ -209,7 +237,7 @@ export default function Footer() {
 
                 <div className='border-t border-[#4a4b4d] mt-8 pt-8 text-center text-sm text-gray-300'>
                     <p>
-                        &copy; {new Date().getFullYear()} GearGrow Cycle. All
+                        &copy; {new Date().getFullYear()} Gear Grow Cycle. All
                         rights reserved.
                     </p>
                 </div>

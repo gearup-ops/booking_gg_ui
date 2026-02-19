@@ -10,8 +10,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { getLocaleStorage } from '@/lib/utils';
 
 export default function Header() {
+    const { cities } = useSelector((state: RootState) => state.city);
     const dispatch = useDispatch();
     const pathname = usePathname();
     const mobileMenuOpen = useSelector(
@@ -26,6 +28,7 @@ export default function Header() {
         { name: 'For Business', href: '/for-business' },
         { name: 'Stories', href: '/stories' },
         { name: 'About', href: '/about' },
+        { name: 'Contact', href: '/contact' },
     ];
 
     const handleLogout = () => {
@@ -35,6 +38,13 @@ export default function Header() {
             dispatch(toggleMobileMenu());
         }
     };
+
+    const cityId = getLocaleStorage('cityId');
+    const city = cities.find((city) =>
+        cityId && cityId !== ''
+            ? city.id === parseInt(cityId)
+            : city.id === null
+    );
 
     return (
         <motion.header
@@ -55,7 +65,10 @@ export default function Header() {
                             className='w-8 h-8'
                         />
                         <span className='text-xl font-bold text-white'>
-                            GearGrow Cycle
+                            Gear Grow Cycle
+                            <span className='block text-sm text-gray-400'>
+                                {city?.name}
+                            </span>
                         </span>
                     </Link>
 
