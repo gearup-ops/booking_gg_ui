@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Header from '@/components/header';
+
 import Footer from '@/components/footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -1246,9 +1246,7 @@ export function Account() {
 
     return (
         <div className='min-h-screen bg-[#3c3d3f] text-white'>
-            <Header />
-
-            <div className='container mx-auto px-4 py-8'>
+            <div className='container mx-auto px-4 py-8 pt-24'>
                 <div className='text-center mb-8'>
                     <h1 className='text-3xl font-bold text-[#fbbf24]'>
                         My Account
@@ -1261,7 +1259,7 @@ export function Account() {
                         {[
                             { key: 'profile', label: 'Profile' },
                             { key: 'orders', label: 'My Orders' },
-                            { key: 'settings', label: 'Settings' },
+                            // { key: 'settings', label: 'Settings' },
                         ].map((tab) => (
                             <Button
                                 disabled={tab.key === 'settings'}

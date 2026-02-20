@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Header from '@/components/header';
+
 import Footer from '@/components/footer';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
@@ -43,7 +43,6 @@ export default function StoriesPage() {
             image: '/happy-customer-portrait.png',
         })) || sampleTestimonials;
 
-
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentTestimonialIndex(
@@ -66,10 +65,8 @@ export default function StoriesPage() {
 
     return (
         <div className='min-h-screen bg-[#060608] text-white'>
-            <Header />
-
             {/* Hero Section for Stories */}
-            <section className='py-16 bg-[#060608]'>
+            <section className='py-16 bg-[#060608] pt-24'>
                 <div className='container mx-auto px-4 text-center'>
                     <h1 className='text-4xl md:text-6xl font-bold text-[#fbbf24] mb-4'>
                         Our Happy Riders
@@ -91,7 +88,7 @@ export default function StoriesPage() {
                     <div className='max-w-4xl mx-auto'>
                         <div className='bg-[#060608] rounded-lg p-8 relative border border-[#4a4b4d]'>
                             <div className='flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-6'>
-                                <Image
+                                {/* <Image
                                     src={
                                         testimonials[currentTestimonialIndex]
                                             .image || '/placeholder.svg'
@@ -103,7 +100,7 @@ export default function StoriesPage() {
                                     width={100}
                                     height={100}
                                     className='rounded-full object-cover flex-shrink-0'
-                                />
+                                /> */}
                                 <div className='flex-1 text-center md:text-left'>
                                     <p className='text-gray-300 text-lg leading-relaxed mb-4'>
                                         {

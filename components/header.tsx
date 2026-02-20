@@ -1,19 +1,22 @@
 'use client';
 
+import { useRef, useEffect } from 'react';
+
 import { useDispatch, useSelector } from 'react-redux';
-import { Menu, X, User } from 'lucide-react';
+import { Menu, X, User, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { RootState } from '@/lib/store';
-import { toggleMobileMenu } from '@/lib/slices/uiSlice';
+import { toggleMobileMenu, setCityPopup } from '@/lib/slices/uiSlice';
 import { logout } from '@/lib/slices/authSlice';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { getLocaleStorage } from '@/lib/utils';
 
 export default function Header() {
-    const { cities } = useSelector((state: RootState) => state.city);
+    const { cities, selectedCityId } = useSelector(
+        (state: RootState) => state.city
+    );
     const dispatch = useDispatch();
     const pathname = usePathname();
     const mobileMenuOpen = useSelector(
@@ -39,16 +42,31 @@ export default function Header() {
         }
     };
 
-    const cityId = getLocaleStorage('cityId');
     const city = cities.find((city) =>
-        cityId && cityId !== ''
-            ? city.id === parseInt(cityId)
-            : city.id === null
+        selectedCityId !== null ? city.id === selectedCityId : city.id === null
     );
+
+    // Close mobile menu when clicking outside header
+    const headerRef = useRef<HTMLElement>(null);
+    useEffect(() => {
+        if (!mobileMenuOpen) return;
+        const handleClickOutside = (e: MouseEvent) => {
+            if (
+                headerRef.current &&
+                !headerRef.current.contains(e.target as Node)
+            ) {
+                dispatch(toggleMobileMenu());
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () =>
+            document.removeEventListener('mousedown', handleClickOutside);
+    }, [mobileMenuOpen, dispatch]);
 
     return (
         <motion.header
-            className='bg-[#3c3d3f] border-b border-[#4a4b4d]'
+            ref={headerRef}
+            className='absolute top-0 left-0 right-0 z-40 bg-transparent'
             initial={{ y: -100 }}
             animate={{ y: 0 }}
             transition={{ duration: 0.6 }}
@@ -62,13 +80,25 @@ export default function Header() {
                             alt='GearGrow Cycle Logo'
                             width={32}
                             height={32}
-                            className='w-8 h-8'
+                            className='w-16 h-16'
                         />
                         <span className='text-xl font-bold text-white'>
                             Gear Grow Cycle
-                            <span className='block text-sm text-gray-400'>
-                                {city?.name}
-                            </span>
+                            {city?.name && (
+                                <button
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        dispatch(setCityPopup(true));
+                                    }}
+                                    className='flex items-center gap-1 text-xs px-2 py-1 rounded-full border border-[#fbbf24]/40 bg-[#fbbf24]/10 hover:bg-[#fbbf24]/20 transition-colors cursor-pointer group'
+                                    title='Change city'
+                                >
+                                    <MapPin className='w-2.5 h-2.5 text-[#fbbf24]' />
+                                    <span className='text-xs text-[#fbbf24] group-hover:underline'>
+                                        {city.name}
+                                    </span>
+                                </button>
+                            )}
                         </span>
                     </Link>
 
@@ -130,7 +160,7 @@ export default function Header() {
                 {/* Mobile Navigation */}
                 {mobileMenuOpen && (
                     <motion.nav
-                        className='md:hidden mt-4 pb-4 border-t border-[#4a4b4d] pt-4'
+                        className='md:hidden mt-4 p-4 border-t border-[#4a4b4d] bg-[#060608]'
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}

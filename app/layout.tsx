@@ -5,6 +5,8 @@ import { GeistMono } from 'geist/font/mono';
 import './globals.css';
 import { Provider } from 'react-redux';
 import { store } from '@/lib/store';
+import CityPopup from '@/components/city-popup';
+import LayoutShell from '@/components/layout-shell';
 
 const metadata: Metadata = {
     title: 'GearGrow Cycle - Professional Bicycle Maintenance',
@@ -22,7 +24,10 @@ export default function RootLayout({
         <html lang='en'>
             <head></head>
             <body>
-                <Provider store={store}>{children}</Provider>
+                <Provider store={store}>
+                    <CityPopup />
+                    <LayoutShell>{children}</LayoutShell>
+                </Provider>
             </body>
         </html>
     );

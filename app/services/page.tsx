@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import Header from '@/components/header';
+
 import Footer from '@/components/footer';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -65,6 +65,7 @@ function ServicesContent() {
     const { services, isLoading } = useSelector(
         (state: RootState) => state.services
     );
+    const { selectedCityId } = useSelector((state: RootState) => state.city);
 
     const activeServices =
         services
@@ -72,8 +73,10 @@ function ServicesContent() {
             .sort((a: Service, b: Service) => a.orderNo - b.orderNo) || [];
 
     useEffect(() => {
-        dispatch(getServicesAction({ city: 3 }));
-    }, [dispatch]);
+        if (selectedCityId !== null) {
+            dispatch(getServicesAction({ city: selectedCityId }));
+        }
+    }, [dispatch, selectedCityId]);
 
     useEffect(() => {
         if (activeServices.length > 0 && selectedServiceId === null) {
@@ -103,10 +106,14 @@ function ServicesContent() {
                     index
                 ] as HTMLElement;
                 if (element) {
-                    element.scrollIntoView({
+                    const container = scrollRef.current;
+                    const scrollLeft =
+                        element.offsetLeft -
+                        container.offsetWidth / 2 +
+                        element.offsetWidth / 2;
+                    container.scrollTo({
+                        left: scrollLeft,
                         behavior: 'smooth',
-                        block: 'nearest',
-                        inline: 'center',
                     });
                 }
             }
@@ -162,10 +169,8 @@ function ServicesContent() {
 
     return (
         <div className='min-h-screen bg-[#060608] text-white'>
-            <Header />
-
             {/* Service Tabs */}
-            <section className='py-8 bg-[#3c3d3f]'>
+            <section className='py-8 bg-[#3c3d3f] pt-24'>
                 <div className='container mx-auto px-4'>
                     <div
                         ref={scrollRef}

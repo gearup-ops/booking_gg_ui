@@ -1,7 +1,7 @@
 'use client';
 
 import Footer from '@/components/footer';
-import Header from '@/components/header';
+
 import { Button } from '@/components/ui/button';
 import { getContactDetailsAction } from '@/lib/actions/contentActions';
 import { ContactDetails } from '@/lib/api/contentApi';
@@ -49,8 +49,7 @@ export default function ContactPage() {
 
     return (
         <div className='min-h-screen bg-[#060608] text-white'>
-            <Header />
-            <div className='min-h-screen bg-black px-4 py-10 text-white flex justify-center'>
+            <div className='min-h-screen bg-black px-4 py-10 text-white flex justify-center pt-24'>
                 <div className='w-full max-w-2xl bg-zinc-900 border-2 border-yellow-400 shadow-[0_0_15px_#facc15] p-6'>
                     {/* Logo */}
                     <div className='flex justify-center mb-4'>

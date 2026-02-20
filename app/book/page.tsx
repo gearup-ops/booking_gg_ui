@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense, useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Header from '@/components/header';
+
 import Footer from '@/components/footer';
 import ErrorBoundary from '@/components/error-boundry';
 import { Button } from '@/components/ui/button';
@@ -1414,74 +1414,74 @@ function Book() {
     return (
         <ErrorBoundary>
             <div className='min-h-screen bg-[#3c3d3f] text-white'>
-                <Header />
-
-                <div className='bg-white text-black m-6'>
-                    {/* Header Section */}
-                    <div className='bg-black py-6'>
-                        <div className='container mx-auto px-4'>
-                            <div className='text-center'>
-                                <h1 className='text-2xl font-semibold text-[#fbbf24]'>
-                                    {selectedService?.name} -{' '}
-                                    {selectedService?.type === 'gear'
-                                        ? 'Gear'
-                                        : 'Non Gear'}{' '}
-                                    Bicycle
-                                </h1>
-                                <p className='text-gray-300 mt-1'>
-                                    Confirm Your booking
-                                </p>
+                <div className='pt-24'>
+                    <div className='bg-white text-black mx-6 mb-6'>
+                        {/* Header Section */}
+                        <div className='bg-black py-6'>
+                            <div className='container mx-auto px-4'>
+                                <div className='text-center'>
+                                    <h1 className='text-2xl font-semibold text-[#fbbf24]'>
+                                        {selectedService?.name} -{' '}
+                                        {selectedService?.type === 'gear'
+                                            ? 'Gear'
+                                            : 'Non Gear'}{' '}
+                                        Bicycle
+                                    </h1>
+                                    <p className='text-gray-300 mt-1'>
+                                        Confirm Your booking
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className='container mx-auto py-12'>
-                        {/* Progress Steps */}
-                        <div className='px-4'>{renderProgressSteps()}</div>
+                        <div className='container mx-auto py-12'>
+                            {/* Progress Steps */}
+                            <div className='px-4'>{renderProgressSteps()}</div>
 
-                        {/* Step Content */}
-                        <AnimatePresence mode='wait'>
-                            {currentStep === 'customer-details' &&
-                                renderCustomerDetailsStep()}
-                            {currentStep === 'cycle-details' &&
-                                renderCycleDetailsStep()}
-                            {currentStep === 'confirmation' &&
-                                renderConfirmationStep()}
-                        </AnimatePresence>
+                            {/* Step Content */}
+                            <AnimatePresence mode='wait'>
+                                {currentStep === 'customer-details' &&
+                                    renderCustomerDetailsStep()}
+                                {currentStep === 'cycle-details' &&
+                                    renderCycleDetailsStep()}
+                                {currentStep === 'confirmation' &&
+                                    renderConfirmationStep()}
+                            </AnimatePresence>
 
-                        {/* Navigation Buttons */}
-                        {currentStep !== 'confirmation' && (
-                            <div className='flex justify-between lg:justify-center gap-2 mt-12 max-w-4xl lg:max-w-full mx-4'>
-                                <Button
-                                    onClick={handlePrevStep}
-                                    variant='outline'
-                                    className='border-[#4a4b4d] text-white hover:bg-[#2a2b2d] px-8 py-3 bg-black'
-                                    disabled={isLoading}
-                                >
-                                    Back
-                                </Button>
-                                <Button
-                                    onClick={handleNext}
-                                    disabled={
-                                        isLoading ||
-                                        (currentStep === 'cycle-details' &&
-                                            !termsAccepted)
-                                    }
-                                    className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold px-8 py-3 rounded-full disabled:opacity-50 disabled:cursor-not-allowed'
-                                >
-                                    {isLoading ? (
-                                        <div className='flex items-center gap-2'>
-                                            <div className='w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin'></div>
-                                            Submitting...
-                                        </div>
-                                    ) : currentStep === 'cycle-details' ? (
-                                        'Submit Booking'
-                                    ) : (
-                                        'Next'
-                                    )}
-                                </Button>
-                            </div>
-                        )}
+                            {/* Navigation Buttons */}
+                            {currentStep !== 'confirmation' && (
+                                <div className='flex justify-between lg:justify-center gap-2 mt-12 max-w-4xl lg:max-w-full mx-4'>
+                                    <Button
+                                        onClick={handlePrevStep}
+                                        variant='outline'
+                                        className='border-[#4a4b4d] text-white hover:bg-[#2a2b2d] px-8 py-3 bg-black'
+                                        disabled={isLoading}
+                                    >
+                                        Back
+                                    </Button>
+                                    <Button
+                                        onClick={handleNext}
+                                        disabled={
+                                            isLoading ||
+                                            (currentStep === 'cycle-details' &&
+                                                !termsAccepted)
+                                        }
+                                        className='bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold px-8 py-3 rounded-full disabled:opacity-50 disabled:cursor-not-allowed'
+                                    >
+                                        {isLoading ? (
+                                            <div className='flex items-center gap-2'>
+                                                <div className='w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin'></div>
+                                                Submitting...
+                                            </div>
+                                        ) : currentStep === 'cycle-details' ? (
+                                            'Submit Booking'
+                                        ) : (
+                                            'Next'
+                                        )}
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 

@@ -53,7 +53,7 @@ export default function TestimonialsSection({
                     </button>
 
                     {/* Profile Image */}
-                    <div className='flex-shrink-0'>
+                    {/* <div className='flex-shrink-0'>
                         <div className='w-48 h-48 bg-gray-600 rounded-lg overflow-hidden border-4 border-gray-500'>
                             <img
                                 src={
@@ -64,7 +64,7 @@ export default function TestimonialsSection({
                                 className='w-full h-full object-cover'
                             />
                         </div>
-                    </div>
+                    </div> */}
 
                     {/* Testimonial Content */}
                     <div className='flex-1 bg-white rounded-lg p-6 relative'>

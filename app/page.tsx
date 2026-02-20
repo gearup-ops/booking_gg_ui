@@ -1,6 +1,5 @@
 'use client';
 
-import Header from '@/components/header';
 import HeroSection from '@/components/hero-section';
 import FeaturesSection from '@/components/features-section';
 import ServicesSection from '@/components/services-section';
@@ -18,11 +17,7 @@ import { getCitiesAction } from '@/lib/actions/cityActions';
 import type { AppDispatch } from '@/lib/store';
 import { getUserByIdAction } from '@/lib/actions/userActions';
 import { setAuthenticated } from '@/lib/slices/authSlice';
-import {
-    getLocaleStorage,
-    removeFromLocalStorage,
-    setLocaleStorage,
-} from '@/lib/utils';
+import { getLocaleStorage, removeFromLocalStorage } from '@/lib/utils';
 import { ArrowUp } from 'lucide-react';
 
 export default function HomePage() {
@@ -47,9 +42,6 @@ export default function HomePage() {
         (state: any) => state.content
     );
     const { user, isAuthenticated } = useSelector((state: any) => state.auth);
-    const { cities, isLoading: isCityLoading } = useSelector(
-        (state: any) => state.city
-    );
 
     const [showTopBtn, setShowTopBtn] = useState(false);
 
@@ -89,29 +81,9 @@ export default function HomePage() {
         dispatch(getCitiesAction());
     }, [dispatch]);
 
-    // City options
-    // const cities = [
-    //     { id: 3, name: 'Pune' },
-    //     { id: 1, name: 'Mumbai' },
-    //     { id: 4, name: 'Bengalore' },
-    // ];
-
-    // Popup state
-    const [showPopup, setShowPopup] = useState(
-        getLocaleStorage('cityId') ? false : true
-    );
-    const [selectedCityId, setSelectedCityId] = useState<number | null>(null);
-
-    useEffect(() => {
-        if (cities && cities.length > 0 && selectedCityId === null) {
-            setSelectedCityId(cities[0].id);
-        }
-    }, [cities, selectedCityId]);
-
     useEffect(() => {
         const token = getLocaleStorage('token');
         if (token && !isAuthenticated) {
-            // Dispatch an action to fetch user details using the token
             const res = dispatch(getUserByIdAction()).unwrap();
             console.log(
                 res
@@ -127,57 +99,10 @@ export default function HomePage() {
                     })
             );
         }
-    }, [selectedCityId]);
-
-    const handleClosePopup = () => {
-        if (selectedCityId !== null) {
-            setLocaleStorage('cityId', selectedCityId.toString());
-            setShowPopup(false);
-        }
-    };
-
-    useEffect(() => {
-        if (getLocaleStorage('cityId')) {
-            setShowPopup(false);
-        } else {
-            setShowPopup(true);
-        }
-    }, [getLocaleStorage('cityId')]);
+    }, []);
 
     return (
         <div className='min-h-screen bg-[#060608] text-white'>
-            {showPopup && (
-                <div className='fixed inset-0 bg-black/60 flex items-center justify-center z-50'>
-                    <div className='bg-white text-black rounded-lg p-6 min-w-[300px] shadow-lg'>
-                        <h2 className='text-lg font-semibold mb-4'>
-                            Select your city
-                        </h2>
-                        <div className='flex flex-row gap-2 mb-4'>
-                            {cities.map((city: any) => (
-                                <button
-                                    key={city.id}
-                                    className={`w-full p-2 border rounded ${
-                                        selectedCityId === city.id
-                                            ? 'bg-[#fbbf24] text-white border-blue-600'
-                                            : 'bg-white text-black border-gray-300'
-                                    }`}
-                                    onClick={() => setSelectedCityId(city.id)}
-                                    type='button'
-                                >
-                                    {city.name}
-                                </button>
-                            ))}
-                        </div>
-                        <button
-                            className='bg-[#000] text-[#fbbf24] px-4 py-2 rounded w-full'
-                            onClick={handleClosePopup}
-                        >
-                            Confirm
-                        </button>
-                    </div>
-                </div>
-            )}
-            <Header />
             <HeroSection />
             <FeaturesSection />
             <ServicesSection />

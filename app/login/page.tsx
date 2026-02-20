@@ -38,6 +38,8 @@ export default function LoginPage() {
         useSelector((state: RootState) => state.auth);
     const [otpInputs, setOtpInputs] = useState<string>('');
     const [confirmation, setConfirmation] = useState<any>(null);
+    const [isSendingOtp, setIsSendingOtp] = useState(false);
+    const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
 
     useEffect(() => {
         if (isAuthenticated || getLocaleStorage('token')) {
@@ -57,11 +59,10 @@ export default function LoginPage() {
 
     const handleGetOTP = async () => {
         if (!phone || phone.length < 10) {
-            // Error message will be handled by the slice if API returns an error
             return;
         }
+        setIsSendingOtp(true);
         const verifier = await setupRecaptcha();
-        // setupRecaptcha(); // setup invisible recaptcha
         try {
             let confirmationResult;
             if (typeof window !== 'undefined') {
@@ -79,6 +80,8 @@ export default function LoginPage() {
         } catch (err: any) {
             console.error(err);
             alert(err.message);
+        } finally {
+            setIsSendingOtp(false);
         }
     };
 
@@ -90,15 +93,14 @@ export default function LoginPage() {
         if (!confirmation) return alert('No confirmation available');
         if (otp.length !== 6) {
             alert('Please enter a valid 6-digit OTP');
-            // Error message will be handled by the slice if API returns an error
             return;
         }
+        setIsVerifyingOtp(true);
         try {
             const result = await confirmation.confirm(otp);
             const user = result.user;
             const token = await user.getIdToken();
 
-            // Immediately call your backend API
             const res = await dispatch(
                 registerUserAction({
                     phone: user.phoneNumber.slice(3) || '',
@@ -113,6 +115,8 @@ export default function LoginPage() {
         } catch (err: any) {
             console.error(err);
             alert(err.message);
+        } finally {
+            setIsVerifyingOtp(false);
         }
     };
 
@@ -153,7 +157,7 @@ export default function LoginPage() {
                         />
                     </Link>
 
-                    <div className='space-y-2 p-4 md:p-8 lg:pb-16 bg-black opacity-50 rounded-2xl max-w-xl lg:max-w-4xl'>
+                    <div className='space-y-2 p-4 md:p-8 lg:pb-16 bg-black/50 backdrop-blur-sm rounded-2xl max-w-xl lg:max-w-4xl'>
                         <h1 className='text-4xl md:text-6xl font-bold text-white leading-tight'>
                             Pedal with Peace of mind
                         </h1>
@@ -199,13 +203,39 @@ export default function LoginPage() {
                                     <Button
                                         onClick={handleGetOTP}
                                         disabled={
+                                            isSendingOtp ||
                                             isLoading ||
                                             !phone ||
                                             phone.length < 10
                                         }
                                         className='h-12 bg-[#F5B41D] hover:bg-[#F5B41D] text-black font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed'
                                     >
-                                        {isLoading ? 'Sending...' : 'Get OTP'}
+                                        {isSendingOtp ? (
+                                            <span className='flex items-center gap-2'>
+                                                <svg
+                                                    className='animate-spin h-5 w-5'
+                                                    viewBox='0 0 24 24'
+                                                >
+                                                    <circle
+                                                        className='opacity-25'
+                                                        cx='12'
+                                                        cy='12'
+                                                        r='10'
+                                                        stroke='currentColor'
+                                                        strokeWidth='4'
+                                                        fill='none'
+                                                    />
+                                                    <path
+                                                        className='opacity-75'
+                                                        fill='currentColor'
+                                                        d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z'
+                                                    />
+                                                </svg>
+                                                Sending...
+                                            </span>
+                                        ) : (
+                                            'Get OTP'
+                                        )}
                                     </Button>
                                 </div>
                             </div>
@@ -279,10 +309,39 @@ export default function LoginPage() {
 
                                     <Button
                                         onClick={handleSubmitOTP}
-                                        disabled={isLoading || otp.length !== 6}
+                                        disabled={
+                                            isVerifyingOtp ||
+                                            isLoading ||
+                                            otp.length !== 6
+                                        }
                                         className='h-12 bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed'
                                     >
-                                        {isLoading ? 'Verifying...' : 'Submit'}
+                                        {isVerifyingOtp ? (
+                                            <span className='flex items-center gap-2'>
+                                                <svg
+                                                    className='animate-spin h-5 w-5'
+                                                    viewBox='0 0 24 24'
+                                                >
+                                                    <circle
+                                                        className='opacity-25'
+                                                        cx='12'
+                                                        cy='12'
+                                                        r='10'
+                                                        stroke='currentColor'
+                                                        strokeWidth='4'
+                                                        fill='none'
+                                                    />
+                                                    <path
+                                                        className='opacity-75'
+                                                        fill='currentColor'
+                                                        d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z'
+                                                    />
+                                                </svg>
+                                                Verifying...
+                                            </span>
+                                        ) : (
+                                            'Submit'
+                                        )}
                                     </Button>
                                 </div>
                             </div>

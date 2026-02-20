@@ -29,7 +29,7 @@ export default function HeroSection() {
             {/* Background gradient overlay */}
             <div className='absolute inset-0 bg-gradient-to-br from-[#060608] via-[#3c3d3f] to-[#060608] opacity-90'></div>
 
-            <div className='relative z-10 container mx-auto px-4 py-20'>
+            <div className='relative z-10 container mx-auto px-4 py-24'>
                 <div className='grid lg:grid-cols-2 gap-12 items-center min-h-[80vh]'>
                     <motion.div
                         className='space-y-6'

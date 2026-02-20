@@ -1,13 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Header from '@/components/header';
+
 import Footer from '@/components/footer';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { getHomePageDataAction } from '@/lib/actions/contentActions';
+import type { AppDispatch } from '@/lib/store';
 import Link from 'next/link';
 
 const heroImages = [
@@ -59,8 +61,17 @@ const brands = [
 
 export default function AboutPage() {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const dispatch = useDispatch<AppDispatch>();
 
-    const { homePageData } = useSelector((state: any) => state.content);
+    const { homePageData, isLoading } = useSelector(
+        (state: any) => state.content
+    );
+
+    useEffect(() => {
+        if (!homePageData && !isLoading) {
+            dispatch(getHomePageDataAction());
+        }
+    }, [dispatch, homePageData, isLoading]);
 
     const stats = homePageData?.s6?.data || [
         {
@@ -97,10 +108,8 @@ export default function AboutPage() {
 
     return (
         <div className='min-h-screen bg-[#060608] text-white'>
-            <Header />
-
             {/* Hero Image Carousel */}
-            <section className='py-8 bg-[#060608]'>
+            <section className='py-8 bg-[#060608] pt-24'>
                 <div className='container mx-auto px-4'>
                     <motion.div
                         className='relative max-w-4xl mx-auto'

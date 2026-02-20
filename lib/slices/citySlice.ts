@@ -4,12 +4,14 @@ import { City } from '../api/cityApi';
 
 interface CityState {
     cities: City[];
+    selectedCityId: number | null;
     isLoading: boolean;
     error: string | null;
 }
 
 const initialState: CityState = {
     cities: [],
+    selectedCityId: null,
     isLoading: false,
     error: null,
 };
@@ -18,6 +20,9 @@ const citySlice = createSlice({
     name: 'city',
     initialState,
     reducers: {
+        setSelectedCityId: (state, action: PayloadAction<number | null>) => {
+            state.selectedCityId = action.payload;
+        },
         setLoading: (state, action: PayloadAction<boolean>) => {
             state.isLoading = action.payload;
         },
@@ -43,5 +48,5 @@ const citySlice = createSlice({
     },
 });
 
-export const { setLoading, setError } = citySlice.actions;
+export const { setSelectedCityId, setLoading, setError } = citySlice.actions;
 export default citySlice.reducer;
