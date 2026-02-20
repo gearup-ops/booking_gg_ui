@@ -9,7 +9,7 @@ import CityPopup from '@/components/city-popup';
 import LayoutShell from '@/components/layout-shell';
 
 const metadata: Metadata = {
-    title: 'GearGrow Cycle - Professional Bicycle Maintenance',
+    title: 'Gear Grow Cycle',
     description:
         'Doorstep bicycle maintenance services. Professional bike servicing at your convenience.',
     generator: 'v0.dev',
@@ -22,7 +22,10 @@ export default function RootLayout({
 }>) {
     return (
         <html lang='en'>
-            <head></head>
+            <head>
+                <title>Gear Grow Cycle</title>
+                <link rel='icon' href='/images/logo.png' />
+            </head>
             <body>
                 <Provider store={store}>
                     <CityPopup />
