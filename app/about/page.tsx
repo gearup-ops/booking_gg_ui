@@ -109,7 +109,7 @@ export default function AboutPage() {
     return (
         <div className='min-h-screen bg-[#060608] text-white'>
             {/* Hero Image Carousel */}
-            <section className='py-8 bg-[#060608] pt-24'>
+            <section className='py-8 bg-[#060608] pt-32'>
                 <div className='container mx-auto px-4'>
                     <motion.div
                         className='relative max-w-4xl mx-auto'

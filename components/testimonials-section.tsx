@@ -36,7 +36,7 @@ export default function TestimonialsSection({
     const currentTestimonial = testimonials[currentIndex];
 
     return (
-        <div className='bg-[#3c3d3f] py-16'>
+        <div className='bg-[#3c3d3f] pb-16'>
             <div className=' p-8 rounded-lg max-w-4xl mx-auto'>
                 <h2 className='text-3xl font-bold text-yellow-400 text-center mb-8'>
                     Happy riders!

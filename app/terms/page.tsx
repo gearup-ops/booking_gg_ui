@@ -7,7 +7,7 @@ export default function TermsPage() {
     return (
         <div className='min-h-screen bg-[#060608] text-white'>
             {/* Hero Section with Logo and Title */}
-            <section className='py-16 bg-[#060608] pt-24'>
+            <section className='py-16 bg-[#060608] pt-32'>
                 <div className='container mx-auto px-4'>
                     <div className='grid lg:grid-cols-2 gap-12 items-center'>
                         {/* Large Logo */}

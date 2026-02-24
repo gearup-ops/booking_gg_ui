@@ -1414,7 +1414,7 @@ function Book() {
     return (
         <ErrorBoundary>
             <div className='min-h-screen bg-[#3c3d3f] text-white'>
-                <div className='pt-24'>
+                <div className='pt-32'>
                     <div className='bg-white text-black mx-6 mb-6'>
                         {/* Header Section */}
                         <div className='bg-black py-6'>

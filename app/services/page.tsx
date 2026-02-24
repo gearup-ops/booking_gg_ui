@@ -30,24 +30,43 @@ interface Service {
     prices: ServicePrice[];
 }
 
+// const serviceCheckItems = [
+//     'Brake adjustment and inspection',
+//     'Gear shifting optimization',
+//     'Chain cleaning and lubrication',
+//     'Tire pressure check and adjustment',
+//     'Wheel alignment and spoke tension',
+//     'Handlebar and stem tightening',
+//     'Seat height and angle adjustment',
+//     'Pedal inspection and tightening',
+//     'Cable tension adjustment',
+//     'Frame cleaning and inspection',
+//     'Derailleur alignment',
+//     'Bottom bracket check',
+//     'Headset adjustment',
+//     'Quick release inspection',
+//     'Reflector and light check',
+//     'Bell and horn functionality',
+//     'Safety inspection',
+// ];
 const serviceCheckItems = [
-    'Brake adjustment and inspection',
-    'Gear shifting optimization',
-    'Chain cleaning and lubrication',
-    'Tire pressure check and adjustment',
-    'Wheel alignment and spoke tension',
-    'Handlebar and stem tightening',
-    'Seat height and angle adjustment',
-    'Pedal inspection and tightening',
-    'Cable tension adjustment',
-    'Frame cleaning and inspection',
-    'Derailleur alignment',
-    'Bottom bracket check',
-    'Headset adjustment',
-    'Quick release inspection',
-    'Reflector and light check',
-    'Bell and horn functionality',
-    'Safety inspection',
+    'Stem Bolt (Alignment of Headset)',
+    'Brakes (Check & Adjust)',
+    'Pedals (Tightening)',
+    'Axle Setting (Loose & Tightening)',
+    'Tyre Pressure (Check/Inflate)',
+    'Gear Tune-up',
+    'Clean up with D-Greaser',
+    'Bottom Bracket (Checkup)',
+    'Chain (Check & Lube)',
+    'Cables (Check & Lube)',
+    'Checking & Tightening All Screws & Bolts',
+    'Wheel Truing (Not Wheel Bend)',
+    'Pre-ride Check',
+    'Safety Checks',
+    'Hub Checkup',
+    'Clean (Wipe Clean The Bike)',
+    'Brake Levers (Loose & Tightening)',
 ];
 
 function ServicesContent() {
@@ -170,7 +189,7 @@ function ServicesContent() {
     return (
         <div className='min-h-screen bg-[#060608] text-white'>
             {/* Service Tabs */}
-            <section className='py-8 bg-[#3c3d3f] pt-24'>
+            <section className='py-8 bg-[#3c3d3f] pt-32'>
                 <div className='container mx-auto px-4'>
                     <div
                         ref={scrollRef}

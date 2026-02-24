@@ -10,7 +10,7 @@ export default function StatsSection() {
     ];
 
     return (
-        <section className='py-16 bg-[#3c3d3f]'>
+        <section className='pb-16 bg-[#3c3d3f]'>
             <div className='container mx-auto px-4'>
                 <div className='text-center mb-8'>
                     <p className='text-gray-300 px-24'>

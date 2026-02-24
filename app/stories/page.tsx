@@ -66,7 +66,7 @@ export default function StoriesPage() {
     return (
         <div className='min-h-screen bg-[#060608] text-white'>
             {/* Hero Section for Stories */}
-            <section className='py-16 bg-[#060608] pt-24'>
+            <section className='py-16 bg-[#060608] pt-32'>
                 <div className='container mx-auto px-4 text-center'>
                     <h1 className='text-4xl md:text-6xl font-bold text-[#fbbf24] mb-4'>
                         Our Happy Riders

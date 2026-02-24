@@ -2,7 +2,7 @@ export default function BrandsSection() {
     const brands = ['HERO', 'FIREFOX', 'SCHNELL', 'GIANT', 'TREK'];
 
     return (
-        <section className='py-16 bg-[#3c3d3f]'>
+        <section className='pb-16 bg-[#3c3d3f]'>
             <div className='container mx-auto px-4'>
                 <h2 className='text-2xl font-bold text-center mb-8 text-[#fbbf24]'>
                     Brands we served for

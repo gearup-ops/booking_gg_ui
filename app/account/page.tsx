@@ -1246,7 +1246,7 @@ export function Account() {
 
     return (
         <div className='min-h-screen bg-[#3c3d3f] text-white'>
-            <div className='container mx-auto px-4 py-8 pt-24'>
+            <div className='container mx-auto px-4 py-8 pt-32'>
                 <div className='text-center mb-8'>
                     <h1 className='text-3xl font-bold text-[#fbbf24]'>
                         My Account

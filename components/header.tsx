@@ -76,11 +76,11 @@ export default function Header() {
                     {/* Logo */}
                     <Link href='/' className='flex items-center space-x-2'>
                         <Image
-                            src='/images/logo.png'
+                            src='/images/gg-logo.png'
                             alt='GearGrow Cycle Logo'
                             width={32}
                             height={32}
-                            className='w-16 h-16'
+                            className='w-24 h-24'
                         />
                         <span className='text-xl font-bold text-white'>
                             Gear Grow Cycle

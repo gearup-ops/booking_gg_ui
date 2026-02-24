@@ -13,7 +13,7 @@ export default function TrackBookingPage() {
 
     return (
         <div className='min-h-screen bg-[#060608] text-white'>
-            <div className='container mx-auto px-4 py-16 pt-24'>
+            <div className='container mx-auto px-4 py-16 pt-32'>
                 <motion.div
                     className='max-w-2xl mx-auto text-center'
                     initial={{ opacity: 0, y: 20 }}

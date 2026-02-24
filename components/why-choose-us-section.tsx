@@ -8,7 +8,7 @@ export default function WhyChooseUsSection() {
     const { homePageData } = useSelector((state: any) => state.content);
 
     return (
-        <section className='py-16 bg-[#3c3d3f]'>
+        <section className='pb-16 bg-[#3c3d3f]'>
             <div className='container px-16'>
                 <div className='grid lg:grid-cols-3 gap-12 items-center'>
                     <div className='lg:col-span-2 space-y-6'>
