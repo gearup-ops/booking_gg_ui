@@ -71,7 +71,7 @@ export default function LayoutShell({
                     <ArrowUp className='h-6 w-6' />
                 </button>
             )}
-            {!loading && data && data.contactAddresses[0]?.whatsapp && (
+            {!loading && data && data.contactAddresses && data.contactAddresses.length > 0 && data.contactAddresses[0]?.whatsapp && (
                 <button
                     onClick={() =>
                         window.open(

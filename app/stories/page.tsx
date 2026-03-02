@@ -130,22 +130,24 @@ export default function StoriesPage() {
                                     <ChevronLeft className='w-6 h-6' />
                                 </Button>
                                 <div className='flex space-x-2'>
-                                    {testimonials.map((_, index) => (
-                                        <button
-                                            key={index}
-                                            className={`w-3 h-3 rounded-full transition-colors ${
-                                                index ===
-                                                currentTestimonialIndex
-                                                    ? 'bg-[#fbbf24]'
-                                                    : 'bg-gray-600'
-                                            }`}
-                                            onClick={() =>
-                                                setCurrentTestimonialIndex(
-                                                    index
-                                                )
-                                            }
-                                        />
-                                    ))}
+                                    {testimonials.map(
+                                        (_: any, index: number) => (
+                                            <button
+                                                key={index}
+                                                className={`w-3 h-3 rounded-full transition-colors ${
+                                                    index ===
+                                                    currentTestimonialIndex
+                                                        ? 'bg-[#fbbf24]'
+                                                        : 'bg-gray-600'
+                                                }`}
+                                                onClick={() =>
+                                                    setCurrentTestimonialIndex(
+                                                        index
+                                                    )
+                                                }
+                                            />
+                                        )
+                                    )}
                                 </div>
                                 <Button
                                     variant='ghost'

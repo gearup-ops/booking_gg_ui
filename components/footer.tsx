@@ -24,7 +24,7 @@ export default function Footer() {
     } = useSelector((state: RootState) => state.content);
 
     const contactData = data as ContactDetailsData;
-    const { contactAddresses, socials } = contactData;
+    const { contactAddresses, socials } = contactData || {};
     return (
         <motion.footer
             className='bg-[#060608] border-t border-[#4a4b4d] py-12'
