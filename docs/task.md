@@ -38,4 +38,5 @@ Remember contact_addresses could be multiple, so handle showing that.
         }
         **File Reference** `lib\api\contentApi.ts` `lib\slices\contentSlice.ts` `app\contact\page.tsx` `components\layout-shell.tsx` `app\page.tsx`
 
-- [ ] 
+-   [x] Redirect to respective city whatsapp contact on click of whatsapp button in footer and floating action button.
+        **File Reference** `components\layout-shell.tsx` `components\footer.tsx`

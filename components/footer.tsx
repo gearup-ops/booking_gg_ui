@@ -23,8 +23,16 @@ export default function Footer() {
         error,
     } = useSelector((state: RootState) => state.content);
 
+    const { selectedCityId } = useSelector((state: RootState) => state.city);
+
     const contactData = data as ContactDetailsData;
     const { contactAddresses, socials } = contactData || {};
+
+    const cityContact =
+        contactAddresses?.find((c) => c.city_id === selectedCityId) ||
+        contactAddresses?.[0];
+    const whatsappNumber = cityContact?.whatsapp || socials?.phone;
+
     return (
         <motion.footer
             className='bg-[#060608] border-t border-[#4a4b4d] py-12'
@@ -189,11 +197,11 @@ export default function Footer() {
                                                     <Youtube className='w-5 h-5' />
                                                 </Button>
                                             )}
-                                            {socials.phone && (
+                                            {whatsappNumber && (
                                                 <Button
                                                     onClick={() =>
                                                         window.open(
-                                                            `https://wa.me/${socials.phone.replace(
+                                                            `https://wa.me/${whatsappNumber.replace(
                                                                 /[^0-9]/g,
                                                                 ''
                                                             )}`,

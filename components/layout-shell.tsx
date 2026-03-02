@@ -58,6 +58,11 @@ export default function LayoutShell({
         dispatch(getContactDetailsAction());
     }, [dispatch]);
 
+    const cityContact =
+        data?.contactAddresses?.find((c) => c.city_id === selectedCityId) ||
+        data?.contactAddresses?.[0];
+    const whatsappNumber = cityContact?.whatsapp;
+
     return (
         <div className='relative'>
             {showHeader && <Header />}
@@ -71,11 +76,11 @@ export default function LayoutShell({
                     <ArrowUp className='h-6 w-6' />
                 </button>
             )}
-            {!loading && data && data.contactAddresses && data.contactAddresses.length > 0 && data.contactAddresses[0]?.whatsapp && (
+            {!loading && whatsappNumber && (
                 <button
                     onClick={() =>
                         window.open(
-                            `https://wa.me/${data.contactAddresses[0].whatsapp.replace(
+                            `https://wa.me/${whatsappNumber.replace(
                                 /[^0-9]/g,
                                 ''
                             )}`,
