@@ -17,9 +17,9 @@ export const getAboutUsDataAction = createAsyncThunk(
 
 export const getContactDetailsAction = createAsyncThunk(
     'content/getContactDetails',
-    async (_, { rejectWithValue }) => {
+    async (city_id: number | undefined, { rejectWithValue }) => {
         try {
-            const response = await contentApi.getContactDetails();
+            const response = await contentApi.getContactDetails(city_id);
             return response;
         } catch (error: any) {
             return rejectWithValue(

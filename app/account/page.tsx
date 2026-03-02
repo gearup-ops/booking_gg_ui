@@ -15,7 +15,7 @@ import {
     getUserByIdAction,
     updateCustomerAction,
 } from '@/lib/actions/userActions';
-import { getCitiesAction } from '@/lib/actions/cityActions';
+
 import {
     ChevronDown,
     ChevronUp,
@@ -183,7 +183,6 @@ export function Account() {
         }
         if (activeTab === 'profile' && isAuthenticated) {
             dispatch(getUserByIdAction());
-            dispatch(getCitiesAction());
         }
     }, [activeTab, router, isAuthenticated, dispatch]);
     const [isEditing, setIsEditing] = useState(false);

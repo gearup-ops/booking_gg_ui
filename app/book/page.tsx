@@ -40,7 +40,7 @@ import {
     getUserByIdAction,
     updateCustomerAction,
 } from '@/lib/actions/userActions';
-import { getCitiesAction } from '@/lib/actions/cityActions';
+
 import { getLocaleStorage } from '@/lib/utils';
 import { fetchStatic } from '@/lib/api/client';
 
@@ -72,10 +72,6 @@ function Book() {
         error,
     } = useSelector((state: RootState) => state.order);
     const { cities } = useSelector((state: RootState) => state.city);
-
-    useEffect(() => {
-        dispatch(getCitiesAction());
-    }, [dispatch]);
 
     useEffect(() => {
         dispatch(clearError());

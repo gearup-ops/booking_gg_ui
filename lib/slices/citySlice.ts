@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getCitiesAction } from '../actions/cityActions';
+import { getContactDetailsAction } from '../actions/contentActions';
 import { City } from '../api/cityApi';
 
 interface CityState {
@@ -32,19 +32,12 @@ const citySlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        builder
-            .addCase(getCitiesAction.pending, (state) => {
-                state.isLoading = true;
-                state.error = null;
-            })
-            .addCase(getCitiesAction.fulfilled, (state, action) => {
-                state.isLoading = false;
+        builder.addCase(getContactDetailsAction.fulfilled, (state, action) => {
+            state.isLoading = false;
+            if (action.payload.data.cities) {
                 state.cities = action.payload.data.cities;
-            })
-            .addCase(getCitiesAction.rejected, (state, action) => {
-                state.isLoading = false;
-                state.error = action.payload as string;
-            });
+            }
+        });
     },
 });
 

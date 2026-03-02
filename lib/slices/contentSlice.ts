@@ -4,11 +4,15 @@ import {
     getContactDetailsAction,
     getHomePageDataAction,
 } from '../actions/contentActions';
-import { AboutUsData, ContactDetails, HomePageData } from '../api/contentApi';
+import {
+    AboutUsData,
+    ContactDetailsData,
+    HomePageData,
+} from '../api/contentApi';
 
 interface ContentState {
     aboutUsData: AboutUsData | null;
-    contactDetails: ContactDetails | null;
+    contactDetails: ContactDetailsData | null;
     homePageData: HomePageData | null;
     isLoading: boolean;
     error: string | null;

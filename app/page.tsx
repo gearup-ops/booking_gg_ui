@@ -13,7 +13,7 @@ import Footer from '@/components/footer';
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getHomePageDataAction } from '@/lib/actions/contentActions';
-import { getCitiesAction } from '@/lib/actions/cityActions';
+
 import type { AppDispatch } from '@/lib/store';
 import { getUserByIdAction } from '@/lib/actions/userActions';
 import { setAuthenticated } from '@/lib/slices/authSlice';
@@ -52,7 +52,6 @@ export default function HomePage() {
         if (!homePageData && !isLoading) {
             dispatch(getHomePageDataAction());
         }
-        dispatch(getCitiesAction());
     }, [dispatch]);
 
     useEffect(() => {

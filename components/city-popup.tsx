@@ -6,7 +6,7 @@ import { X } from 'lucide-react';
 import type { AppDispatch } from '@/lib/store';
 import { setCityPopup } from '@/lib/slices/uiSlice';
 import { setSelectedCityId as setReduxCityId } from '@/lib/slices/citySlice';
-import { getCitiesAction } from '@/lib/actions/cityActions';
+
 import { getLocaleStorage, setLocaleStorage } from '@/lib/utils';
 
 export default function CityPopup() {
@@ -17,11 +17,6 @@ export default function CityPopup() {
     const [selectedCityId, setSelectedCityId] = useState<number | null>(null);
     // Track whether we've done the initial localStorage check
     const [initialCheckDone, setInitialCheckDone] = useState(false);
-
-    // Fetch cities on mount
-    useEffect(() => {
-        dispatch(getCitiesAction());
-    }, [dispatch]);
 
     // On mount: if no city saved, show popup; otherwise hydrate Redux
     useEffect(() => {
