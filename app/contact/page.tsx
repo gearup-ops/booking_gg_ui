@@ -59,6 +59,22 @@ export default function ContactPage() {
     const contactData = data as ContactDetailsData;
     const { contactAddresses, socials } = contactData;
 
+    let filterCityIds: number[] = [];
+    try {
+        const envVal = process.env.NEXT_PUBLIC_FILTER_CITY_IDS || '';
+        if (envVal.startsWith('[')) {
+            filterCityIds = JSON.parse(envVal);
+        } else if (envVal) {
+            filterCityIds = envVal.split(',').map(Number);
+        }
+    } catch (e) {
+        console.error('Error parsing NEXT_PUBLIC_FILTER_CITY_IDS', e);
+    }
+
+    const filteredContactAddresses = contactAddresses?.filter(
+        (contact: ContactAddress) => !filterCityIds.includes(contact.city_id)
+    );
+
     /* ---------------- UI ---------------- */
 
     return (
@@ -66,13 +82,14 @@ export default function ContactPage() {
             <div className='min-h-screen bg-black px-4 py-10 text-white flex justify-center pt-32'>
                 <div className='w-full max-w-2xl space-y-6 grid grid-cols-1 md:grid-cols-2 gap-6'>
                     {/* Render each contact address */}
-                    {contactAddresses?.map((contact: ContactAddress) => (
-                        <div
-                            key={contact.id}
-                            className='bg-zinc-900 border-2 border-yellow-400 shadow-[0_0_15px_#facc15] p-6'
-                        >
-                            {/* Logo */}
-                            {/* <div className='flex justify-center mb-4'>
+                    {filteredContactAddresses?.map(
+                        (contact: ContactAddress) => (
+                            <div
+                                key={contact.id}
+                                className='bg-zinc-900 border-2 border-yellow-400 shadow-[0_0_15px_#facc15] p-6'
+                            >
+                                {/* Logo */}
+                                {/* <div className='flex justify-center mb-4'>
                                 <img
                                     src='/images/logo.png'
                                     alt='logo'
@@ -80,68 +97,69 @@ export default function ContactPage() {
                                 />
                             </div> */}
 
-                            {/* Label */}
-                            {contact.label && (
-                                <h2 className='text-xl font-bold text-yellow-400 text-center mb-4 uppercase'>
-                                    {contact.label}
-                                </h2>
-                            )}
+                                {/* Label */}
+                                {contact.label && (
+                                    <h2 className='text-xl font-bold text-yellow-400 text-center mb-4 uppercase'>
+                                        {contact.label}
+                                    </h2>
+                                )}
 
-                            {/* Phone */}
-                            <Section title='Call us on:-'>
-                                <a
-                                    href={`tel:${contact.phone}`}
-                                    className='text-yellow-400 hover:underline'
-                                >
-                                    {contact.phone}
-                                </a>
-                            </Section>
-
-                            {/* WhatsApp */}
-                            {contact.whatsapp && (
-                                <Section title='WhatsApp:-'>
+                                {/* Phone */}
+                                <Section title='Call us on:-'>
                                     <a
-                                        href={`https://wa.me/${contact.whatsapp.replace(
-                                            /[^0-9]/g,
-                                            ''
-                                        )}`}
-                                        target='_blank'
-                                        rel='noopener noreferrer'
+                                        href={`tel:${contact.phone}`}
                                         className='text-yellow-400 hover:underline'
                                     >
-                                        {contact.whatsapp}
+                                        {contact.phone}
                                     </a>
                                 </Section>
-                            )}
 
-                            {/* Email */}
-                            <Section title='Email us at:-'>
-                                <a
-                                    href={`mailto:${contact.email}`}
-                                    className='text-yellow-400 hover:underline'
-                                >
-                                    {contact.email}
-                                </a>
-                            </Section>
-
-                            {/* Address */}
-                            <Section title='Address:-'>
-                                <p className='text-sm leading-relaxed'>
-                                    {contact.address}
-                                </p>
-                                {contact.location && (
-                                    <a
-                                        href={contact.location}
-                                        target='_blank'
-                                        rel='noopener noreferrer'
-                                        className='text-yellow-400 text-sm hover:underline mt-1 inline-block'
-                                    >
-                                        View on Google Maps
-                                    </a>
+                                {/* WhatsApp */}
+                                {contact.whatsapp && (
+                                    <Section title='WhatsApp:-'>
+                                        <a
+                                            href={`https://wa.me/${contact.whatsapp.replace(
+                                                /[^0-9]/g,
+                                                ''
+                                            )}`}
+                                            target='_blank'
+                                            rel='noopener noreferrer'
+                                            className='text-yellow-400 hover:underline'
+                                        >
+                                            {contact.whatsapp}
+                                        </a>
+                                    </Section>
                                 )}
-                            </Section>
-                        </div>
-                    ))}
+
+                                {/* Email */}
+                                <Section title='Email us at:-'>
+                                    <a
+                                        href={`mailto:${contact.email}`}
+                                        className='text-yellow-400 hover:underline'
+                                    >
+                                        {contact.email}
+                                    </a>
+                                </Section>
+
+                                {/* Address */}
+                                <Section title='Address:-'>
+                                    <p className='text-sm leading-relaxed'>
+                                        {contact.address}
+                                    </p>
+                                    {contact.location && (
+                                        <a
+                                            href={contact.location}
+                                            target='_blank'
+                                            rel='noopener noreferrer'
+                                            className='text-yellow-400 text-sm hover:underline mt-1 inline-block'
+                                        >
+                                            View on Google Maps
+                                        </a>
+                                    )}
+                                </Section>
+                            </div>
+                        )
+                    )}
 
                     {/* Social Links (shared across all addresses) */}
                 </div>
