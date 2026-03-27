@@ -105,6 +105,7 @@ export default function LoginPage() {
                 registerUserAction({
                     phone: user.phoneNumber.slice(3) || '',
                     fcm: '',
+                    city: parseInt(getLocaleStorage('city') || '3'),
                 })
             ).unwrap();
 

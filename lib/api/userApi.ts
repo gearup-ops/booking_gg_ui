@@ -15,6 +15,7 @@ export interface SendOtpResponse {
 export interface RegisterRequest {
     phone: string;
     fcm?: string;
+    city: number;
 }
 
 export interface RegisterResponse {
