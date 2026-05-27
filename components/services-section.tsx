@@ -274,81 +274,99 @@ export default function ServicesSection() {
                     <div className='grid lg:grid-cols-2 gap-6 lg:gap-8 items-start w-full min-w-0'>
                         {/* Left Panel: Service List */}
                         <div className="relative w-full min-w-0 flex items-center gap-1 sm:gap-2 lg:block">
-                            {/* Mobile Left Arrow */}
-                            <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); scrollServices('left'); }} className="lg:hidden shrink-0 pointer-events-auto bg-black/60 text-white p-2 sm:p-3 rounded-full backdrop-blur-sm shadow-md hover:bg-black/80 transition-all active:scale-95">
-                                <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
-                            </button>
+                            {(() => {
+                                const currentIndex = activeServices.findIndex(s => s._id === selectedServiceId);
+                                const isFirstService = currentIndex <= 0;
+                                const isLastService = currentIndex === -1 || currentIndex === activeServices.length - 1;
+                                
+                                return (
+                                    <>
+                                        {/* Mobile Left Arrow */}
+                                        <button 
+                                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); scrollServices('left'); }} 
+                                            disabled={isFirstService}
+                                            className="lg:hidden shrink-0 pointer-events-auto bg-black/60 text-white p-2 sm:p-3 rounded-full backdrop-blur-sm shadow-md hover:bg-black/80 transition-all active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-black/60"
+                                        >
+                                            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+                                        </button>
 
-                            <motion.div
-                                ref={scrollRef}
-                                className='flex-1 min-w-0 relative flex lg:flex-col gap-4 lg:gap-6 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 snap-x snap-mandatory scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
-                                initial={{ opacity: 0, x: -20 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.6, delay: 0.3 }}
-                                viewport={{ once: true }}
-                            >
-                                {activeServices.map(
-                                    (service: Service, index: number) => {
-                                        const currentPrice =
-                                            getCurrentPrice(service);
-                                        return (
-                                            <motion.button
-                                                key={service._id}
-                                                onClick={() =>
-                                                    setSelectedServiceId(
-                                                        service._id
-                                                    )
+                                        <motion.div
+                                            ref={scrollRef}
+                                            className='flex-1 min-w-0 relative flex lg:flex-col gap-4 lg:gap-6 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 snap-x snap-mandatory scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+                                            initial={{ opacity: 0, x: -20 }}
+                                            whileInView={{ opacity: 1, x: 0 }}
+                                            transition={{ duration: 0.6, delay: 0.3 }}
+                                            viewport={{ once: true }}
+                                        >
+                                            {activeServices.map(
+                                                (service: Service, index: number) => {
+                                                    const currentPrice =
+                                                        getCurrentPrice(service);
+                                                    return (
+                                                        <motion.button
+                                                            key={service._id}
+                                                            onClick={() =>
+                                                                setSelectedServiceId(
+                                                                    service._id
+                                                                )
+                                                            }
+                                                            className={`w-full shrink-0 snap-center text-left p-3 lg:p-4 rounded-lg border-2 transition-all duration-300 flex justify-between items-center ${selectedServiceId ===
+                                                                service._id
+                                                                ? 'bg-[#f5b41d] text-black border-[#f5b41d]'
+                                                                : 'bg-white text-black border-[#4a4b4d] hover:bg-[#2a2b2d]'
+                                                                }`}
+                                                            whileHover={{ scale: 1.02 }}
+                                                            whileTap={{ scale: 0.98 }}
+                                                            initial={{
+                                                                opacity: 0,
+                                                                y: isMobile ? 0 : 20,
+                                                            }}
+                                                            whileInView={{ opacity: 1, y: 0 }}
+                                                            transition={{
+                                                                duration: 0.4,
+                                                                delay: index * 0.1,
+                                                            }}
+                                                            viewport={{ once: true }}
+                                                        >
+                                                            <div className='flex items-center space-x-2 lg:space-x-3 w-full min-w-0'>
+                                                                {selectedServiceId ===
+                                                                    service._id && (
+                                                                        <CheckCircle2 className='w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0' />
+                                                                    )}
+                                                                <div className='flex-1 min-w-0'>
+                                                                    <span className='font-semibold text-base lg:text-lg block truncate'>
+                                                                        {service.serviceName}
+                                                                    </span>
+                                                                    <span className='block text-xs lg:text-sm text-gray-600 truncate'>
+                                                                        {isGearBike
+                                                                            ? 'Gear'
+                                                                            : 'Non-Gear'}
+                                                                    </span>
+                                                                </div>
+                                                                <span className='font-bold text-base lg:text-lg md:hidden ml-2 whitespace-nowrap flex-shrink-0'>
+                                                                    {currentPrice} Rs
+                                                                </span>
+                                                            </div>
+                                                            <span className='font-bold text-lg hidden md:block whitespace-nowrap flex-shrink-0'>
+                                                                {currentPrice} Rs
+                                                            </span>
+                                                        </motion.button>
+                                                    );
                                                 }
-                                                className={`w-full shrink-0 snap-center text-left p-3 lg:p-4 rounded-lg border-2 transition-all duration-300 flex justify-between items-center ${selectedServiceId ===
-                                                    service._id
-                                                    ? 'bg-[#f5b41d] text-black border-[#f5b41d]'
-                                                    : 'bg-white text-black border-[#4a4b4d] hover:bg-[#2a2b2d]'
-                                                    }`}
-                                                whileHover={{ scale: 1.02 }}
-                                                whileTap={{ scale: 0.98 }}
-                                                initial={{
-                                                    opacity: 0,
-                                                    y: isMobile ? 0 : 20,
-                                                }}
-                                                whileInView={{ opacity: 1, y: 0 }}
-                                                transition={{
-                                                    duration: 0.4,
-                                                    delay: index * 0.1,
-                                                }}
-                                                viewport={{ once: true }}
-                                            >
-                                                <div className='flex items-center space-x-2 lg:space-x-3 w-full min-w-0'>
-                                                    {selectedServiceId ===
-                                                        service._id && (
-                                                            <CheckCircle2 className='w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0' />
-                                                        )}
-                                                    <div className='flex-1 min-w-0'>
-                                                        <span className='font-semibold text-base lg:text-lg block truncate'>
-                                                            {service.serviceName}
-                                                        </span>
-                                                        <span className='block text-xs lg:text-sm text-gray-600 truncate'>
-                                                            {isGearBike
-                                                                ? 'Gear'
-                                                                : 'Non-Gear'}
-                                                        </span>
-                                                    </div>
-                                                    <span className='font-bold text-base lg:text-lg md:hidden ml-2 whitespace-nowrap flex-shrink-0'>
-                                                        {currentPrice} Rs
-                                                    </span>
-                                                </div>
-                                                <span className='font-bold text-lg hidden md:block whitespace-nowrap flex-shrink-0'>
-                                                    {currentPrice} Rs
-                                                </span>
-                                            </motion.button>
-                                        );
-                                    }
-                                )}
-                            </motion.div>
+                                            )}
+                                        </motion.div>
 
-                            {/* Mobile Right Arrow */}
-                            <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); scrollServices('right'); }} className="lg:hidden shrink-0 pointer-events-auto bg-black/60 text-white p-2 sm:p-3 rounded-full backdrop-blur-sm shadow-md hover:bg-black/80 transition-all active:scale-95">
-                                <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
-                            </button>
+                                        {/* Mobile Right Arrow */}
+                                        <button 
+                                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); scrollServices('right'); }} 
+                                            disabled={isLastService}
+                                            className="lg:hidden shrink-0 pointer-events-auto bg-black/60 text-white p-2 sm:p-3 rounded-full backdrop-blur-sm shadow-md hover:bg-black/80 transition-all active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-black/60"
+                                        >
+                                            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+                                        </button>
+                                    </>
+                                );
+                            })()}
                         </div>
 
                         {/* Right Panel: Service Details */}
