@@ -98,20 +98,26 @@ function ServicesContent() {
     }, [dispatch, selectedCityId]);
 
     useEffect(() => {
-        if (activeServices.length > 0 && selectedServiceId === null) {
-            const serviceName = searchParams.get('service');
-            if (serviceName) {
-                const service = activeServices.find(
-                    (s) =>
-                        s.serviceName.toLowerCase() ===
-                        serviceName.toLowerCase()
-                );
-                if (service) {
-                    setSelectedServiceId(service._id);
-                    return;
+        if (activeServices.length > 0) {
+            const isValidSelection = selectedServiceId !== null && activeServices.some(s => s._id === selectedServiceId);
+            
+            if (!isValidSelection) {
+                const serviceName = searchParams.get('service');
+                if (serviceName) {
+                    const service = activeServices.find(
+                        (s) =>
+                            s.serviceName.toLowerCase() ===
+                            serviceName.toLowerCase()
+                    );
+                    if (service) {
+                        setSelectedServiceId(service._id);
+                        return;
+                    }
                 }
+                setSelectedServiceId(activeServices[0]._id);
             }
-            setSelectedServiceId(activeServices[0]._id);
+        } else if (activeServices.length === 0 && selectedServiceId !== null) {
+            setSelectedServiceId(null);
         }
     }, [activeServices, selectedServiceId, searchParams]);
 

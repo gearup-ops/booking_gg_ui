@@ -102,17 +102,21 @@ export default function ServicesSection() {
             ?.filter((service: Service) => service.isActive)
             .sort((a: Service, b: Service) => a.orderNo - b.orderNo) || [];
 
-    const cityId = getLocaleStorage('cityId');
+    const { selectedCityId } = useSelector((state: RootState) => state.city);
 
     useEffect(() => {
-        if (cityId) {
-            dispatch(getServicesAction({ city: Number(cityId) }));
+        if (selectedCityId !== null) {
+            dispatch(getServicesAction({ city: selectedCityId }));
         }
-    }, [dispatch, cityId]);
+    }, [dispatch, selectedCityId]);
 
     useEffect(() => {
-        if (activeServices.length > 0 && selectedServiceId === null) {
-            setSelectedServiceId(activeServices[0]._id);
+        if (activeServices.length > 0) {
+            if (selectedServiceId === null || !activeServices.some(s => s._id === selectedServiceId)) {
+                setSelectedServiceId(activeServices[0]._id);
+            }
+        } else if (activeServices.length === 0 && selectedServiceId !== null) {
+            setSelectedServiceId(null);
         }
     }, [activeServices, selectedServiceId]);
 
