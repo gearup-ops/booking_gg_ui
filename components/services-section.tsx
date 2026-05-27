@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import type { RootState, AppDispatch } from '@/lib/store';
 import { getServicesAction } from '@/lib/actions/serviceActions';
@@ -166,6 +166,20 @@ export default function ServicesSection() {
         }
     };
 
+    const scrollServices = (direction: 'left' | 'right') => {
+        if (!selectedServiceId || activeServices.length === 0) return;
+        const currentIndex = activeServices.findIndex(
+            (s: Service) => s._id === selectedServiceId
+        );
+        if (currentIndex !== -1) {
+            let nextIndex =
+                direction === 'left' ? currentIndex - 1 : currentIndex + 1;
+            if (nextIndex >= 0 && nextIndex < activeServices.length) {
+                setSelectedServiceId(activeServices[nextIndex]._id);
+            }
+        }
+    };
+
     const handleBookNow = () => {
         if (!isAuthenticated) {
             router.push('/login');
@@ -201,7 +215,7 @@ export default function ServicesSection() {
 
     return (
         <section className='bg-[#3c3d3f]'>
-            <div className='relative w-full h-auto flex items-center justify-center overflow-hidden py-20 px-4 lg:px-0'>
+            <div className='relative w-full h-auto flex items-center justify-center overflow-hidden py-10 lg:py-20 px-2 lg:px-0'>
                 <div className='absolute inset-0 hidden lg:block'>
                     <Image
                         src='/images/bg-cycle.jpg'
@@ -211,145 +225,154 @@ export default function ServicesSection() {
                     />
                 </div>
 
-                <div className='container mx-auto px-4 lg:px-16 py-16 bg-black/50 rounded-2xl max-w-6xl relative'>
+                <div className='container mx-auto px-4 lg:px-16 py-8 lg:py-16 bg-black/50 rounded-xl lg:rounded-2xl max-w-6xl relative'>
                     <motion.div
-                        className='text-center mb-12'
+                        className='text-center mb-8 lg:mb-12'
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
                         viewport={{ once: true }}
                     >
-                        <h2 className='text-3xl md:text-4xl font-bold mb-4 text-white'>
+                        <h2 className='text-2xl md:text-4xl font-bold mb-2 lg:mb-4 text-white'>
                             Our services
                         </h2>
-                        <p className='text-white max-w-2xl mx-auto'>
+                        <p className='text-white text-sm lg:text-base max-w-2xl mx-auto'>
                             Skip the hassle: our on demand bicycle servicing
                             comes to you!
                         </p>
                     </motion.div>
 
                     <motion.div
-                        className='flex justify-center mb-8'
+                        className='flex justify-center mb-6 lg:mb-8'
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.2 }}
                         viewport={{ once: true }}
                     >
-                        <div className='bg-[#3c3d3f] rounded-full p-1 flex items-center space-x-2 border border-[#4a4b4d]'>
+                        <div className='bg-[#3c3d3f] rounded-full p-1 flex items-center space-x-1 lg:space-x-2 border border-[#4a4b4d] text-sm lg:text-base'>
                             <Button
                                 onClick={() => setIsGearBike(true)}
-                                className={`px-6 py-2 rounded-full transition-all duration-300 ${
-                                    isGearBike
-                                        ? 'bg-[#9ee2ff] text-black'
-                                        : 'bg-transparent text-gray-300 hover:bg-[#2a2b2d]'
-                                }`}
+                                className={`px-4 lg:px-6 py-1.5 lg:py-2 rounded-full transition-all duration-300 ${isGearBike
+                                    ? 'bg-[#9ee2ff] text-black'
+                                    : 'bg-transparent text-gray-300 hover:bg-[#2a2b2d]'
+                                    }`}
                             >
                                 Gear
                             </Button>
                             <Button
                                 onClick={() => setIsGearBike(false)}
-                                className={`px-6 py-2 rounded-full transition-all duration-300 ${
-                                    !isGearBike
-                                        ? 'bg-[#9ee2ff] text-black'
-                                        : 'bg-transparent text-gray-300 hover:bg-[#2a2b2d]'
-                                }`}
+                                className={`px-4 lg:px-6 py-1.5 lg:py-2 rounded-full transition-all duration-300 ${!isGearBike
+                                    ? 'bg-[#9ee2ff] text-black'
+                                    : 'bg-transparent text-gray-300 hover:bg-[#2a2b2d]'
+                                    }`}
                             >
                                 Non-Gear
                             </Button>
                         </div>
                     </motion.div>
 
-                    <div className='grid lg:grid-cols-2 gap-8 items-start'>
+                    <div className='grid lg:grid-cols-2 gap-6 lg:gap-8 items-start w-full min-w-0'>
                         {/* Left Panel: Service List */}
-                        <motion.div
-                            ref={scrollRef}
-                            className='relative flex lg:flex-col gap-6 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 px-4 lg:px-0 snap-x snap-mandatory scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
-                            initial={{ opacity: 0, x: -20 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.6, delay: 0.3 }}
-                            viewport={{ once: true }}
-                        >
-                            {activeServices.map(
-                                (service: Service, index: number) => {
-                                    const currentPrice =
-                                        getCurrentPrice(service);
-                                    return (
-                                        <motion.button
-                                            key={service._id}
-                                            onClick={() =>
-                                                setSelectedServiceId(
+                        <div className="relative w-full min-w-0 flex items-center gap-1 sm:gap-2 lg:block">
+                            {/* Mobile Left Arrow */}
+                            <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); scrollServices('left'); }} className="lg:hidden shrink-0 pointer-events-auto bg-black/60 text-white p-2 sm:p-3 rounded-full backdrop-blur-sm shadow-md hover:bg-black/80 transition-all active:scale-95">
+                                <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+                            </button>
+
+                            <motion.div
+                                ref={scrollRef}
+                                className='flex-1 min-w-0 relative flex lg:flex-col gap-4 lg:gap-6 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 snap-x snap-mandatory scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+                                initial={{ opacity: 0, x: -20 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.6, delay: 0.3 }}
+                                viewport={{ once: true }}
+                            >
+                                {activeServices.map(
+                                    (service: Service, index: number) => {
+                                        const currentPrice =
+                                            getCurrentPrice(service);
+                                        return (
+                                            <motion.button
+                                                key={service._id}
+                                                onClick={() =>
+                                                    setSelectedServiceId(
+                                                        service._id
+                                                    )
+                                                }
+                                                className={`w-full shrink-0 snap-center text-left p-3 lg:p-4 rounded-lg border-2 transition-all duration-300 flex justify-between items-center ${selectedServiceId ===
                                                     service._id
-                                                )
-                                            }
-                                            className={`min-w-[55vw] lg:min-w-0 lg:w-full shrink-0 snap-center text-left p-4 rounded-lg border-2 transition-all duration-300 flex justify-between items-center ${
-                                                selectedServiceId ===
-                                                service._id
                                                     ? 'bg-[#f5b41d] text-black border-[#f5b41d]'
                                                     : 'bg-white text-black border-[#4a4b4d] hover:bg-[#2a2b2d]'
-                                            }`}
-                                            whileHover={{ scale: 1.02 }}
-                                            whileTap={{ scale: 0.98 }}
-                                            initial={{
-                                                opacity: 0,
-                                                y: isMobile ? 0 : 20,
-                                            }}
-                                            whileInView={{ opacity: 1, y: 0 }}
-                                            transition={{
-                                                duration: 0.4,
-                                                delay: index * 0.1,
-                                            }}
-                                            viewport={{ once: true }}
-                                        >
-                                            <div className='flex items-center space-x-3'>
-                                                {selectedServiceId ===
-                                                    service._id && (
-                                                    <CheckCircle2 className='w-5 h-5' />
-                                                )}
-                                                <div>
-                                                    <span className='font-semibold text-lg'>
-                                                        {service.serviceName}
-                                                    </span>
-                                                    <span className='block text-sm text-gray-600'>
-                                                        {isGearBike
-                                                            ? 'Gear'
-                                                            : 'Non-Gear'}
+                                                    }`}
+                                                whileHover={{ scale: 1.02 }}
+                                                whileTap={{ scale: 0.98 }}
+                                                initial={{
+                                                    opacity: 0,
+                                                    y: isMobile ? 0 : 20,
+                                                }}
+                                                whileInView={{ opacity: 1, y: 0 }}
+                                                transition={{
+                                                    duration: 0.4,
+                                                    delay: index * 0.1,
+                                                }}
+                                                viewport={{ once: true }}
+                                            >
+                                                <div className='flex items-center space-x-2 lg:space-x-3 w-full min-w-0'>
+                                                    {selectedServiceId ===
+                                                        service._id && (
+                                                            <CheckCircle2 className='w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0' />
+                                                        )}
+                                                    <div className='flex-1 min-w-0'>
+                                                        <span className='font-semibold text-base lg:text-lg block truncate'>
+                                                            {service.serviceName}
+                                                        </span>
+                                                        <span className='block text-xs lg:text-sm text-gray-600 truncate'>
+                                                            {isGearBike
+                                                                ? 'Gear'
+                                                                : 'Non-Gear'}
+                                                        </span>
+                                                    </div>
+                                                    <span className='font-bold text-base lg:text-lg md:hidden ml-2 whitespace-nowrap flex-shrink-0'>
+                                                        {currentPrice} Rs
                                                     </span>
                                                 </div>
-                                                <span className='font-bold text-lg md:hidden'>
+                                                <span className='font-bold text-lg hidden md:block whitespace-nowrap flex-shrink-0'>
                                                     {currentPrice} Rs
                                                 </span>
-                                            </div>
-                                            <span className='font-bold text-lg hidden md:block'>
-                                                {currentPrice} Rs
-                                            </span>
-                                        </motion.button>
-                                    );
-                                }
-                            )}
-                        </motion.div>
+                                            </motion.button>
+                                        );
+                                    }
+                                )}
+                            </motion.div>
+
+                            {/* Mobile Right Arrow */}
+                            <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); scrollServices('right'); }} className="lg:hidden shrink-0 pointer-events-auto bg-black/60 text-white p-2 sm:p-3 rounded-full backdrop-blur-sm shadow-md hover:bg-black/80 transition-all active:scale-95">
+                                <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+                            </button>
+                        </div>
 
                         {/* Right Panel: Service Details */}
                         {currentService && (
                             <motion.div
-                                className='bg-white text-black rounded-lg p-6 border border-[#4a4b4d] shadow-lg'
+                                className='w-full min-w-0 bg-white text-black rounded-xl p-4 lg:p-6 border border-[#4a4b4d] shadow-lg overflow-hidden'
                                 initial={{ opacity: 0, x: 20 }}
                                 whileInView={{ opacity: 1, x: 0 }}
                                 transition={{ duration: 0.6, delay: 0.4 }}
                                 viewport={{ once: true }}
                                 key={selectedServiceId}
                             >
-                                <div className='flex justify-between items-center mb-4'>
-                                    <div className='w-[70%]'>
-                                        <h3 className='text-2xl font-bold text-black'>
+                                <div className='flex flex-col lg:flex-row lg:justify-between lg:items-center mb-3 lg:mb-4 relative w-full min-w-0'>
+                                    <div className='w-full lg:w-[70%] mb-2 lg:mb-0 min-w-0'>
+                                        <h3 className='text-xl lg:text-2xl font-bold text-black break-words'>
                                             {currentService.serviceName}
                                         </h3>
                                     </div>
-                                    <div className='absolute right-4 lg:right-16 text-2xl lg:text-4xl font-bold text-white bg-[#3c9306] w-fit px-4 py-2 rounded-l-full'>
+                                    <div className='lg:absolute lg:right-0 lg:-mr-6 text-lg lg:text-4xl font-bold text-white bg-[#3c9306] w-fit px-3 lg:px-4 py-1 lg:py-2 rounded-full lg:rounded-r-none lg:rounded-l-full self-start lg:self-auto flex-shrink-0'>
                                         {getCurrentPrice(currentService)} Rs
                                     </div>
                                 </div>
 
-                                <div className='mb-4'>
+                                <div className='mb-3 lg:mb-4'>
                                     <Image
                                         src={
                                             '/images/service1.png'
@@ -358,11 +381,11 @@ export default function ServicesSection() {
                                         alt={currentService.serviceName}
                                         width={400}
                                         height={200}
-                                        className='w-full h-48 object-cover rounded-lg'
+                                        className='w-full h-40 lg:h-48 object-cover rounded-lg'
                                     />
                                 </div>
 
-                                <p className='text-gray-700 text-sm'>
+                                <p className='text-gray-700 text-xs lg:text-sm mb-3 lg:mb-4'>
                                     {currentService?.serviceShortDescription?.slice(
                                         0,
                                         100
@@ -370,12 +393,12 @@ export default function ServicesSection() {
                                 </p>
 
                                 {getServiceChecks(currentService).length !==
-                                0 ? (
-                                    <h4 className='text-lg font-semibold text-black mb-3'>
+                                    0 ? (
+                                    <h4 className='text-base lg:text-lg font-semibold text-black mb-2 lg:mb-3'>
                                         What we provide?
                                     </h4>
                                 ) : null}
-                                <ul className='space-y-2 text-black'>
+                                <ul className='space-y-1.5 lg:space-y-2 text-black text-sm lg:text-base'>
                                     {getServiceChecks(currentService).map(
                                         (checkItem: string, index: number) => (
                                             <motion.li
@@ -392,7 +415,7 @@ export default function ServicesSection() {
                                                 }}
                                                 viewport={{ once: true }}
                                             >
-                                                <CheckCircle2 className='w-5 h-5 text-[#4CAF50] flex-shrink-0' />
+                                                <CheckCircle2 className='w-4 h-4 lg:w-5 lg:h-5 text-[#4CAF50] flex-shrink-0' />
                                                 <span>{checkItem}</span>
                                             </motion.li>
                                         )
@@ -404,7 +427,7 @@ export default function ServicesSection() {
 
                     {/* Book Now Button */}
                     <motion.div
-                        className='mt-12 text-center'
+                        className='mt-8 lg:mt-12 text-center'
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.5 }}
@@ -413,7 +436,7 @@ export default function ServicesSection() {
                         <Button
                             onClick={handleBookNow}
                             disabled={isLoading || !currentService}
-                            className='bg-[#f5b41d] hover:bg-[#f59e0b] text-black font-semibold px-12 py-4 text-xl rounded-lg transition-all duration-300 hover:scale-105 disabled:opacity-50'
+                            className='bg-[#f5b41d] hover:bg-[#f59e0b] text-black font-semibold px-8 lg:px-12 py-3 lg:py-4 text-lg lg:text-xl rounded-lg transition-all duration-300 hover:scale-105 disabled:opacity-50 w-full md:w-auto'
                         >
                             {isLoading ? 'Loading...' : 'Book Now'}
                         </Button>
