@@ -514,7 +514,7 @@ export default function BookingModal() {
                     <span className='text-blue-600 underline cursor-pointer'>
                         terms & conditions
                     </span>{' '}
-                    set by gearup cycles. I have read all the{' '}
+                    set by gear grow cycles. I have read all the{' '}
                     <span className='text-blue-600 underline cursor-pointer'>
                         privacy policy
                     </span>

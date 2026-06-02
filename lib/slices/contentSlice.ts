@@ -58,7 +58,31 @@ const contentSlice = createSlice({
             })
             .addCase(getContactDetailsAction.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.contactDetails = action.payload.data;
+
+                const data = action.payload.data;
+                const formatNumber = (num: string) => {
+                    if (!num) return num;
+                    const digits = num.replace(/\D/g, '');
+                    if (digits.length === 10) {
+                        return '+91' + digits;
+                    }
+                    return '+' + digits;
+                };
+
+                if (data) {
+                    if (data.contactAddresses) {
+                        data.contactAddresses = data.contactAddresses.map(addr => ({
+                            ...addr,
+                            whatsapp: formatNumber(addr.whatsapp),
+                            phone: formatNumber(addr.phone)
+                        }));
+                    }
+                    if (data.socials && data.socials.phone) {
+                        data.socials.phone = formatNumber(data.socials.phone);
+                    }
+                }
+
+                state.contactDetails = data;
             })
             .addCase(getContactDetailsAction.rejected, (state, action) => {
                 state.isLoading = false;
