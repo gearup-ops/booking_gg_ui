@@ -278,12 +278,12 @@ export default function ServicesSection() {
                                 const currentIndex = activeServices.findIndex(s => s._id === selectedServiceId);
                                 const isFirstService = currentIndex <= 0;
                                 const isLastService = currentIndex === -1 || currentIndex === activeServices.length - 1;
-                                
+
                                 return (
                                     <>
                                         {/* Mobile Left Arrow */}
-                                        <button 
-                                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); scrollServices('left'); }} 
+                                        <button
+                                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); scrollServices('left'); }}
                                             disabled={isFirstService}
                                             className="lg:hidden shrink-0 pointer-events-auto bg-black/60 text-white p-2 sm:p-3 rounded-full backdrop-blur-sm shadow-md hover:bg-black/80 transition-all active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-black/60"
                                         >
@@ -357,8 +357,8 @@ export default function ServicesSection() {
                                         </motion.div>
 
                                         {/* Mobile Right Arrow */}
-                                        <button 
-                                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); scrollServices('right'); }} 
+                                        <button
+                                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); scrollServices('right'); }}
                                             disabled={isLastService}
                                             className="lg:hidden shrink-0 pointer-events-auto bg-black/60 text-white p-2 sm:p-3 rounded-full backdrop-blur-sm shadow-md hover:bg-black/80 transition-all active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-black/60"
                                         >

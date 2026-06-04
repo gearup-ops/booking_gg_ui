@@ -123,15 +123,27 @@ function Book() {
         const serviceName = searchParams.get('name');
         const servicePrice = searchParams.get('price');
 
-        if (serviceId && serviceName && servicePrice && !selectedService) {
-            dispatch(
-                setSelectedService({
-                    id: Number.parseInt(serviceId),
-                    name: serviceName,
-                    type: serviceType || 'gear',
-                    price: Number.parseInt(servicePrice),
-                })
-            );
+        if (serviceId && serviceName && servicePrice) {
+            const parsedId = Number.parseInt(serviceId);
+            const parsedPrice = Number.parseInt(servicePrice);
+            const parsedType = serviceType || 'gear';
+
+            // Update if no service is selected, or if the selected service doesn't match the URL
+            if (
+                !selectedService || 
+                selectedService.id !== parsedId || 
+                selectedService.type !== parsedType ||
+                selectedService.name !== serviceName
+            ) {
+                dispatch(
+                    setSelectedService({
+                        id: parsedId,
+                        name: serviceName,
+                        type: parsedType,
+                        price: parsedPrice,
+                    })
+                );
+            }
         }
 
         // Pre-fill customer details from user data (keep for store sync)

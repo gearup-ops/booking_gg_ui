@@ -7,14 +7,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
-export default function HeroSection() {
+export default function HeroSection({ initialData }: { initialData?: any }) {
     const { isAuthenticated, user } = useSelector(
         (state: RootState) => state.auth
     );
 
-    const { homePageData, isLoading } = useSelector(
+    const { homePageData: reduxData, isLoading } = useSelector(
         (state: RootState) => state.content
     );
+
+    const homePageData = reduxData || initialData;
 
     if (!homePageData && isLoading) {
         return (

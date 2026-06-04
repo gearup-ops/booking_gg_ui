@@ -303,7 +303,7 @@ export default function Footer() {
                         <ul className='space-y-2 text-sm text-gray-300'>
                             <li>
                                 <Link
-                                    href='/services?service=Standard Service'
+                                    href='/services/pune/standard-service'
                                     className='hover:text-white transition-colors'
                                 >
                                     Standard Service
@@ -311,7 +311,7 @@ export default function Footer() {
                             </li>
                             <li>
                                 <Link
-                                    href='/services?service=Premium Service'
+                                    href='/services/pune/premium-service'
                                     className='hover:text-white transition-colors'
                                 >
                                     Premium Service
@@ -319,31 +319,31 @@ export default function Footer() {
                             </li>
                             <li>
                                 <Link
-                                    href='/services?service=Assemble/Dismantle'
+                                    href='/services/pune/assemble-dismantle'
                                     className='hover:text-white transition-colors'
                                 >
                                     Assemble/Dismantle
                                 </Link>
                             </li>
                             <li>
-                                <a
-                                    href='/services?service=Road Bike Service'
+                                <Link
+                                    href='/services/pune/road-bike-service'
                                     className='hover:text-white transition-colors'
                                 >
                                     Road Bike Service
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href='/services?service=E Bike Service'
-                                    className='hover:text-white transition-colors'
-                                >
-                                    E-Bike Service
-                                </a>
+                                </Link>
                             </li>
                             <li>
                                 <Link
-                                    href='/services?service=Full Service'
+                                    href='/services/pune/e-bike-service'
+                                    className='hover:text-white transition-colors'
+                                >
+                                    E-Bike Service
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href='/services/pune/full-service'
                                     className='hover:text-white transition-colors'
                                 >
                                     Full Service

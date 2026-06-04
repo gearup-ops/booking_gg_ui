@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux';
 
-export default function StatsSection() {
-    const { homePageData } = useSelector((state: any) => state.content);
+export default function StatsSection({ initialData }: { initialData?: any }) {
+    const { homePageData: reduxData } = useSelector((state: any) => state.content);
+    const homePageData = reduxData || initialData;
 
     const stats = homePageData?.s6?.data || [
         { no: '70000+', tl: 'Bicycles serviced in PAN India' },

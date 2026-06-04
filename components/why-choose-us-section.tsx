@@ -4,8 +4,9 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { useSelector } from 'react-redux';
 
-export default function WhyChooseUsSection() {
-    const { homePageData } = useSelector((state: any) => state.content);
+export default function WhyChooseUsSection({ initialData }: { initialData?: any }) {
+    const { homePageData: reduxData } = useSelector((state: any) => state.content);
+    const homePageData = reduxData || initialData;
 
     return (
         <section className='pb-16 bg-[#3c3d3f]'>

@@ -88,11 +88,10 @@ export default function CityPopup() {
                     {cities.map((city: any) => (
                         <button
                             key={city.id}
-                            className={`w-full p-2 border rounded ${
-                                selectedCityId === city.id
+                            className={`w-full p-2 border rounded ${selectedCityId === city.id
                                     ? 'bg-[#fbbf24] text-white border-blue-600'
                                     : 'bg-white text-black border-gray-300'
-                            }`}
+                                }`}
                             onClick={() => setSelectedCityId(city.id)}
                             type='button'
                         >

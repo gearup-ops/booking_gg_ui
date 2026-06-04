@@ -12,19 +12,19 @@ export default function ServiceHighlights() {
             icon: Shield,
             title: 'Quality Assurance',
             description:
-                'Lorem ipsum dolor sit amet consectetur. Lacus eu gravida tortor nam duis.',
+                'We use genuine parts and guarantee top-notch service for a smooth and safe ride.',
         },
         {
             icon: Award,
             title: 'Affordable Prices',
             description:
-                'Lorem ipsum dolor sit amet consectetur. Lacus eu gravida tortor nam duis.',
+                'Get premium doorstep bicycle maintenance at transparent and budget-friendly rates.',
         },
         {
             icon: Clock,
             title: 'On Call support',
             description:
-                'Lorem ipsum dolor sit amet consectetur. Lacus eu gravida tortor nam duis.',
+                'Our dedicated team is always available to answer your queries and assist you promptly.',
         },
     ];
 

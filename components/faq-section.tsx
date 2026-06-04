@@ -5,9 +5,10 @@ import { ChevronDown } from 'lucide-react';
 import { RootState } from '@/lib/store';
 import { toggleFAQ } from '@/lib/slices/uiSlice';
 
-export default function FAQSection() {
+export default function FAQSection({ initialData }: { initialData?: any }) {
     const dispatch = useDispatch();
-    const { homePageData } = useSelector((state: RootState) => state.content);
+    const { homePageData: reduxData } = useSelector((state: RootState) => state.content);
+    const homePageData = reduxData || initialData;
     const openFAQ = useSelector((state: RootState) => state.ui.openFAQ);
 
     const faqs = homePageData?.s7 || [
