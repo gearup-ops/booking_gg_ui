@@ -33,9 +33,29 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const orgSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'LocalBusiness',
+        name: 'Gear Grow Cycle',
+        image: 'https://booking.geargrowcycle.com/images/logo.png',
+        '@id': 'https://booking.geargrowcycle.com',
+        url: 'https://booking.geargrowcycle.com',
+        telephone: '+9188885742472',
+        priceRange: '₹₹',
+        address: {
+            '@type': 'PostalAddress',
+            addressCountry: 'IN',
+        },
+        description: 'Professional doorstep bicycle maintenance and repair services at your location.',
+    };
+
     return (
         <html lang='en'>
             <body>
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
+                />
                 <Providers>
                     <CityPopup />
                     <LayoutShell>{children}</LayoutShell>

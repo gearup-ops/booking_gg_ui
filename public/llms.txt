@@ -1,0 +1,30 @@
+# Gear Grow Cycle
+
+Gear Grow Cycle is a premium doorstep bicycle maintenance and repair service provider in India. We bring expert cycle mechanics directly to the customer's location for hassle-free repairs.
+
+## About Us
+- **Website**: https://booking.geargrowcycle.com
+- **Contact**: contact@geargrowcycle.com
+- **Locations Served**: Pune, Bengaluru, Mumbai, Vishakhapatnam, Hyderabad, Chennai, and Navi Mumbai.
+
+## Our Services
+We offer specialized maintenance for both Gear and Non-Gear bicycles:
+- **Standard Service**: Basic tune-up, brake adjustments, gear indexing, chain lubrication, and comprehensive cleaning.
+- **Advanced Service**: Includes everything in Standard, plus full drive-train degreasing, bottom bracket overhaul, and wheel truing.
+- **Premium Service**: Our ultimate package with complete strip-down, deep cleaning of all components, greasing of all bearings, and precision tuning.
+- **Custom Repairs**: Puncture fixes, tire replacements, and ad-hoc parts replacement.
+
+## How It Works
+1. Customers visit our website and select their city.
+2. They browse our available services and select the one that fits their needs.
+3. They provide their address and preferred time slot.
+4. Our certified mechanic arrives at their doorstep fully equipped to service the bicycle.
+
+## Target Audience
+Cyclists, commuters, fitness enthusiasts, and professionals who lack the time or means to transport their bicycles to a physical repair shop.
+
+## Quick Links
+- **Book a Service**: https://booking.geargrowcycle.com
+- **About Us**: https://booking.geargrowcycle.com/about
+- **Contact Us**: https://booking.geargrowcycle.com/contact
+- **Corporate Tie-ups**: https://booking.geargrowcycle.com/for-business

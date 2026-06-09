@@ -56,6 +56,31 @@ export default async function DynamicServicesPage({ params }: Props) {
         }
     }
 
+    let currentService = null;
+    if (initialServices.length > 0) {
+        currentService = initialServices.find((s: any) => slugify(s.serviceName) === params.service) || initialServices[0];
+    }
+
+    const serviceSchema = currentService ? {
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        name: currentService.serviceName,
+        provider: {
+            '@type': 'LocalBusiness',
+            name: 'Gear Grow Cycle'
+        },
+        areaServed: {
+            '@type': 'City',
+            name: params.city.charAt(0).toUpperCase() + params.city.slice(1).replace('-', ' ')
+        },
+        offers: {
+            '@type': 'Offer',
+            price: currentService.prices[0].price, 
+            priceCurrency: 'INR'
+        },
+        description: currentService.serviceShortDescription || `Professional ${currentService.serviceName} at your doorstep in ${params.city}.`
+    } : null;
+
     return (
         <Suspense
             fallback={
@@ -64,6 +89,12 @@ export default async function DynamicServicesPage({ params }: Props) {
                 </div>
             }
         >
+            {serviceSchema && (
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+                />
+            )}
             <ServicesClient 
                 initialServices={initialServices} 
                 citySlug={params.city} 

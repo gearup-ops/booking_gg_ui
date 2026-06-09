@@ -22,8 +22,8 @@ export default function WhyChooseUsSection({ initialData }: { initialData?: any 
                         </p>
                         {homePageData ? (
                             <ul className='space-y-4 text-gray-300 list-disc pl-5'>
-                                {homePageData?.s3?.pts?.map((point: any) => (
-                                    <li key={point._id}>{point.pt}</li>
+                                {homePageData?.s3?.pts?.map((point: any, i: number) => (
+                                    <li key={i}>{point.pt}</li>
                                 ))}
                             </ul>
                         ) : (
