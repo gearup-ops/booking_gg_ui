@@ -43,6 +43,12 @@ import {
 
 import { getLocaleStorage } from '@/lib/utils';
 import { fetchStatic } from '@/lib/api/client';
+import dynamic from 'next/dynamic';
+
+const MapPicker = dynamic(() => import('@/components/map-picker'), {
+    ssr: false,
+    loading: () => <div className="w-full h-[300px] bg-gray-200 animate-pulse rounded-md" />
+});
 
 function Book() {
     const dispatch = useDispatch<AppDispatch>();
@@ -52,6 +58,7 @@ function Book() {
     const [validationErrors, setValidationErrors] = useState<
         Record<string, string>
     >({});
+    const [showMap, setShowMap] = useState(false);
 
     const { isAuthenticated, user } = useSelector(
         (state: RootState) => state.auth
@@ -223,9 +230,9 @@ function Book() {
             if (customer.city === null || customer.city === undefined) {
                 errors.cityId = 'City is required';
             }
-            // if (!isLocationAvailable || !user.longLat?.trim()) {
-            //     errors.longLat = 'Please locate yourself';
-            // }
+            if (!customer.longLat?.trim()) {
+                errors.longLat = 'Location is required. Please locate yourself or select on map.';
+            }
             // if (!user.state.trim()) {
             //     errors.state = 'State is required';
             // }
@@ -1188,19 +1195,19 @@ function Book() {
                         )}
                     </div>
                     <div className='space-y-2'>
-                        <Label className='text-black'>Locate Yourself</Label>
-                        <div className='flex items-center space-x-2'>
+                        <Label className={validationErrors.longLat ? 'text-red-500' : 'text-black'}>Locate Yourself*</Label>
+                        <div className='flex flex-wrap items-center gap-2'>
                             <Button
                                 type='button'
                                 variant='outline'
-                                className='border-[#4a4b4d] text-[#fbbf24] bg-white hover:bg-[#fbbf24] hover:text-black flex items-center'
+                                className={`border-[#4a4b4d] bg-white hover:bg-[#fbbf24] hover:text-black flex items-center ${validationErrors.longLat ? 'border-red-500 text-red-500' : 'text-[#fbbf24]'}`}
                                 onClick={() => {
                                     if (navigator.geolocation) {
                                         navigator.geolocation.getCurrentPosition(
                                             (position) => {
                                                 const { latitude, longitude } =
                                                     position.coords;
-                                                const longLat = `${longitude},${latitude}`;
+                                                const longLat = `${latitude},${longitude}`;
                                                 setCustomer((prev) => ({
                                                     ...prev,
                                                     longLat,
@@ -1210,34 +1217,71 @@ function Book() {
                                                         longLat,
                                                     })
                                                 );
+                                                if (validationErrors.longLat) {
+                                                    setValidationErrors(prev => {
+                                                        const next = { ...prev };
+                                                        delete next.longLat;
+                                                        return next;
+                                                    });
+                                                }
                                             },
                                             (error) => {
                                                 alert(
                                                     'Unable to get location: ' +
                                                         error.message
                                                 );
+                                                setShowMap(true);
                                             }
                                         );
                                     } else {
                                         alert(
                                             'Geolocation is not supported by your browser.'
                                         );
+                                        setShowMap(true);
                                     }
                                 }}
                             >
                                 <MapPin className='w-5 h-5 mr-2' />
-                                Locate Me
+                                Auto Locate
+                            </Button>
+                            <Button
+                                type='button'
+                                variant='outline'
+                                className='border-[#4a4b4d] text-black bg-gray-100 hover:bg-gray-200 flex items-center'
+                                onClick={() => setShowMap(!showMap)}
+                            >
+                                {showMap ? 'Hide Map' : 'Select on Map'}
                             </Button>
                             {customer.longLat && (
-                                <span className='text-xs text-gray-600'>
+                                <span className='text-xs font-semibold text-green-600 bg-green-50 px-2 py-1 rounded w-full mt-2'>
                                     Location set ✓: {customer.longLat}
                                 </span>
                             )}
                         </div>
                         {validationErrors.longLat && (
-                            <p className='text-red-500 text-sm'>
+                            <p className='text-red-500 text-sm mt-1'>
                                 {validationErrors.longLat}
                             </p>
+                        )}
+                        {showMap && (
+                            <div className="mt-4">
+                                <p className="text-sm text-gray-600 mb-2">Click on the map to set your location:</p>
+                                <MapPicker 
+                                    position={customer.longLat ? [parseFloat(customer.longLat.split(',')[0]), parseFloat(customer.longLat.split(',')[1])] : null}
+                                    onPositionChange={(pos) => {
+                                        const longLat = `${pos[0]},${pos[1]}`;
+                                        setCustomer((prev) => ({ ...prev, longLat }));
+                                        dispatch(updateCustomerDetails({ longLat }));
+                                        if (validationErrors.longLat) {
+                                            setValidationErrors(prev => {
+                                                const next = { ...prev };
+                                                delete next.longLat;
+                                                return next;
+                                            });
+                                        }
+                                    }}
+                                />
+                            </div>
                         )}
                     </div>
                 </div>
